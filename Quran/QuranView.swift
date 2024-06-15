@@ -1,5 +1,5 @@
 //
-//  SurahsView.swift
+//  QuranView.swift
 //  Quran
 //
 //  Created by Ali Earp on 14/06/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SurahsView: View {
+struct QuranView: View {
     @State private var quranModel: QuranModel = QuranModel()
     
     var body: some View {
@@ -52,12 +52,11 @@ struct SurahsView: View {
                         }
                     }
                 }.padding(.horizontal)
-            }
-            .toolbarVisibility(.visible, for: .navigationBar)
+            }.toolbarVisibility(.visible, for: .navigationBar)
         }
     }
 }
 
 #Preview {
-    SurahsView()
+    QuranView()
 }
