@@ -26,4 +26,19 @@ class QuranModel: ObservableObject {
             }
         }
     }
+    
+    func getSurah(_ surahId: Int) -> Surah? {
+        if let path = Bundle.main.path(forResource: "Quran", ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                let jsonData = try JSONDecoder().decode([Surah].self, from: data)
+                
+                return jsonData.first { $0.id == surahId }
+            } catch {
+                print("Failed to load Quran JSON from local file.")
+            }
+        }
+        
+        return nil
+    }
 }

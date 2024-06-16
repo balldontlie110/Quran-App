@@ -18,7 +18,7 @@ struct QuranView: View {
                 LazyVStack {
                     ForEach(quran) { surah in
                         NavigationLink {
-                            SurahView(surah: surah)
+                            SurahView(surah: surah, initialScroll: getVerse(surah: surah))
                         } label: {
                             HStack(spacing: 15) {
                                 Text(String(surah.id))
@@ -60,6 +60,14 @@ struct QuranView: View {
             .navigationTitle("Quran")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarVisibility(.visible, for: .navigationBar)
+            .toolbar {
+                NavigationLink {
+                    BookmarkedFoldersView()
+                } label: {
+                    Image(systemName: "bookmark")
+                        .foregroundStyle(Color.primary)
+                }
+            }
         }
     }
     
@@ -74,12 +82,45 @@ struct QuranView: View {
                     return true
                 } else if surah.transliteration.lowercased().contains(searchText.lowercased()) {
                     return true
-                } else if String(surah.id).contains(searchText) {
+                } else if String(surah.id).contains(searchText.filter { $0.isNumber }) {
+                    return true
+                } else if isSurahToVerse(surah: surah) {
                     return true
                 } else {
                     return false
                 }
             }
+        }
+    }
+    
+    private func isSurahToVerse(surah: Surah) -> Bool {
+        let surahToVerseRegex = "\\d+\\s*:\\s*\\d+"
+        let surahToVersePredicate = NSPredicate(format: "SELF MATCHES %@", surahToVerseRegex)
+        
+        if surahToVersePredicate.evaluate(with: searchText) {
+            if let surahId = Int(searchText.split(separator: ":")[0]), let verseId = Int(searchText.split(separator: ":")[1]) {
+                if surahId == surah.id && verseId <= surah.total_verses {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    
+    private func getVerse(surah: Surah) -> Int? {
+        if isSurahToVerse(surah: surah) {
+            if let verseId = Int(searchText.split(separator: ":")[1]) {
+                return verseId
+            } else {
+                return nil
+            }
+        } else {
+            return nil
         }
     }
 }

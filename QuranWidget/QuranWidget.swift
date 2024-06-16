@@ -1,0 +1,153 @@
+//
+//  QuranWidget.swift
+//  QuranWidget
+//
+//  Created by Ali Earp on 16/06/2024.
+//
+
+import WidgetKit
+import SwiftUI
+
+struct Provider: TimelineProvider {
+    private var prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
+    
+    func placeholder(in context: Context) -> SimpleEntry {
+        SimpleEntry(date: Date(), prayerTimes: [:])
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimesModel.prayerTimes)
+        completion(entry)
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+        var entries: [SimpleEntry] = []
+
+        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
+        let currentDate = Date()
+        for hourOffset in 0 ..< 5 {
+            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+            let entry = SimpleEntry(date: entryDate, prayerTimes: prayerTimesModel.prayerTimes)
+            entries.append(entry)
+        }
+
+        if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
+            let timeline = Timeline(entries: entries, policy: .after(updateDate))
+            completion(timeline)
+        }
+    }
+
+//    func relevances() async -> WidgetRelevances<Void> {
+//        // Generate a list containing the contexts this widget is relevant in.
+//    }
+}
+
+struct SimpleEntry: TimelineEntry {
+    let date: Date
+    let prayerTimes: [String : String]
+}
+
+struct QuranWidgetEntryView : View {
+    @Environment(\.widgetFamily) private var widgetFamily
+    
+    var entry: Provider.Entry
+    
+    private let prayersSmall = ["Dawn", "Sunrise", "Noon", "Sunset", "Maghrib", "Midnight"]
+    private let prayersMedium = ["Dawn", "Sunrise", "Noon", "Maghrib", "Midnight"]
+    
+    private let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib", "Midnight" : "Isha"]
+    
+    private let columns: [GridItem] = [GridItem](repeating: GridItem(.flexible()), count: 2)
+    private let rows: [GridItem] = [GridItem](repeating: GridItem(.flexible()), count: 5)
+    
+    var body: some View {
+        switch widgetFamily {
+        case .systemSmall:
+            VStack(spacing: 0) {
+                let prayerTimes = entry.prayerTimes.filter {
+                    return prayersMedium.contains($0.key)
+                }.sorted {
+                    return prayersSmall.firstIndex(of: $0.key) ?? 0 < prayersSmall.firstIndex(of: $1.key) ?? 0
+                }
+                
+                ForEach(prayerTimes, id: \.key) { prayer in
+                    LazyVGrid(columns: columns) {
+                        Text(prayersRenamed[prayer.key] ?? prayer.key)
+                            .foregroundStyle(Color.secondary)
+                        
+                        Text(prayer.value)
+                            .bold()
+                    }
+                    .font(.system(size: 15))
+                    .padding(.vertical, 5)
+                }
+            }
+        case .systemMedium:
+            VStack(spacing: 0) {
+                let prayerTimes = entry.prayerTimes.filter {
+                    return prayersMedium.contains($0.key)
+                }.sorted {
+                    return prayersMedium.firstIndex(of: $0.key) ?? 0 < prayersMedium.firstIndex(of: $1.key) ?? 0
+                }
+                
+                Spacer()
+                
+                LazyVGrid(columns: rows) {
+                    ForEach(prayerTimes, id: \.key) { prayer in
+                        Text(prayersRenamed[prayer.key] ?? prayer.key)
+                            .foregroundStyle(Color.secondary)
+                    }
+                }.font(.system(size: 14))
+                
+                Spacer()
+                
+                LazyVGrid(columns: rows) {
+                    ForEach(prayerTimes, id: \.key) { prayer in
+                        Text(prayer.value)
+                            .bold()
+                    }
+                }.font(.system(size: 18))
+                
+                Spacer()
+            }
+        default:
+            EmptyView()
+        }
+    }
+}
+
+struct QuranWidget: Widget {
+    let kind: String = "QuranWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+            if #available(iOS 17.0, *) {
+                QuranWidgetEntryView(entry: entry)
+                    .containerBackground(.fill.tertiary, for: .widget)
+            } else {
+                QuranWidgetEntryView(entry: entry)
+                    .padding()
+                    .background()
+            }
+        }
+        .configurationDisplayName("Prayer Times")
+        .description("See prayer times at a glance.")
+        .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+#Preview(as: .systemSmall) {
+    QuranWidget()
+} timeline: {
+    var prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
+    
+    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"])
+}
+
+#Preview(as: .systemMedium) {
+    QuranWidget()
+} timeline: {
+    var prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
+    
+    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"])
+}

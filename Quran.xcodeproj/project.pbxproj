@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A20E15F52C1F314E00AF9DA4 /* BookmarkedVersesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20E15F42C1F314E00AF9DA4 /* BookmarkedVersesView.swift */; };
+		A20E15FD2C1F5C3300AF9DA4 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20E15FC2C1F5C3300AF9DA4 /* WidgetKit.framework */; };
+		A20E15FF2C1F5C3300AF9DA4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20E15FE2C1F5C3300AF9DA4 /* SwiftUI.framework */; };
+		A20E16022C1F5C3300AF9DA4 /* QuranWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20E16012C1F5C3300AF9DA4 /* QuranWidgetBundle.swift */; };
+		A20E16042C1F5C3300AF9DA4 /* QuranWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20E16032C1F5C3300AF9DA4 /* QuranWidget.swift */; };
+		A20E16062C1F5C3500AF9DA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20E16052C1F5C3500AF9DA4 /* Assets.xcassets */; };
+		A20E160A2C1F5C3500AF9DA4 /* QuranWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A20E15FA2C1F5C3300AF9DA4 /* QuranWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A20E160F2C1F5FC200AF9DA4 /* PrayerTimesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */; };
+		A20E16112C1F621F00AF9DA4 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = A20E16102C1F621F00AF9DA4 /* Alamofire */; };
+		A20E16132C1F621F00AF9DA4 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = A20E16122C1F621F00AF9DA4 /* SwiftSoup */; };
 		A222F86A2C1DF0D300405860 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = A222F8692C1DF0D300405860 /* Alamofire */; };
 		A222F86F2C1DF0DF00405860 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = A222F86E2C1DF0DF00405860 /* SwiftSoup */; };
 		A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A230CE5E2C1C8F32002DC576 /* QuranView.swift */; };
@@ -17,6 +27,7 @@
 		A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF32C1CC4AF005FA616 /* DuaView.swift */; };
 		A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF52C1CC685005FA616 /* DuasView.swift */; };
 		A2975CF82C1CC898005FA616 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF72C1CC898005FA616 /* RootView.swift */; };
+		A2BEC6422C1EF3330058017F /* BookmarkedFoldersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */; };
 		A2D43E532C190A0900C3F21F /* QuranApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E522C190A0900C3F21F /* QuranApp.swift */; };
 		A2D43E552C190A0900C3F21F /* SurahView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E542C190A0900C3F21F /* SurahView.swift */; };
 		A2D43E572C190A0A00C3F21F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2D43E562C190A0A00C3F21F /* Assets.xcassets */; };
@@ -29,7 +40,39 @@
 		A2FD25BE2C1EEBF9003785CF /* QuranApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25BC2C1EEBF9003785CF /* QuranApp.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A20E16082C1F5C3500AF9DA4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A2D43E472C190A0900C3F21F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A20E15F92C1F5C3300AF9DA4;
+			remoteInfo = QuranWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A20E160E2C1F5C3600AF9DA4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A20E160A2C1F5C3500AF9DA4 /* QuranWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		A20E15F42C1F314E00AF9DA4 /* BookmarkedVersesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedVersesView.swift; sourceTree = "<group>"; };
+		A20E15FA2C1F5C3300AF9DA4 /* QuranWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuranWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20E15FC2C1F5C3300AF9DA4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		A20E15FE2C1F5C3300AF9DA4 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		A20E16012C1F5C3300AF9DA4 /* QuranWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranWidgetBundle.swift; sourceTree = "<group>"; };
+		A20E16032C1F5C3300AF9DA4 /* QuranWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranWidget.swift; sourceTree = "<group>"; };
+		A20E16052C1F5C3500AF9DA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20E16072C1F5C3500AF9DA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A230CE5E2C1C8F32002DC576 /* QuranView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranView.swift; sourceTree = "<group>"; };
 		A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesView.swift; sourceTree = "<group>"; };
 		A2975CED2C1CBDAC005FA616 /* Duas.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Duas.json; sourceTree = "<group>"; };
@@ -38,6 +81,7 @@
 		A2975CF32C1CC4AF005FA616 /* DuaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaView.swift; sourceTree = "<group>"; };
 		A2975CF52C1CC685005FA616 /* DuasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuasView.swift; sourceTree = "<group>"; };
 		A2975CF72C1CC898005FA616 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedFoldersView.swift; sourceTree = "<group>"; };
 		A2D43E4F2C190A0900C3F21F /* Quran.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quran.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2D43E522C190A0900C3F21F /* QuranApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranApp.swift; sourceTree = "<group>"; };
 		A2D43E542C190A0900C3F21F /* SurahView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurahView.swift; sourceTree = "<group>"; };
@@ -52,6 +96,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A20E15F72C1F5C3300AF9DA4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A20E16112C1F621F00AF9DA4 /* Alamofire in Frameworks */,
+				A20E16132C1F621F00AF9DA4 /* SwiftSoup in Frameworks */,
+				A20E15FF2C1F5C3300AF9DA4 /* SwiftUI.framework in Frameworks */,
+				A20E15FD2C1F5C3300AF9DA4 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2D43E4C2C190A0900C3F21F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -64,29 +119,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A20E15FB2C1F5C3300AF9DA4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A20E15FC2C1F5C3300AF9DA4 /* WidgetKit.framework */,
+				A20E15FE2C1F5C3300AF9DA4 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A20E16002C1F5C3300AF9DA4 /* QuranWidget */ = {
+			isa = PBXGroup;
+			children = (
+				A20E16012C1F5C3300AF9DA4 /* QuranWidgetBundle.swift */,
+				A20E16032C1F5C3300AF9DA4 /* QuranWidget.swift */,
+				A20E16052C1F5C3500AF9DA4 /* Assets.xcassets */,
+				A20E16072C1F5C3500AF9DA4 /* Info.plist */,
+			);
+			path = QuranWidget;
+			sourceTree = "<group>";
+		};
 		A222F8702C1DF0ED00405860 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				A2975CF72C1CC898005FA616 /* RootView.swift */,
 				A2E4E3BE2C1DF140007D28A4 /* Quran */,
 				A2E4E3BF2C1DF14A007D28A4 /* Duas */,
-				A26A35192C1DF94900C60561 /* New Group */,
+				A26A35192C1DF94900C60561 /* Prayer Times */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		A26A35192C1DF94900C60561 /* New Group */ = {
+		A26A35192C1DF94900C60561 /* Prayer Times */ = {
 			isa = PBXGroup;
 			children = (
 				A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */,
 			);
-			path = "New Group";
+			path = "Prayer Times";
 			sourceTree = "<group>";
 		};
 		A2D43E462C190A0900C3F21F = {
 			isa = PBXGroup;
 			children = (
 				A2D43E512C190A0900C3F21F /* Quran */,
+				A20E16002C1F5C3300AF9DA4 /* QuranWidget */,
+				A20E15FB2C1F5C3300AF9DA4 /* Frameworks */,
 				A2D43E502C190A0900C3F21F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,6 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				A2D43E4F2C190A0900C3F21F /* Quran.app */,
+				A20E15FA2C1F5C3300AF9DA4 /* QuranWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -155,6 +233,8 @@
 			children = (
 				A230CE5E2C1C8F32002DC576 /* QuranView.swift */,
 				A2D43E542C190A0900C3F21F /* SurahView.swift */,
+				A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */,
+				A20E15F42C1F314E00AF9DA4 /* BookmarkedVersesView.swift */,
 			);
 			path = Quran;
 			sourceTree = "<group>";
@@ -180,6 +260,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A20E15F92C1F5C3300AF9DA4 /* QuranWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A20E160B2C1F5C3500AF9DA4 /* Build configuration list for PBXNativeTarget "QuranWidgetExtension" */;
+			buildPhases = (
+				A20E15F62C1F5C3300AF9DA4 /* Sources */,
+				A20E15F72C1F5C3300AF9DA4 /* Frameworks */,
+				A20E15F82C1F5C3300AF9DA4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuranWidgetExtension;
+			packageProductDependencies = (
+				A20E16102C1F621F00AF9DA4 /* Alamofire */,
+				A20E16122C1F621F00AF9DA4 /* SwiftSoup */,
+			);
+			productName = QuranWidgetExtension;
+			productReference = A20E15FA2C1F5C3300AF9DA4 /* QuranWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		A2D43E4E2C190A0900C3F21F /* Quran */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A2D43E5D2C190A0A00C3F21F /* Build configuration list for PBXNativeTarget "Quran" */;
@@ -187,10 +288,12 @@
 				A2D43E4B2C190A0900C3F21F /* Sources */,
 				A2D43E4C2C190A0900C3F21F /* Frameworks */,
 				A2D43E4D2C190A0900C3F21F /* Resources */,
+				A20E160E2C1F5C3600AF9DA4 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A20E16092C1F5C3500AF9DA4 /* PBXTargetDependency */,
 			);
 			name = Quran;
 			packageProductDependencies = (
@@ -211,6 +314,9 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					A20E15F92C1F5C3300AF9DA4 = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					A2D43E4E2C190A0900C3F21F = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -234,11 +340,20 @@
 			projectRoot = "";
 			targets = (
 				A2D43E4E2C190A0900C3F21F /* Quran */,
+				A20E15F92C1F5C3300AF9DA4 /* QuranWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A20E15F82C1F5C3300AF9DA4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A20E16062C1F5C3500AF9DA4 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2D43E4D2C190A0900C3F21F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -253,6 +368,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A20E15F62C1F5C3300AF9DA4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A20E160F2C1F5FC200AF9DA4 /* PrayerTimesModel.swift in Sources */,
+				A20E16022C1F5C3300AF9DA4 /* QuranWidgetBundle.swift in Sources */,
+				A20E16042C1F5C3300AF9DA4 /* QuranWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2D43E4B2C190A0900C3F21F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -262,7 +387,9 @@
 				A2D43E552C190A0900C3F21F /* SurahView.swift in Sources */,
 				A2FD25BE2C1EEBF9003785CF /* QuranApp.xcdatamodeld in Sources */,
 				A2975CF02C1CC414005FA616 /* Dua.swift in Sources */,
+				A2BEC6422C1EF3330058017F /* BookmarkedFoldersView.swift in Sources */,
 				A2D43E632C190A8F00C3F21F /* Quran.swift in Sources */,
+				A20E15F52C1F314E00AF9DA4 /* BookmarkedVersesView.swift in Sources */,
 				A2975CF82C1CC898005FA616 /* RootView.swift in Sources */,
 				A2975CF22C1CC461005FA616 /* DuaModel.swift in Sources */,
 				A2FD25BA2C1EEB9A003785CF /* Persistence.swift in Sources */,
@@ -276,7 +403,69 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A20E16092C1F5C3500AF9DA4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A20E15F92C1F5C3300AF9DA4 /* QuranWidgetExtension */;
+			targetProxy = A20E16082C1F5C3500AF9DA4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		A20E160C2C1F5C3600AF9DA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3CS5B84X2T;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuranWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuranWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ali.Quran.QuranWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A20E160D2C1F5C3600AF9DA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3CS5B84X2T;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuranWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuranWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ali.Quran.QuranWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		A2D43E5B2C190A0A00C3F21F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -457,6 +646,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A20E160B2C1F5C3500AF9DA4 /* Build configuration list for PBXNativeTarget "QuranWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A20E160C2C1F5C3600AF9DA4 /* Debug */,
+				A20E160D2C1F5C3600AF9DA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A2D43E4A2C190A0900C3F21F /* Build configuration list for PBXProject "Quran" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -497,6 +695,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A20E16102C1F621F00AF9DA4 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A222F8682C1DF0D300405860 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		A20E16122C1F621F00AF9DA4 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A222F86D2C1DF0DF00405860 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
 		A222F8692C1DF0D300405860 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A222F8682C1DF0D300405860 /* XCRemoteSwiftPackageReference "Alamofire" */;

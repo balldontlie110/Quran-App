@@ -17,8 +17,12 @@ struct Surah: Identifiable, Decodable {
     let verses: [Ayat]
 }
 
-struct Ayat: Identifiable, Decodable {
+struct Ayat: Identifiable, Decodable, Equatable {
     let id: Int
     let text: String
     let translation: String
+    
+    static func ==(lhs: Ayat, rhs: Ayat) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

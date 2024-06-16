@@ -10,14 +10,15 @@ import SwiftUI
 struct PrayerTimesView: View {
     @StateObject private var prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    let prayers = ["Imsaak", "Dawn", "Sunrise", "Noon", "Sunset", "Maghrib", "Midnight"]
+    private let prayers = ["Imsaak", "Dawn", "Sunrise", "Noon", "Sunset", "Maghrib", "Midnight"]
+    private let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib", "Midnight" : "Isha"]
     
     private let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
         NavigationStack {
             LazyVStack(spacing: 0) {
-                if prayers.count > 0 {
+                if prayerTimes.count != 0 {
                     Divider()
                     
                     HStack(spacing: 0) {
@@ -29,7 +30,7 @@ struct PrayerTimesView: View {
                                     Text(prayer.key)
                                         .font(.system(.title2, weight: .bold))
                                     
-                                    Text(prayer.value)
+                                    Text(prayersRenamed[prayer.value] ?? prayer.value)
                                         .font(.system(.title2))
                                         .foregroundStyle(Color.secondary)
                                 }.padding(.vertical)
