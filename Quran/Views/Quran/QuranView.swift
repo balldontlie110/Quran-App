@@ -10,22 +10,25 @@ import SwiftUI
 struct QuranView: View {
     @State private var quranModel: QuranModel = QuranModel()
     
+    @State private var searchText: String = ""
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack {
-                    ForEach(quranModel.quran) { surah in
+                    ForEach(quran) { surah in
                         NavigationLink {
                             SurahView(surah: surah)
                         } label: {
-                            HStack {
-                                ZStack {
-                                    Image(systemName: "diamond")
-                                        .font(.largeTitle)
-                                    Text(String(surah.id))
-                                        .font(String(surah.id).count == 1 ? .title3 : String(surah.id).count == 2 ? .headline : .caption)
-                                        .bold()
-                                }
+                            HStack(spacing: 15) {
+                                Text(String(surah.id))
+                                    .bold()
+                                    .overlay {
+                                        Image(systemName: "diamond")
+                                            .font(.system(size: 40))
+                                            .fontWeight(.ultraLight)
+                                    }
+                                    .frame(width: 40)
                                 
                                 VStack(alignment: .leading) {
                                     Text(surah.transliteration)
@@ -52,7 +55,31 @@ struct QuranView: View {
                         }
                     }
                 }.padding(.horizontal)
-            }.toolbarVisibility(.visible, for: .navigationBar)
+            }
+            .searchable(text: $searchText)
+            .navigationTitle("Quran")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarVisibility(.visible, for: .navigationBar)
+        }
+    }
+    
+    private var quran: [Surah] {
+        if searchText == "" {
+            return quranModel.quran
+        } else {
+            return quranModel.quran.filter { surah in
+                if surah.name.lowercased() == searchText.lowercased() {
+                    return true
+                } else if surah.translation.lowercased().contains(searchText.lowercased()) {
+                    return true
+                } else if surah.transliteration.lowercased().contains(searchText.lowercased()) {
+                    return true
+                } else if String(surah.id).contains(searchText) {
+                    return true
+                } else {
+                    return false
+                }
+            }
         }
     }
 }

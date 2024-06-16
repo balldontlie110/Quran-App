@@ -11,7 +11,8 @@ import SwiftUI
 struct QuranApp: App {
     var body: some Scene {
         WindowGroup {
-            SurahsView()
+            RootView()
+                .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }
 }

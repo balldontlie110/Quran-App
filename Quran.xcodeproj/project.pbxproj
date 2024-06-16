@@ -7,7 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A230CE5F2C1C8F32002DC576 /* SurahsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A230CE5E2C1C8F32002DC576 /* SurahsView.swift */; };
+		A222F86A2C1DF0D300405860 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = A222F8692C1DF0D300405860 /* Alamofire */; };
+		A222F86F2C1DF0DF00405860 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = A222F86E2C1DF0DF00405860 /* SwiftSoup */; };
+		A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A230CE5E2C1C8F32002DC576 /* QuranView.swift */; };
+		A26A351B2C1DF96700C60561 /* PrayerTimesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */; };
+		A2975CEE2C1CBDAC005FA616 /* Duas.json in Resources */ = {isa = PBXBuildFile; fileRef = A2975CED2C1CBDAC005FA616 /* Duas.json */; };
+		A2975CF02C1CC414005FA616 /* Dua.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CEF2C1CC414005FA616 /* Dua.swift */; };
+		A2975CF22C1CC461005FA616 /* DuaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF12C1CC461005FA616 /* DuaModel.swift */; };
+		A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF32C1CC4AF005FA616 /* DuaView.swift */; };
+		A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF52C1CC685005FA616 /* DuasView.swift */; };
+		A2975CF82C1CC898005FA616 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF72C1CC898005FA616 /* RootView.swift */; };
 		A2D43E532C190A0900C3F21F /* QuranApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E522C190A0900C3F21F /* QuranApp.swift */; };
 		A2D43E552C190A0900C3F21F /* SurahView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E542C190A0900C3F21F /* SurahView.swift */; };
 		A2D43E572C190A0A00C3F21F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2D43E562C190A0A00C3F21F /* Assets.xcassets */; };
@@ -15,10 +24,20 @@
 		A2D43E632C190A8F00C3F21F /* Quran.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E622C190A8F00C3F21F /* Quran.swift */; };
 		A2D43E652C190AF200C3F21F /* QuranModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E642C190AF200C3F21F /* QuranModel.swift */; };
 		A2DC615D2C1A650400E73390 /* Quran.json in Resources */ = {isa = PBXBuildFile; fileRef = A2DC615C2C1A650400E73390 /* Quran.json */; };
+		A2E4E3C12C1DF174007D28A4 /* PrayerTimesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */; };
+		A2FD25BA2C1EEB9A003785CF /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25B92C1EEB9A003785CF /* Persistence.swift */; };
+		A2FD25BE2C1EEBF9003785CF /* QuranApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25BC2C1EEBF9003785CF /* QuranApp.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A230CE5E2C1C8F32002DC576 /* SurahsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurahsView.swift; sourceTree = "<group>"; };
+		A230CE5E2C1C8F32002DC576 /* QuranView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranView.swift; sourceTree = "<group>"; };
+		A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesView.swift; sourceTree = "<group>"; };
+		A2975CED2C1CBDAC005FA616 /* Duas.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Duas.json; sourceTree = "<group>"; };
+		A2975CEF2C1CC414005FA616 /* Dua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dua.swift; sourceTree = "<group>"; };
+		A2975CF12C1CC461005FA616 /* DuaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaModel.swift; sourceTree = "<group>"; };
+		A2975CF32C1CC4AF005FA616 /* DuaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaView.swift; sourceTree = "<group>"; };
+		A2975CF52C1CC685005FA616 /* DuasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuasView.swift; sourceTree = "<group>"; };
+		A2975CF72C1CC898005FA616 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A2D43E4F2C190A0900C3F21F /* Quran.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quran.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2D43E522C190A0900C3F21F /* QuranApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranApp.swift; sourceTree = "<group>"; };
 		A2D43E542C190A0900C3F21F /* SurahView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurahView.swift; sourceTree = "<group>"; };
@@ -27,6 +46,9 @@
 		A2D43E622C190A8F00C3F21F /* Quran.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quran.swift; sourceTree = "<group>"; };
 		A2D43E642C190AF200C3F21F /* QuranModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranModel.swift; sourceTree = "<group>"; };
 		A2DC615C2C1A650400E73390 /* Quran.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Quran.json; sourceTree = "<group>"; };
+		A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesModel.swift; sourceTree = "<group>"; };
+		A2FD25B92C1EEB9A003785CF /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		A2FD25BD2C1EEBF9003785CF /* QuranApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = QuranApp.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,12 +56,33 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A222F86A2C1DF0D300405860 /* Alamofire in Frameworks */,
+				A222F86F2C1DF0DF00405860 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A222F8702C1DF0ED00405860 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A2975CF72C1CC898005FA616 /* RootView.swift */,
+				A2E4E3BE2C1DF140007D28A4 /* Quran */,
+				A2E4E3BF2C1DF14A007D28A4 /* Duas */,
+				A26A35192C1DF94900C60561 /* New Group */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A26A35192C1DF94900C60561 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */,
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		A2D43E462C190A0900C3F21F = {
 			isa = PBXGroup;
 			children = (
@@ -60,11 +103,11 @@
 			isa = PBXGroup;
 			children = (
 				A2D43E522C190A0900C3F21F /* QuranApp.swift */,
-				A2D43E542C190A0900C3F21F /* SurahView.swift */,
-				A230CE5E2C1C8F32002DC576 /* SurahsView.swift */,
-				A2D43E622C190A8F00C3F21F /* Quran.swift */,
-				A2D43E642C190AF200C3F21F /* QuranModel.swift */,
-				A2DC615C2C1A650400E73390 /* Quran.json */,
+				A222F8702C1DF0ED00405860 /* Views */,
+				A2E4E3BB2C1DF10D007D28A4 /* Models */,
+				A2E4E3BC2C1DF111007D28A4 /* ViewModels */,
+				A2FD25BB2C1EEBA5003785CF /* CoreData */,
+				A2E4E3BD2C1DF135007D28A4 /* Data */,
 				A2D43E562C190A0A00C3F21F /* Assets.xcassets */,
 				A2D43E582C190A0A00C3F21F /* Preview Content */,
 			);
@@ -77,6 +120,61 @@
 				A2D43E592C190A0A00C3F21F /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		A2E4E3BB2C1DF10D007D28A4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A2D43E622C190A8F00C3F21F /* Quran.swift */,
+				A2975CEF2C1CC414005FA616 /* Dua.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A2E4E3BC2C1DF111007D28A4 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A2D43E642C190AF200C3F21F /* QuranModel.swift */,
+				A2975CF12C1CC461005FA616 /* DuaModel.swift */,
+				A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A2E4E3BD2C1DF135007D28A4 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A2DC615C2C1A650400E73390 /* Quran.json */,
+				A2975CED2C1CBDAC005FA616 /* Duas.json */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		A2E4E3BE2C1DF140007D28A4 /* Quran */ = {
+			isa = PBXGroup;
+			children = (
+				A230CE5E2C1C8F32002DC576 /* QuranView.swift */,
+				A2D43E542C190A0900C3F21F /* SurahView.swift */,
+			);
+			path = Quran;
+			sourceTree = "<group>";
+		};
+		A2E4E3BF2C1DF14A007D28A4 /* Duas */ = {
+			isa = PBXGroup;
+			children = (
+				A2975CF52C1CC685005FA616 /* DuasView.swift */,
+				A2975CF32C1CC4AF005FA616 /* DuaView.swift */,
+			);
+			path = Duas;
+			sourceTree = "<group>";
+		};
+		A2FD25BB2C1EEBA5003785CF /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				A2FD25B92C1EEB9A003785CF /* Persistence.swift */,
+				A2FD25BC2C1EEBF9003785CF /* QuranApp.xcdatamodeld */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,6 +193,10 @@
 			dependencies = (
 			);
 			name = Quran;
+			packageProductDependencies = (
+				A222F8692C1DF0D300405860 /* Alamofire */,
+				A222F86E2C1DF0DF00405860 /* SwiftSoup */,
+			);
 			productName = Quran;
 			productReference = A2D43E4F2C190A0900C3F21F /* Quran.app */;
 			productType = "com.apple.product-type.application";
@@ -123,6 +225,10 @@
 				Base,
 			);
 			mainGroup = A2D43E462C190A0900C3F21F;
+			packageReferences = (
+				A222F8682C1DF0D300405860 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				A222F86D2C1DF0DF00405860 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = A2D43E502C190A0900C3F21F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -139,6 +245,7 @@
 			files = (
 				A2D43E5A2C190A0A00C3F21F /* Preview Assets.xcassets in Resources */,
 				A2DC615D2C1A650400E73390 /* Quran.json in Resources */,
+				A2975CEE2C1CBDAC005FA616 /* Duas.json in Resources */,
 				A2D43E572C190A0A00C3F21F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,10 +257,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A230CE5F2C1C8F32002DC576 /* SurahsView.swift in Sources */,
+				A26A351B2C1DF96700C60561 /* PrayerTimesView.swift in Sources */,
+				A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */,
 				A2D43E552C190A0900C3F21F /* SurahView.swift in Sources */,
+				A2FD25BE2C1EEBF9003785CF /* QuranApp.xcdatamodeld in Sources */,
+				A2975CF02C1CC414005FA616 /* Dua.swift in Sources */,
 				A2D43E632C190A8F00C3F21F /* Quran.swift in Sources */,
+				A2975CF82C1CC898005FA616 /* RootView.swift in Sources */,
+				A2975CF22C1CC461005FA616 /* DuaModel.swift in Sources */,
+				A2FD25BA2C1EEB9A003785CF /* Persistence.swift in Sources */,
+				A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */,
+				A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */,
 				A2D43E532C190A0900C3F21F /* QuranApp.swift in Sources */,
+				A2E4E3C12C1DF174007D28A4 /* PrayerTimesModel.swift in Sources */,
 				A2D43E652C190AF200C3F21F /* QuranModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +476,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A222F8682C1DF0D300405860 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
+		A222F86D2C1DF0DF00405860 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A222F8692C1DF0D300405860 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A222F8682C1DF0D300405860 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		A222F86E2C1DF0DF00405860 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A222F86D2C1DF0DF00405860 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		A2FD25BC2C1EEBF9003785CF /* QuranApp.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A2FD25BD2C1EEBF9003785CF /* QuranApp.xcdatamodel */,
+			);
+			currentVersion = A2FD25BD2C1EEBF9003785CF /* QuranApp.xcdatamodel */;
+			path = QuranApp.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = A2D43E472C190A0900C3F21F /* Project object */;
 }
