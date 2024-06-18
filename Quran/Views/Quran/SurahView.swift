@@ -16,7 +16,7 @@ struct SurahView: View {
     @State private var readingMode: Bool = false
     
     @State private var showVerseSelector: Bool = false
-    @State private var verseNumber: Int = 1
+    @State private var scrollPosition: Int?
     
     let initialScroll: Int?
     
@@ -52,33 +52,21 @@ struct SurahView: View {
     @FocusState private var focusedField: FocusedField?
     
     var body: some View {
-        ScrollView {
-            ScrollViewReader { proxy in
-                VStack {
-                    Text(surah.name)
-                        .font(.system(size: 50, weight: .bold))
-                    
-                    Text(surah.translation)
-                        .font(.system(size: 20, weight: .semibold))
-                }
-                
-                Spacer().frame(height: 40)
-                
-                Group {
-                    if readingMode {
-                        let verses = getSurahVerses(surah.verses)
-                        
-                        LazyVStack(spacing: 20) {
-                            ForEach(verses) { verse in
-                                Text(verse.text)
-                                    .tag(verse.id)
-                            }
-                            .font(.system(size: 40, weight: .bold))
-                            .multilineTextAlignment(.center)
-                            .lineSpacing(20)
-                        }
-                    } else {
+        TabView(selection: $readingMode) {
+            Tab("Translation", systemImage: "book.closed", value: false) {
+                ScrollView {
+                    ScrollViewReader { proxy in
                         LazyVStack {
+                            VStack {
+                                Text(surah.name)
+                                    .font(.system(size: 50, weight: .bold))
+                                
+                                Text(surah.translation)
+                                    .font(.system(size: 20, weight: .semibold))
+                            }
+                            
+                            Spacer().frame(height: 40)
+                            
                             ForEach(surah.verses) { verse in
                                 VStack(alignment: .trailing, spacing: 10) {
                                     Group {
@@ -131,17 +119,75 @@ struct SurahView: View {
                                 }.id(verse.id)
                             }
                         }
+                        .padding(.horizontal)
+                        .scrollTargetLayout()
+                        .onChange(of: readingMode) { _, _ in
+                            if readingMode == false {
+                                proxy.scrollTo(scrollPosition, anchor: .top)
+                            }
+                        }
+                        .onRotate { _ in
+                            proxy.scrollTo(scrollPosition, anchor: .top)
+                        }
+                        .onAppear {
+                            if let initialScroll = initialScroll {
+                                proxy.scrollTo(initialScroll, anchor: .top)
+                            }
+                        }
                     }
                 }
-                .padding(.horizontal)
-                .onChange(of: verseNumber) { _, _ in
+                .scrollPosition(id: $scrollPosition)
+                .onTapGesture {
                     withAnimation {
-                        proxy.scrollTo(verseNumber, anchor: .top)
+                        self.showBookmarkAlert = nil
+                        self.showVerseSelector = false
                     }
                 }
-                .onAppear {
-                    if let initialScroll = initialScroll {
-                        proxy.scrollTo(initialScroll, anchor: .top)
+            }
+            
+            Tab("Reading", systemImage: "book", value: true) {
+                ScrollView {
+                    ScrollViewReader { proxy in
+                        let verses = getSurahVerses(surah.verses)
+                        LazyVStack(spacing: 20) {
+                            VStack {
+                                Text(surah.name)
+                                    .font(.system(size: 50, weight: .bold))
+                                
+                                Text(surah.translation)
+                                    .font(.system(size: 20, weight: .semibold))
+                            }
+                            
+                            Spacer().frame(height: 40)
+                            
+                            ForEach(verses) { verse in
+                                Text(verse.text)
+                                    .id(verse.id)
+                            }
+                            .font(.system(size: 40, weight: .bold))
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(20)
+                        }
+                        .padding(.horizontal)
+                        .scrollTargetLayout()
+                        .onAppear {
+                            proxy.scrollTo(scrollPosition, anchor: .top)
+                        }
+                        .onChange(of: readingMode) { _, _ in
+                            if readingMode == true {
+                                proxy.scrollTo(scrollPosition, anchor: .top)
+                            }
+                        }
+                        .onRotate { _ in
+                            proxy.scrollTo(scrollPosition, anchor: .top)
+                        }
+                    }
+                }
+                .scrollPosition(id: $scrollPosition)
+                .onTapGesture {
+                    withAnimation {
+                        self.showBookmarkAlert = nil
+                        self.showVerseSelector = false
                     }
                 }
             }
@@ -149,182 +195,170 @@ struct SurahView: View {
         .navigationTitle(surah.transliteration)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbarVisibility(.visible, for: .navigationBar)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation(.bouncy) { self.showVerseSelector.toggle() }
-                } label: {
-                    Image(systemName: "chevron.\(showVerseSelector ? "up" : "down")")
-                }.foregroundStyle(.primary)
+            Button {
+                withAnimation { self.showVerseSelector.toggle() }
+            } label: {
+                Text("Ayat: \(String(scrollPosition ?? 1))")
+                    .bold()
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 10)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
             }
-            
-            Group {
-                ToolbarItem(placement: .bottomBar) { Spacer() }
-                
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        self.readingMode = false
-                    } label: {
-                        Image(systemName: readingMode ? "book.closed" : "book.closed.fill")
-                    }.foregroundStyle(.primary)
-                }
-                
-                ToolbarItem(placement: .bottomBar) { Spacer() }
-                
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        self.readingMode = true
-                    } label: {
-                        Image(systemName: readingMode ? "book.fill" : "book")
-                    }.foregroundStyle(.primary)
-                }
-                
-                ToolbarItem(placement: .bottomBar) { Spacer() }
-            }
+
         }
-        .safeAreaInset(edge: .top) {
+        .blur(radius: showBookmarkAlert == nil ? 0 : 5)
+        .brightness(showVerseSelector ? -0.5 : 0)
+        .overlay(alignment: .center) {
             if showVerseSelector {
-                VStack(spacing: 0) {
-                    Picker("", selection: $verseNumber) {
+                VStack {
+                    Spacer()
+                    
+                    Picker("", selection: $scrollPosition) {
                         ForEach(0..<surah.total_verses) { number in
-                            LazyVGrid(columns: columns) {
-                                Text(String(number + 1))
-                                
-                                Text(getArabicNumber(number + 1))
-                            }.tag(number + 1)
+                            Text(String(number + 1))
+                                .tag(number + 1)
                         }
                     }
                     .pickerStyle(.wheel)
-                    .background(Color(.systemBackground))
-                    .frame(height: 150)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .padding(.horizontal, 50)
                     
-                    Divider()
-                }.shadow(radius: 1)
+                    Spacer()
+                    Spacer()
+                }
             }
         }
-        .blur(radius: showBookmarkAlert == nil ? 0 : 5)
-        .overlay {
+        .overlay(alignment: .center) {
             if let verse = showBookmarkAlert {
-                VStack(spacing: 15) {
-                    Button {
-                        self.bookmarkFolder = nil
-                    } label: {
-                        HStack {
-                            Text("Reading Bookmark").foregroundStyle(Color.primary)
-                            
-                            Spacer()
-                            
-                            if bookmarkFolder == nil {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    ForEach(bookmarkedFolders) { folder in
+                ScrollView {
+                    VStack(spacing: 15) {
                         Button {
-                            self.bookmarkFolder = folder
+                            self.bookmarkFolder = nil
                         } label: {
                             HStack {
-                                Group {
-                                    Image(systemName: "folder")
-                                    Text(folder.title ?? "")
-                                }.foregroundStyle(Color.primary)
+                                Text("Reading Bookmark").foregroundStyle(Color.primary)
                                 
                                 Spacer()
                                 
-                                if folder == bookmarkFolder {
+                                if bookmarkFolder == nil {
                                     Image(systemName: "checkmark")
                                 }
                             }
                         }
-                    }
-                    
-                    if showNewFolderTitleField {
-                        HStack {
-                            Image(systemName: "folder")
-                            TextField("Folder name", text: $folderTitle)
-                                .focused($focusedField, equals: .folderTitle)
-                                .onSubmit {
-                                    addNewFolder()
-                                    self.focusedField = .bookmarkTitle
-                                }
-                                .onChange(of: focusedField) { _, _ in
-                                    addNewFolder()
-                                }
-                            
-                            Spacer()
-                            
+                        
+                        Divider()
+                        
+                        ForEach(bookmarkedFolders) { folder in
                             Button {
-                                self.folderTitle = ""
-                                self.focusedField = .bookmarkTitle
-                                self.showNewFolderTitleField = false
+                                self.bookmarkFolder = folder
                             } label: {
-                                Image(systemName: "trash")
-                                    .foregroundStyle(Color.red)
+                                HStack {
+                                    Group {
+                                        Image(systemName: "folder")
+                                        Text(folder.title ?? "")
+                                    }.foregroundStyle(Color.primary)
+                                    
+                                    Spacer()
+                                    
+                                    if folder == bookmarkFolder {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
                             }
                         }
-                    }
-                    
-                    Button {
-                        self.showNewFolderTitleField = true
-                        self.focusedField = .folderTitle
-                    } label: {
-                        Text("+ New Folder")
-                            .bold()
-                    }
-                    
-                    if bookmarkFolder != nil || showNewFolderTitleField {
-                        TextField("Bookmark title", text: $bookmarkTitle, axis: .vertical)
-                            .focused($focusedField, equals: .bookmarkTitle)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    
-                    Spacer()
-                        .frame(height: 10)
-                    
-                    Button {
-                        addNewFolder()
                         
-                        if let folder = bookmarkFolder && bookmarkTitle != "" {
-                            addVerseToBookmarks(
-                                verse: verse,
-                                title: bookmarkTitle,
-                                folder: folder)
-                            
-                            withAnimation { self.showBookmarkAlert = nil }
-                            self.bookmarkTitle = ""
-                            self.bookmarkFolder = nil
-                        } else {
-                            addVerseToBookmarks(
-                                verse: verse,
-                                title: "Reading Bookmark",
-                                folder: nil)
-                            
-                            withAnimation { self.showBookmarkAlert = nil }
-                            self.bookmarkTitle = ""
-                            self.bookmarkFolder = nil
+                        if showNewFolderTitleField {
+                            HStack {
+                                Image(systemName: "folder")
+                                TextField("Folder name", text: $folderTitle)
+                                    .focused($focusedField, equals: .folderTitle)
+                                    .onSubmit {
+                                        addNewFolder()
+                                        self.focusedField = .bookmarkTitle
+                                    }
+                                    .onChange(of: focusedField) { _, _ in
+                                        addNewFolder()
+                                    }
+                                
+                                Spacer()
+                                
+                                Button {
+                                    self.folderTitle = ""
+                                    self.focusedField = .bookmarkTitle
+                                    self.showNewFolderTitleField = false
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .foregroundStyle(Color.red)
+                                }
+                            }
                         }
-                    } label: {
-                        Text("Bookmark Verse")
-                            .bold()
-                    }
-                    .buttonStyle(BorderedButtonStyle())
-                    .disabled(bookmarkFolder != nil && bookmarkTitle == "")
-                    
-                    Button {
-                        withAnimation { self.showBookmarkAlert = nil }
-                        self.bookmarkTitle = ""
-                        self.bookmarkFolder = nil
-                    } label: {
-                        Text("Cancel")
-                            .bold()
-                            .foregroundStyle(Color.red)
-                    }
+                        
+                        Button {
+                            self.showNewFolderTitleField = true
+                            self.focusedField = .folderTitle
+                        } label: {
+                            Text("+ New Folder")
+                                .bold()
+                        }
+                        
+                        if bookmarkFolder != nil || showNewFolderTitleField {
+                            TextField("Bookmark title", text: $bookmarkTitle, axis: .vertical)
+                                .focused($focusedField, equals: .bookmarkTitle)
+                                .padding(7.5)
+                                .background(Color(.systemBackground))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
+                        
+                        Spacer()
+                            .frame(height: 10)
+                        
+                        Button {
+                            addNewFolder()
+                            
+                            if let folder = bookmarkFolder, bookmarkTitle != "" {
+                                addVerseToBookmarks(
+                                    verse: verse,
+                                    title: bookmarkTitle,
+                                    folder: folder)
+                                
+                                withAnimation { self.showBookmarkAlert = nil }
+                                self.bookmarkTitle = ""
+                                self.bookmarkFolder = nil
+                            } else {
+                                addVerseToBookmarks(
+                                    verse: verse,
+                                    title: "Reading Bookmark",
+                                    folder: nil)
+                                
+                                withAnimation { self.showBookmarkAlert = nil }
+                                self.bookmarkTitle = ""
+                                self.bookmarkFolder = nil
+                            }
+                        } label: {
+                            Text("Bookmark Verse")
+                                .bold()
+                        }
+                        .buttonStyle(BorderedButtonStyle())
+                        .disabled(bookmarkFolder != nil && bookmarkTitle == "")
+                        
+                        Button {
+                            withAnimation { self.showBookmarkAlert = nil }
+                            self.bookmarkTitle = ""
+                            self.bookmarkFolder = nil
+                        } label: {
+                            Text("Cancel")
+                                .bold()
+                                .foregroundStyle(Color.red)
+                        }
+                    }.padding()
                 }
+                .frame(height: 350)
                 .font(.system(size: 20))
-                .padding()
                 .background(Color(.secondarySystemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 15))
                 .padding(.horizontal, 50)
@@ -413,6 +447,24 @@ struct SurahView: View {
         } catch {
             
         }
+    }
+}
+
+struct DeviceRotationViewModifier: ViewModifier {
+    let action: (UIDeviceOrientation) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear()
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                action(UIDevice.current.orientation)
+            }
+    }
+}
+
+extension View {
+    func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
+        self.modifier(DeviceRotationViewModifier(action: action))
     }
 }
 

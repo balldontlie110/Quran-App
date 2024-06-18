@@ -27,10 +27,10 @@ struct PrayerTimesView: View {
                         VStack(spacing: 0) {
                             ForEach(prayerTimes, id: \.key) { prayer in
                                 LazyVGrid(columns: columns) {
-                                    Text(prayer.key)
+                                    Text(prayersRenamed[prayer.key] ?? prayer.key)
                                         .font(.system(.title2, weight: .bold))
                                     
-                                    Text(prayersRenamed[prayer.value] ?? prayer.value)
+                                    Text(prayer.value)
                                         .font(.system(.title2))
                                         .foregroundStyle(Color.secondary)
                                 }.padding(.vertical)
