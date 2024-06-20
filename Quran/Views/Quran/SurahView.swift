@@ -55,6 +55,7 @@ struct SurahView: View {
     @FocusState private var focusedField: FocusedField?
     
     @State private var player: AVPlayer?
+    @State private var playing: Bool = false
     var finishedPlaying = NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime)
     
     var body: some View {
@@ -97,15 +98,19 @@ struct SurahView: View {
                                             
                                             if let audioUrl = URL(string: "https://everyayah.com/data/Ghamadi_40kbps/\(verse.audio).mp3") {
                                                 Button {
-                                                    if isAudioPlaying(audioUrl: audioUrl) {
+                                                    if playing && (player?.currentItem?.asset as? AVURLAsset)?.url == audioUrl {
                                                         player?.pause()
+                                                        self.playing = false
                                                     } else {
                                                         player?.pause()
+                                                        
                                                         self.player = AVPlayer(url: audioUrl)
                                                         player?.play()
+                                                        
+                                                        self.playing = true
                                                     }
                                                 } label: {
-                                                    if isAudioPlaying(audioUrl: audioUrl) {
+                                                    if playing && (player?.currentItem?.asset as? AVURLAsset)?.url == audioUrl {
                                                         Image(systemName: "pause.fill")
                                                     } else {
                                                         Image(systemName: "play.fill")
@@ -117,7 +122,7 @@ struct SurahView: View {
                                         .foregroundStyle(Color.primary)
                                         .disabled(showVerseSelector)
                                         .onReceive(finishedPlaying) { _ in
-                                            self.player = nil
+                                            self.playing = false
                                         }
                                         
                                         Spacer()
@@ -366,10 +371,6 @@ struct SurahView: View {
                 }
             }
         }
-    }
-    
-    private func isAudioPlaying(audioUrl: URL) -> Bool {
-        return player?.currentItem != nil && (player?.currentItem?.asset as? AVURLAsset)?.url == audioUrl
     }
 
     private func getSurahVerses(_ verses: [Ayat]) -> [Ayat] {
