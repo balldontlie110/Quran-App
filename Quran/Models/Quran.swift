@@ -21,6 +21,7 @@ struct Ayat: Identifiable, Decodable, Equatable {
     let id: Int
     let text: String
     let translation: String
+    let audio: String
     
     static func ==(lhs: Ayat, rhs: Ayat) -> Bool {
         return lhs.id == rhs.id

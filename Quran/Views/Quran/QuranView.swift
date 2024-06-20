@@ -36,7 +36,7 @@ struct QuranView: View {
                                     Text(surah.translation)
                                         .font(.system(.subheadline, weight: .semibold))
                                         .foregroundStyle(Color.secondary)
-                                }
+                                }.multilineTextAlignment(.leading)
                                 
                                 Spacer()
                                 

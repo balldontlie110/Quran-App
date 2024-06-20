@@ -39,14 +39,13 @@ struct BookmarkedFoldersView: View {
                             VStack(alignment: .leading) {
                                 Text("Reading Bookmark")
                                     .fontWeight(.heavy)
-                                    .multilineTextAlignment(.leading)
                                 
                                 Spacer()
                                 
                                 Text("\(readingBookmark.surahName ?? ""): Ayat \(readingBookmark.verseId)")
                                     .font(.system(.subheadline, weight: .semibold))
                                     .foregroundStyle(Color.secondary)
-                            }
+                            }.multilineTextAlignment(.leading)
                             
                             Spacer()
                             
@@ -63,7 +62,7 @@ struct BookmarkedFoldersView: View {
                                     Image(systemName: "trash")
                                         .foregroundStyle(Color.red)
                                 }
-                            }
+                            }.multilineTextAlignment(.trailing)
                         }
                         .foregroundStyle(Color.primary)
                         .padding()
@@ -75,7 +74,7 @@ struct BookmarkedFoldersView: View {
                 ForEach(bookmarkedFolders) { folder in
                     NavigationLink {
                         if let bookmarkedVerses = folder.verses?.allObjects as? [BookmarkedVerse] {
-                            BookmarkedVersesView(bookmarkedVerses: bookmarkedVerses)
+                            BookmarkedVersesView(title: folder.title, bookmarkedVerses: bookmarkedVerses)
                         }
                     } label: {
                         HStack(spacing: 15) {
@@ -107,7 +106,7 @@ struct BookmarkedFoldersView: View {
                     }
                 }
             }.padding(.horizontal)
-        }.navigationTitle("Bookmarked Folders")
+        }.navigationTitle("Bookmarks")
     }
     
     private func getDateString(_ date: Date?) -> String {

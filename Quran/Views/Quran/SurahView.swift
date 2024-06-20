@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import AVFoundation
 
 struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -18,7 +19,7 @@ struct SurahView: View {
     @State private var showVerseSelector: Bool = false
     @State private var scrollPosition: Int?
     
-    let initialScroll: Int?
+    @State var initialScroll: Int?
     
     private let columns: [GridItem] = [
         GridItem(.flexible()),
@@ -45,34 +46,39 @@ struct SurahView: View {
     @State private var folderTitle: String = ""
     @State private var bookmarkFolder: FetchedResults<BookmarkedFolder>.Element?
     
+    private let bookmarkAlertHeight: CGFloat = UIScreen.main.bounds.width / 3 * 2
+    
     enum FocusedField {
         case bookmarkTitle, folderTitle
     }
     
     @FocusState private var focusedField: FocusedField?
     
+    @State private var player: AVPlayer?
+    var finishedPlaying = NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime)
+    
     var body: some View {
-        TabView(selection: $readingMode) {
-            Tab("Translation", systemImage: "book.closed", value: false) {
-                ScrollView {
-                    ScrollViewReader { proxy in
-                        LazyVStack {
-                            VStack {
-                                Text(surah.name)
-                                    .font(.system(size: 50, weight: .bold))
+        ScrollView {
+            ScrollViewReader { proxy in
+                LazyVStack {
+                    VStack {
+                        Text(surah.name)
+                            .font(.system(size: 50, weight: .bold))
+                        
+                        Text(surah.translation)
+                            .font(.system(size: 20, weight: .semibold))
+                    }
+                    
+                    Spacer().frame(height: 40)
+                    
+                    ForEach(surah.verses) { verse in
+                        VStack(alignment: .trailing, spacing: 10) {
+                            Group {
+                                let verseText = getVerse(verse)
                                 
-                                Text(surah.translation)
-                                    .font(.system(size: 20, weight: .semibold))
-                            }
-                            
-                            Spacer().frame(height: 40)
-                            
-                            ForEach(surah.verses) { verse in
-                                VStack(alignment: .trailing, spacing: 10) {
-                                    Group {
-                                        let verseText = getVerse(verse)
-                                        
-                                        HStack(alignment: .top) {
+                                HStack(alignment: .top) {
+                                    if !readingMode {
+                                        VStack(spacing: 10) {
                                             Button {
                                                 if let verseToRemove = bookmarkedVerses.first(where: { $0.id == "\(surah.id):\(verse.id)" }) {
                                                     removeVerseFromBookmarks(verseToRemove)
@@ -87,150 +93,142 @@ struct SurahView: View {
                                                         Image(systemName: "bookmark")
                                                     }
                                                 }
-                                                .font(.system(size: 20))
-                                                .foregroundStyle(Color.primary)
                                             }
                                             
-                                            Spacer()
-                                            
-                                            Text(verseText.text)
-                                                .font(.system(size: 40, weight: .bold))
-                                                .multilineTextAlignment(.trailing)
-                                                .lineSpacing(20)
+                                            if let audioUrl = URL(string: "https://everyayah.com/data/Ghamadi_40kbps/\(verse.audio).mp3") {
+                                                Button {
+                                                    if isAudioPlaying(audioUrl: audioUrl) {
+                                                        player?.pause()
+                                                    } else {
+                                                        player?.pause()
+                                                        self.player = AVPlayer(url: audioUrl)
+                                                        player?.play()
+                                                    }
+                                                } label: {
+                                                    if isAudioPlaying(audioUrl: audioUrl) {
+                                                        Image(systemName: "pause.fill")
+                                                    } else {
+                                                        Image(systemName: "play.fill")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(Color.primary)
+                                        .disabled(showVerseSelector)
+                                        .onReceive(finishedPlaying) { _ in
+                                            self.player = nil
                                         }
                                         
-                                        HStack(alignment: .top) {
-                                            Group {
-                                                Text("\(verse.id).")
-                                                Text(verse.translation)
-                                            }
-                                            .font(.system(size: 20))
-                                            .multilineTextAlignment(.leading)
-                                            
-                                            Spacer()
-                                        }.padding(.trailing, 15)
+                                        Spacer()
                                     }
-                                    .padding(.bottom, 5)
-                                    .padding(.top, 15)
                                     
-                                    if verse.id != surah.verses.count {
-                                        Divider()
-                                    }
-                                }.id(verse.id)
-                            }
-                        }
-                        .padding(.horizontal)
-                        .scrollTargetLayout()
-                        .onChange(of: readingMode) { _, _ in
-                            if readingMode == false {
-                                proxy.scrollTo(scrollPosition, anchor: .top)
-                            }
-                        }
-                        .onRotate { _ in
-                            proxy.scrollTo(scrollPosition, anchor: .top)
-                        }
-                        .onAppear {
-                            if let initialScroll = initialScroll {
-                                proxy.scrollTo(initialScroll, anchor: .top)
-                            }
-                        }
-                    }
-                }
-                .scrollPosition(id: $scrollPosition)
-                .onTapGesture {
-                    withAnimation {
-                        self.showBookmarkAlert = nil
-                        self.showVerseSelector = false
-                    }
-                }
-            }
-            
-            Tab("Reading", systemImage: "book", value: true) {
-                ScrollView {
-                    ScrollViewReader { proxy in
-                        let verses = getSurahVerses(surah.verses)
-                        LazyVStack(spacing: 20) {
-                            VStack {
-                                Text(surah.name)
-                                    .font(.system(size: 50, weight: .bold))
+                                    Text(verseText.text)
+                                        .font(.system(size: 40, weight: .bold))
+                                        .multilineTextAlignment(readingMode ? .center : .trailing)
+                                        .lineSpacing(20)
+                                }
                                 
-                                Text(surah.translation)
-                                    .font(.system(size: 20, weight: .semibold))
+                                if !readingMode {
+                                    HStack(alignment: .top) {
+                                        Group {
+                                            Text("\(verse.id).")
+                                            Text(verse.translation)
+                                        }
+                                        .font(.system(size: 20))
+                                        .multilineTextAlignment(.leading)
+                                        
+                                        Spacer()
+                                    }.padding(.trailing, 15)
+                                }
                             }
+                            .padding(.bottom, 5)
+                            .padding(.top, 15)
                             
-                            Spacer().frame(height: 40)
-                            
-                            ForEach(verses) { verse in
-                                Text(verse.text)
-                                    .id(verse.id)
+                            if verse.id != surah.verses.count && !readingMode {
+                                Divider()
                             }
-                            .font(.system(size: 40, weight: .bold))
-                            .multilineTextAlignment(.center)
-                            .lineSpacing(20)
-                        }
-                        .padding(.horizontal)
-                        .scrollTargetLayout()
-                        .onAppear {
-                            proxy.scrollTo(scrollPosition, anchor: .top)
-                        }
-                        .onChange(of: readingMode) { _, _ in
-                            if readingMode == true {
-                                proxy.scrollTo(scrollPosition, anchor: .top)
-                            }
-                        }
-                        .onRotate { _ in
-                            proxy.scrollTo(scrollPosition, anchor: .top)
-                        }
+                        }.id(verse.id)
                     }
                 }
-                .scrollPosition(id: $scrollPosition)
-                .onTapGesture {
-                    withAnimation {
-                        self.showBookmarkAlert = nil
-                        self.showVerseSelector = false
-                    }
+                .padding(.horizontal)
+                .scrollTargetLayout()
+                .onRotate { _ in
+                    proxy.scrollTo(scrollPosition ?? initialScroll, anchor: .top)
+                }
+                .onAppear {
+                    proxy.scrollTo(initialScroll, anchor: .top)
                 }
             }
         }
+        .onTapGesture {
+            withAnimation {
+                self.showBookmarkAlert = nil
+                self.showVerseSelector = false
+            }
+        }
+        .scrollPosition(id: $scrollPosition)
         .navigationTitle(surah.transliteration)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarVisibility(.hidden, for: .tabBar)
         .toolbarVisibility(.visible, for: .navigationBar)
         .toolbar {
-            Button {
-                withAnimation { self.showVerseSelector.toggle() }
-            } label: {
-                Text("Ayat: \(String(scrollPosition ?? 1))")
-                    .bold()
-                    .padding(.vertical, 5)
-                    .padding(.horizontal, 10)
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation { self.showVerseSelector.toggle() }
+                } label: {
+                    Text("Ayat: \(String(scrollPosition ?? initialScroll ?? 1))")
+                        .bold()
+                        .padding(.vertical, 5)
+                        .padding(.horizontal, 10)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                }.disabled(showBookmarkAlert != nil)
             }
-
+            
+            ToolbarItem(placement: .bottomBar) {
+                Spacer()
+            }
+            
+            ToolbarItem(placement: .bottomBar) {
+                Button {
+                    self.readingMode = false
+                } label: {
+                    Image(systemName: readingMode ? "book.closed" : "book.closed.fill")
+                }
+            }
+            
+            ToolbarItem(placement: .bottomBar) {
+                Spacer()
+            }
+            
+            ToolbarItem(placement: .bottomBar) {
+                Button {
+                    self.readingMode = true
+                } label: {
+                    Image(systemName: readingMode ? "book.fill" : "book")
+                }
+            }
+            
+            ToolbarItem(placement: .bottomBar) {
+                Spacer()
+            }
         }
         .blur(radius: showBookmarkAlert == nil ? 0 : 5)
         .brightness(showVerseSelector ? -0.5 : 0)
         .overlay(alignment: .center) {
             if showVerseSelector {
-                VStack {
-                    Spacer()
-                    
-                    Picker("", selection: $scrollPosition) {
-                        ForEach(0..<surah.total_verses) { number in
-                            Text(String(number + 1))
-                                .tag(number + 1)
-                        }
+                Picker("", selection: $scrollPosition) {
+                    ForEach(0..<surah.total_verses) { number in
+                        Text(String(number + 1))
+                            .tag(number + 1)
                     }
-                    .pickerStyle(.wheel)
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .padding(.horizontal, 50)
-                    
-                    Spacer()
-                    Spacer()
                 }
+                .pickerStyle(.wheel)
+                .padding()
+                .background(Material.thin)
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+                .padding(.horizontal, 50)
             }
         }
         .overlay(alignment: .center) {
@@ -357,16 +355,21 @@ struct SurahView: View {
                         }
                     }.padding()
                 }
-                .frame(height: 350)
                 .font(.system(size: 20))
-                .background(Color(.secondarySystemBackground))
+                .frame(maxHeight: UIScreen.main.bounds.height / 2)
+                .background(Material.regular)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
                 .padding(.horizontal, 50)
+                .padding(.vertical, 10)
                 .onAppear {
                     self.focusedField = .bookmarkTitle
                 }
             }
         }
+    }
+    
+    private func isAudioPlaying(audioUrl: URL) -> Bool {
+        return player?.currentItem != nil && (player?.currentItem?.asset as? AVURLAsset)?.url == audioUrl
     }
 
     private func getSurahVerses(_ verses: [Ayat]) -> [Ayat] {
@@ -374,7 +377,7 @@ struct SurahView: View {
     }
     
     private func getVerse(_ verse: Ayat) -> Ayat {
-        return Ayat(id: verse.id, text: verse.text + " " + getArabicNumber(verse.id), translation: "")
+        return Ayat(id: verse.id, text: verse.text + " " + getArabicNumber(verse.id), translation: "", audio: "")
     }
     
     private func getArabicNumber(_ number: Int) -> String {

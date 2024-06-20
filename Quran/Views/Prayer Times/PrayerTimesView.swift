@@ -17,37 +17,38 @@ struct PrayerTimesView: View {
     
     var body: some View {
         NavigationStack {
-            LazyVStack(spacing: 0) {
-                if prayerTimes.count != 0 {
-                    Divider()
-                    
-                    HStack(spacing: 0) {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    if prayerTimes.count != 0 {
                         Divider()
                         
-                        VStack(spacing: 0) {
-                            ForEach(prayerTimes, id: \.key) { prayer in
-                                LazyVGrid(columns: columns) {
-                                    Text(prayersRenamed[prayer.key] ?? prayer.key)
-                                        .font(.system(.title2, weight: .bold))
+                        HStack(spacing: 0) {
+                            Divider()
+                            
+                            VStack(spacing: 0) {
+                                ForEach(prayerTimes, id: \.key) { prayer in
+                                    LazyVGrid(columns: columns) {
+                                        Text(prayersRenamed[prayer.key] ?? prayer.key)
+                                            .font(.system(.title2, weight: .bold))
+                                        
+                                        Text(prayer.value)
+                                            .font(.system(.title2))
+                                            .foregroundStyle(Color.secondary)
+                                    }.padding(.vertical)
                                     
-                                    Text(prayer.value)
-                                        .font(.system(.title2))
-                                        .foregroundStyle(Color.secondary)
-                                }.padding(.vertical)
-                                
-                                if prayerTimes.last ?? ("", "") != prayer {
-                                    Divider()
+                                    if prayerTimes.last ?? ("", "") != prayer {
+                                        Divider()
+                                    }
                                 }
                             }
+                            
+                            Divider()
                         }
                         
                         Divider()
                     }
-                    
-                    Divider()
-                }
+                }.padding()
             }
-            .padding()
             .navigationTitle("Salat Times")
             .navigationBarTitleDisplayMode(.inline)
         }

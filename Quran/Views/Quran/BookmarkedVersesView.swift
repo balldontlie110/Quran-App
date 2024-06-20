@@ -11,6 +11,7 @@ import CoreData
 struct BookmarkedVersesView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    let title: String?
     let bookmarkedVerses: [BookmarkedVerse]
     
     var body: some View {
@@ -26,14 +27,13 @@ struct BookmarkedVersesView: View {
                             VStack(alignment: .leading) {
                                 Text(verse.title ?? "")
                                     .fontWeight(.heavy)
-                                    .multilineTextAlignment(.leading)
                                 
                                 Spacer()
                                 
                                 Text("\(verse.surahName ?? ""): Ayat \(verse.verseId)")
                                     .font(.system(.subheadline, weight: .semibold))
                                     .foregroundStyle(Color.secondary)
-                            }
+                            }.multilineTextAlignment(.leading)
                             
                             Spacer()
                             
@@ -50,7 +50,7 @@ struct BookmarkedVersesView: View {
                                     Image(systemName: "trash")
                                         .foregroundStyle(Color.red)
                                 }
-                            }
+                            }.multilineTextAlignment(.trailing)
                         }
                         .foregroundStyle(Color.primary)
                         .padding()
@@ -59,7 +59,7 @@ struct BookmarkedVersesView: View {
                     }
                 }
             }.padding(.horizontal)
-        }.navigationTitle("Bookmarked Verses")
+        }.navigationTitle(title ?? "")
     }
     
     private func getDateString(_ date: Date?) -> String {
@@ -87,6 +87,6 @@ struct BookmarkedVersesView: View {
     
     var bookmarkedVerses: FetchedResults<BookmarkedVerse>
     
-    BookmarkedVersesView(bookmarkedVerses: Array(bookmarkedVerses))
+    BookmarkedVersesView(title: "", bookmarkedVerses: Array(bookmarkedVerses))
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }
