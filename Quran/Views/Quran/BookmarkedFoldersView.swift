@@ -20,7 +20,10 @@ struct BookmarkedFoldersView: View {
     private var readingBookmark: FetchedResults<BookmarkedVerse>
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: true)],
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \BookmarkedFolder.questionFolder, ascending: true),
+            NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: false)
+        ],
         animation: .default
     )
     
@@ -92,11 +95,13 @@ struct BookmarkedFoldersView: View {
                             
                             Spacer()
                             
-                            Button {
-                                deleteFolder(folder)
-                            } label: {
-                                Image(systemName: "trash")
-                                    .foregroundStyle(Color.red)
+                            if !folder.questionFolder {
+                                Button {
+                                    deleteFolder(folder)
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .foregroundStyle(Color.red)
+                                }
                             }
                         }
                         .foregroundStyle(Color.primary)

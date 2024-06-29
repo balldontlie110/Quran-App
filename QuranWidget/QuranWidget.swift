@@ -7,29 +7,68 @@
 
 import WidgetKit
 import SwiftUI
+import Alamofire
+import SwiftSoup
 
 struct Provider: TimelineProvider {
-    private var prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
-    
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), prayerTimes: [:])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimesModel.prayerTimes)
-        completion(entry)
+        fetchPrayerTimes { prayerTimes in
+            if let prayerTimes = prayerTimes {
+                let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes)
+                completion(entry)
+            }
+        }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [SimpleEntry] = []
         
-        let currentDate = Date()
-        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimesModel.prayerTimes)
-        entries.append(entry)
+        fetchPrayerTimes { prayerTimes in
+            if let prayerTimes = prayerTimes {
+                let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes)
+                entries.append(entry)
+            }
+            
+            if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
+                let timeline = Timeline(entries: entries, policy: .after(updateDate))
+                completion(timeline)
+            }
+        }
+    }
+    
+    private func fetchPrayerTimes(completion: @escaping ([String: String]?) -> Void) {
+        let url = "https://najaf.org/english/"
 
-        if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
-            let timeline = Timeline(entries: entries, policy: .after(updateDate))
-            completion(timeline)
+        AF.request(url).responseString { response in
+            switch response.result {
+            case .success(let html):
+                do {
+                    let document = try SwiftSoup.parse(html)
+                    
+                    let prayerTimeDiv = try document.select("#prayer_time").first()
+                    let prayerItems = try prayerTimeDiv?.select("ul > li")
+                    
+                    var prayerTimes: [String : String] = [:]
+                    
+                    for item in prayerItems ?? Elements() {
+                        let prayerName = try item.text().letters
+                        let prayerTime = try item.select("span").text()
+                        prayerTimes[prayerName] = prayerTime
+                    }
+                    
+                    completion(prayerTimes)
+                } catch {
+                    print("Error parsing HTML: \(error)")
+                    completion(nil)
+                }
+            case .failure(let error):
+                print("Request failed with error: \(error)")
+                completion(nil)
+            }
         }
     }
 }

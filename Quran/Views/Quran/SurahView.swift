@@ -42,6 +42,7 @@ struct SurahView: View {
     
     @State private var showBookmarkAlert: Ayat?
     @State private var bookmarkTitle: String = ""
+    @State private var showFolderVerses: [UUID] = []
     @State private var showNewFolderTitleField: Bool = false
     @State private var folderTitle: String = ""
     @State private var bookmarkFolder: FetchedResults<BookmarkedFolder>.Element?
@@ -56,6 +57,7 @@ struct SurahView: View {
     
     @State private var player: AVPlayer?
     @State private var playing: Bool = false
+    
     var finishedPlaying = NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime)
     
     var body: some View {
@@ -81,14 +83,18 @@ struct SurahView: View {
                                     if !readingMode {
                                         VStack(spacing: 10) {
                                             Button {
-                                                if let verseToRemove = bookmarkedVerses.first(where: { $0.id == "\(surah.id):\(verse.id)" }) {
+                                                if let verseToRemove = bookmarkedVerses.first(where: { bookmarkedVerse in
+                                                    bookmarkedVerse.surahId == surah.id && bookmarkedVerse.verseId == verse.id
+                                                }) {
                                                     removeVerseFromBookmarks(verseToRemove)
                                                 } else {
                                                     withAnimation { self.showBookmarkAlert = verse }
                                                 }
                                             } label: {
                                                 Group {
-                                                    if bookmarkedVerses.contains(where: { $0.id == "\(surah.id):\(verse.id)" }) {
+                                                    if bookmarkedVerses.contains(where: { bookmarkedVerse in
+                                                        bookmarkedVerse.surahId == surah.id && bookmarkedVerse.verseId == verse.id
+                                                    }) {
                                                         Image(systemName: "bookmark.fill")
                                                     } else {
                                                         Image(systemName: "bookmark")
@@ -175,8 +181,8 @@ struct SurahView: View {
         .scrollPosition(id: $scrollPosition)
         .navigationTitle(surah.transliteration)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarVisibility(.hidden, for: .tabBar)
-        .toolbarVisibility(.visible, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -237,6 +243,12 @@ struct SurahView: View {
             }
         }
         .overlay(alignment: .center) {
+            addBookmarkOverlay
+        }
+    }
+    
+    private var addBookmarkOverlay: some View {
+        Group {
             if let verse = showBookmarkAlert {
                 ScrollView {
                     VStack(spacing: 15) {
@@ -257,19 +269,47 @@ struct SurahView: View {
                         Divider()
                         
                         ForEach(bookmarkedFolders) { folder in
-                            Button {
-                                self.bookmarkFolder = folder
-                            } label: {
-                                HStack {
-                                    Group {
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack(alignment: .top) {
+                                    Button {
+                                        if showFolderVerses.contains(where: { $0 == folder.id }) {
+                                            withAnimation {
+                                                showFolderVerses.removeAll(where: { $0 == folder.id })
+                                            }
+                                        } else {
+                                            if let bookmarkFolderId = folder.id {
+                                                withAnimation {
+                                                    showFolderVerses.append(bookmarkFolderId)
+                                                }
+                                            }
+                                        }
+                                    } label: {
                                         Image(systemName: "folder")
+                                            .foregroundStyle(Color.primary)
+                                    }
+                                    
+                                    Button {
+                                        self.bookmarkFolder = folder
+                                    } label: {
                                         Text(folder.title ?? "")
-                                    }.foregroundStyle(Color.primary)
-                                    
-                                    Spacer()
-                                    
-                                    if folder == bookmarkFolder {
-                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(Color.primary)
+                                        
+                                        Spacer()
+                                        
+                                        if folder == bookmarkFolder {
+                                            Image(systemName: "checkmark")
+                                        }
+                                    }
+                                }
+                                
+                                if showFolderVerses.contains(where: { $0 == folder.id }) {
+                                    if let bookmarkedVerses = folder.verses?.allObjects as? [BookmarkedVerse] {
+                                        ForEach(bookmarkedVerses) { bookmarkVerse in
+                                            HStack {
+                                                Image(systemName: "chevron.right")
+                                                Text(bookmarkVerse.title ?? "")
+                                            }.font(.system(.subheadline, weight: .semibold))
+                                        }.padding(.leading)
                                     }
                                 }
                             }
@@ -360,7 +400,7 @@ struct SurahView: View {
                         }
                     }.padding()
                 }
-                .font(.system(size: 20))
+                .font(.system(size: 18))
                 .frame(maxHeight: UIScreen.main.bounds.height / 2)
                 .background(Material.regular)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
@@ -372,7 +412,7 @@ struct SurahView: View {
             }
         }
     }
-
+    
     private func getSurahVerses(_ verses: [Ayat]) -> [Ayat] {
         return verses.compactMap { getVerse($0) }
     }
@@ -419,12 +459,16 @@ struct SurahView: View {
     
     private func addVerseToBookmarks(verse: Ayat, title: String, folder: FetchedResults<BookmarkedFolder>.Element?) {
         let newBookmarkedVerse = BookmarkedVerse(context: viewContext)
-        newBookmarkedVerse.id = "\(surah.id):\(verse.id)"
+        newBookmarkedVerse.id = UUID()
         newBookmarkedVerse.title = title
         newBookmarkedVerse.date = Date()
         newBookmarkedVerse.surahId = Int64(surah.id)
         newBookmarkedVerse.surahName = surah.transliteration
         newBookmarkedVerse.verseId = Int64(verse.id)
+        
+        if folder?.questionFolder == true {
+            newBookmarkedVerse.question = true
+        }
         
         if let folder = folder {
             folder.verses = NSSet(set: folder.verses?.adding(newBookmarkedVerse) ?? Set())

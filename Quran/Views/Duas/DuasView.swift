@@ -48,7 +48,7 @@ struct DuasView: View {
             }
             .navigationTitle("Du'as")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarVisibility(.visible, for: .navigationBar)
+            .toolbar(.visible, for: .navigationBar)
         }
     }
 }

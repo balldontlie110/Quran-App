@@ -59,7 +59,7 @@ struct QuranView: View {
             .searchable(text: $searchText)
             .navigationTitle("Quran")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarVisibility(.visible, for: .navigationBar)
+            .toolbar(.visible, for: .navigationBar)
             .toolbar {
                 NavigationLink {
                     BookmarkedFoldersView()
