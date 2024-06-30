@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct QuranApp: App {
+    init() {
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
             RootView()
