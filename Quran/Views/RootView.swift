@@ -17,22 +17,42 @@ struct RootView: View {
     
     private var bookmarkedFolders: FetchedResults<BookmarkedFolder>
     
+    @State private var showSettingsView: Bool = false
+    
     var body: some View {
         TabView {
-            QuranView()
-                .tabItem {
-                    Label("Quran", systemImage: "book")
-                }
+            NavigationStack {
+                QuranView()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) { settingsToolbarButton }
+                    }
+            }
+            .tabItem {
+                Label("Quran", systemImage: "book")
+            }
             
-            DuasView()
-                .tabItem {
-                    Label("Du'as", systemImage: "book.closed")
-                }
+            NavigationStack {
+                DuasView()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) { settingsToolbarButton }
+                    }
+            }
+            .tabItem {
+                Label("Du'as", systemImage: "book.closed")
+            }
             
-            PrayerTimesView()
-                .tabItem {
-                    Label("Times", systemImage: "calendar")
-                }
+            NavigationStack {
+                PrayerTimesView()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) { settingsToolbarButton }
+                    }
+            }
+            .tabItem {
+                Label("Times", systemImage: "calendar")
+            }
+        }
+        .sheet(isPresented: $showSettingsView) {
+            SettingsView()
         }
         .onAppear {
             if !bookmarkedFolders.contains(where: { bookmarkedFolder in
@@ -50,6 +70,15 @@ struct RootView: View {
                     
                 }
             }
+        }
+    }
+    
+    private var settingsToolbarButton: some View {
+        Button {
+            self.showSettingsView.toggle()
+        } label: {
+            Image(systemName: "gear")
+                .foregroundStyle(Color.primary)
         }
     }
 }

@@ -13,60 +13,58 @@ struct QuranView: View {
     @State private var searchText: String = ""
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack {
-                    ForEach(quran) { surah in
-                        NavigationLink {
-                            SurahView(surah: surah, initialScroll: getVerse(surah: surah))
-                        } label: {
-                            HStack(spacing: 15) {
-                                Text(String(surah.id))
-                                    .bold()
-                                    .overlay {
-                                        Image(systemName: "diamond")
-                                            .font(.system(size: 40))
-                                            .fontWeight(.ultraLight)
-                                    }
-                                    .frame(width: 40)
-                                
-                                VStack(alignment: .leading) {
-                                    Text(surah.transliteration)
-                                        .fontWeight(.heavy)
-                                    Text(surah.translation)
-                                        .font(.system(.subheadline, weight: .semibold))
-                                        .foregroundStyle(Color.secondary)
-                                }.multilineTextAlignment(.leading)
-                                
-                                Spacer()
-                                
-                                VStack {
-                                    Text(surah.name)
-                                        .fontWeight(.heavy)
-                                    Text("\(surah.total_verses) Ayahs")
-                                        .font(.system(.subheadline, weight: .semibold))
-                                        .foregroundStyle(Color.secondary)
+        ScrollView {
+            LazyVStack {
+                ForEach(quran) { surah in
+                    NavigationLink {
+                        SurahView(surah: surah, initialScroll: getVerse(surah: surah))
+                    } label: {
+                        HStack(spacing: 15) {
+                            Text(String(surah.id))
+                                .bold()
+                                .overlay {
+                                    Image(systemName: "diamond")
+                                        .font(.system(size: 40))
+                                        .fontWeight(.ultraLight)
                                 }
+                                .frame(width: 40)
+                            
+                            VStack(alignment: .leading) {
+                                Text(surah.transliteration)
+                                    .fontWeight(.heavy)
+                                Text(surah.translation)
+                                    .font(.system(.subheadline, weight: .semibold))
+                                    .foregroundStyle(Color.secondary)
+                            }.multilineTextAlignment(.leading)
+                            
+                            Spacer()
+                            
+                            VStack {
+                                Text(surah.name)
+                                    .fontWeight(.heavy)
+                                Text("\(surah.total_verses) Ayahs")
+                                    .font(.system(.subheadline, weight: .semibold))
+                                    .foregroundStyle(Color.secondary)
                             }
-                            .foregroundStyle(Color.primary)
-                            .padding()
-                            .background(Color(.secondarySystemBackground))
-                            .clipShape(RoundedRectangle(cornerRadius: 5))
                         }
-                    }
-                }.padding(.horizontal)
-            }
-            .searchable(text: $searchText)
-            .navigationTitle("Quran")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.visible, for: .navigationBar)
-            .toolbar {
-                NavigationLink {
-                    BookmarkedFoldersView()
-                } label: {
-                    Image(systemName: "bookmark")
                         .foregroundStyle(Color.primary)
+                        .padding()
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
                 }
+            }.padding(.horizontal)
+        }
+        .searchable(text: $searchText)
+        .navigationTitle("Quran")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
+        .toolbar {
+            NavigationLink {
+                BookmarkedFoldersView()
+            } label: {
+                Image(systemName: "bookmark")
+                    .foregroundStyle(Color.primary)
             }
         }
     }
