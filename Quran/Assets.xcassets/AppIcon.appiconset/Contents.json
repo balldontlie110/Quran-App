@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-version https://git-lfs.github.com/spec/v1
-oid sha256:be002b2ba4aaad2451ae16315b33ff9dc50f19fac4d96a00614b97e2784dce34
-size 707
-=======
 {
   "images" : [
     {
@@ -41,4 +36,3 @@ size 707
     "version" : 1
   }
 }
->>>>>>> main
