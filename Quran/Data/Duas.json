@@ -1,0 +1,624 @@
+[
+    {
+        "id": 1,
+        "type": "Fajr Du'a",
+        "time": "Morning",
+        "verses": [
+            {
+                "id": 1,
+                "arabic": "بِسْمِ ٱللَّهِ",
+                "translation": "In the Name of Allah.",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "arabic": "وَصَلَّىٰ ٱللَّهُ عَلَىٰ مُحَمَّدٍ وآلِهِ",
+                "translation": "May Allah bless Muhammad and his Household.",
+                "audio": 12
+            },
+            {
+                "id": 3,
+                "arabic": "وَأُفَوِّضُ أَمْرِي إِلَىٰ ٱللَّهِ",
+                "translation": "\"I confide my cause unto Allah.",
+                "audio": 22
+            },
+            {
+                "id": 4,
+                "arabic": "إِنَّ ٱللَّهَ بَصيرٌ بِٱلْعِبَادِ",
+                "translation": "Surely, Allah is Seer of His slaves.",
+                "audio": 30
+            },
+            {
+                "id": 5,
+                "arabic": "فَوَقَاهُ ٱللَّهُ سَيِّئَاتِ مَا مَكَرُوا",
+                "translation": "So, Allah warded off from him the evils which they plotted.\"",
+                "audio": 37
+            },
+            {
+                "id": 6,
+                "arabic": "لاَ إِلٰهَ إِلاَّ أَنْتَ سُبْحَانَكَ",
+                "translation": "\"There is no god save You. Be You Glorified!",
+                "audio": 46
+            },
+            {
+                "id": 7,
+                "arabic": "إِنِّي كُنْتُ مِنَ ٱلظَّالِمِيـنَ",
+                "translation": "Lo! I have been a wrongdoer.",
+                "audio": 56
+            },
+            {
+                "id": 8,
+                "arabic": "فَٱسْتَجَبْنَا لَهُ وَنَجَّيْنَاهُ مِنَ ٱلغَمِّ",
+                "translation": "Then, We heard his prayer and saved him from the anguish.",
+                "audio": 62
+            },
+            {
+                "id": 9,
+                "arabic": "وَكَذٰلِكَ نُنْجِي ٱلْمُؤْمِنينَ",
+                "translation": "Thus do We save the believers.\"",
+                "audio": 69
+            },
+            {
+                "id": 10,
+                "arabic": "حَسْبُنَا ٱللَّهُ وَنِعْمَ ٱلْوَكِيلُ",
+                "translation": "\"Allah is Sufficient for us! Most Excellent is He in Whom we trust.",
+                "audio": 75
+            },
+            {
+                "id": 11,
+                "arabic": "فَٱنَقَلَبُوٱ بِنِعْمَةٍ مِنَ ٱللَّهِ وَفَضْلٍ",
+                "translation": "So, they returned with grace and favor from Allah,",
+                "audio": 82
+            },
+            {
+                "id": 12,
+                "arabic": "لَمْ يَمْسَسْهُمْ سُوءٌ",
+                "translation": "and no harm touched them.\"",
+                "audio": 88
+            },
+            {
+                "id": 13,
+                "arabic": "مَا شَاءَ ٱللَّهُ",
+                "translation": "Only that which Allah wills shall come to pass.",
+                "audio": 92
+            },
+            {
+                "id": 14,
+                "arabic": "لاَ حَوْلَ وَلاَ قُوَّةَ إِلاَّ بِٱللَّهِ",
+                "translation": "There is neither strength nor power save with Allah.",
+                "audio": 96
+            },
+            {
+                "id": 15,
+                "arabic": "مَا شَاءَ ٱللَّهُ لاَ مَا شَاءَ ٱلنَّاسُ",
+                "translation": "Only that which Allah, but not people, wills shall come to pass.",
+                "audio": 102
+            },
+            {
+                "id": 16,
+                "arabic": "مَا شَاءَ ٱللَّهُ وَإِنْ كَرِهَ ٱلنَّاسُ",
+                "translation": "Only that which Allah wills shall come to pass even if people detest it.",
+                "audio": 110
+            },
+            {
+                "id": 17,
+                "arabic": "حَسْبِيَ ٱلرَّبُّ مِنَ ٱلْمَرْبُوبِيـنَ",
+                "translation": "Sufficient for me is the Lord against the lorded.",
+                "audio": 117
+            },
+            {
+                "id": 18,
+                "arabic": "حَسْبِيَ ٱلْخَالِقُ مِنَ ٱلْمَخْلُوقِيـنَ",
+                "translation": "Sufficient for me is the Creator against the creatures.",
+                "audio": 123
+            },
+            {
+                "id": 19,
+                "arabic": "حَسْبِيَ ٱلرَّازِقُ مِنَ ٱلْمَرْزُوقِيـنَ",
+                "translation": "Sufficient for me is the Sustainer against the sustained.",
+                "audio": 130
+            },
+            {
+                "id": 20,
+                "arabic": "حَسْبِيَ ٱللَّهُ رَبُّ ٱلْعَالَمِيـنَ",
+                "translation": "Sufficient for me is Allah, the Lord of the worlds.",
+                "audio": 136
+            },
+            {
+                "id": 21,
+                "arabic": "حَسْبِي مَنْ هُوَ حَسْبِي",
+                "translation": "Sufficient for me is He Who is sufficient for me.",
+                "audio": 142
+            },
+            {
+                "id": 22,
+                "arabic": "حَسْبِي مَنْ لَمْ يَزَلْ حَسْبِي",
+                "translation": "Sufficient for me is He Who has been always sufficient for me.",
+                "audio": 146
+            },
+            {
+                "id": 23,
+                "arabic": "حَسْبِي مَنْ كَانَ مُذْ كُنْتُ لَمْ يَزَلْ حَسْبِي",
+                "translation": "Sufficient for me is He Who had been since eternity and still sufficient for me.",
+                "audio": 151
+            },
+            {
+                "id": 24,
+                "arabic": "حَسْبِيَ ٱللَّهُ لاَ إِلٰهَ إِلاَّ هُوَ",
+                "translation": "\"Allah suffices me. There is no god save Him.",
+                "audio": 158
+            },
+            {
+                "id": 25,
+                "arabic": "عَلَيْهِ تَوَكَّلْتُ",
+                "translation": "In Him have I put my trust,",
+                "audio": 165
+            },
+            {
+                "id": 26,
+                "arabic": "وَهُوَ رَبُّ ٱلْعَرْشِ ٱلْعَظِيمِ",
+                "translation": "and He is the Lord of the Tremendous Throne.\"",
+                "audio": 167
+            }
+        ],
+        "audio": "Fajr"
+    },
+    {
+        "id": 2,
+        "type": "Zuhr Du'a",
+        "time": "Midday",
+        "verses": [
+            {
+                "id": 1,
+                "arabic": "لاَ إِلٰهَ إِلاَّ ٱللَّهُ ٱلْعَظِيمُ ٱلْحَلِيمُ",
+                "translation": "There is no god save Allah, the All-great and Most Forbearing.",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "arabic": "لاَ إِلٰهَ إِلاَّ ٱللَّهُ رَبُّ ٱلْعَرْشِ ٱلْكَرِيـمِ",
+                "translation": "There is no god save Allah, the Lord of the Throne of Honor.",
+                "audio": 20
+            },
+            {
+                "id": 3,
+                "arabic": "اَلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَالَمينَ",
+                "translation": "All praise be to Allah, the Lord of the worlds.",
+                "audio": 26
+            },
+            {
+                "id": 4,
+                "arabic": "اَللَّهُمَّ إِنِّي أَسْأَلُكَ مُوجِبَاتِ رَحْمَتِكَ",
+                "translation": "O Allah, I ask You for the motives of Your mercy,",
+                "audio": 32
+            },
+            {
+                "id": 5,
+                "arabic": "وَعَزَائِمَ مَغْفِرَتِكَ",
+                "translation": "the determining causes of Your forgiveness,",
+                "audio": 38
+            },
+            {
+                "id": 6,
+                "arabic": "وَٱلْغَنيمَةَ مِنْ كُلِّ بِرٍّ",
+                "translation": "the advantage of each act of kindness,",
+                "audio": 42
+            },
+            {
+                "id": 7,
+                "arabic": "وَٱلسَّلاَمَةَ مِنْ كُلِّ إِثْمٍ",
+                "translation": "and the safeguarding against each and every sin.",
+                "audio": 46
+            },
+            {
+                "id": 8,
+                "arabic": "اَللَّهُمَّ لاَ تَدَعْ لِي ذَنْباً إِلاَّ غَفَرْتَهُ",
+                "translation": "O Allah, (please) do not leave any of my offenses unforgiven,",
+                "audio": 49
+            },
+            {
+                "id": 9,
+                "arabic": "وَلاَ هَمّاً إِلاَّ فَرَّجْتَهُ",
+                "translation": "any of my misfortunes unrelieved,",
+                "audio": 55
+            },
+            {
+                "id": 10,
+                "arabic": "وَلاَ سُقْماً إِلاَّ شَفَيْتَهُ",
+                "translation": "any of my ailments unhealed,",
+                "audio": 59
+            },
+            {
+                "id": 11,
+                "arabic": "وَلاَ عَيْباً إِلاَّ سَتَرْتَهُ",
+                "translation": "any of my defects uncovered,",
+                "audio": 63
+            },
+            {
+                "id": 12,
+                "arabic": "وَلاَ رِزْقاً إِلاَّ بَسَطْتَهُ",
+                "translation": "any (item of my) sustenance not including (me),",
+                "audio": 67
+            },
+            {
+                "id": 13,
+                "arabic": "وَلاَ خَوْفاً إِلاَّ آمَنْتَهُ",
+                "translation": "any fear (that I experience) unsecured,",
+                "audio": 71
+            },
+            {
+                "id": 14,
+                "arabic": "وَلاَ سُوءاً إِلاَّ صَرَفْتَهُ",
+                "translation": "any evil (that comes upon me) uncontrollable,",
+                "audio": 76
+            },
+            {
+                "id": 15,
+                "arabic": "وَلاَ حَاجَةً هِيَ لَكَ رِضاً وَلِيَ فيهَا صَلاَحٌ إِلاَّ قَضَيْتَهَا",
+                "translation": "and any need that achieves Your satisfaction and my benefit unanswered.",
+                "audio": 80
+            },
+            {
+                "id": 16,
+                "arabic": "يَا أَرْحَمَ ٱلرَّاحِمينَ",
+                "translation": "O most Merciful of all those who show mercy.",
+                "audio": 89
+            },
+            {
+                "id": 17,
+                "arabic": "آمينَ رَبَّ ٱلْعَالَمينَ",
+                "translation": "(please) Respond, O Lord of the worlds.",
+                "audio": 94
+            }
+        ],
+        "audio": "Zuhr"
+    },
+    {
+        "id": 3,
+        "type": "Asr Du'a",
+        "time": "Afternoon",
+        "verses": [
+            {
+                "id": 1,
+                "arabic": "أَسْتَغْفِرُ ٱللَّهَ ٱلَّذِي لاَ إِلٰهَ إِلاَّ هُوَ",
+                "translation": "I pray the forgiveness of Allah; there is no god save Him,",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "arabic": "ٱلْحَيُّ ٱلْقَيُّومُ",
+                "translation": "the Ever-living, the Self-Subsisting,",
+                "audio": 15
+            },
+            {
+                "id": 3,
+                "arabic": "ٱلرَّحْمٰنُ ٱلرَّحِيمُ",
+                "translation": "the All-compassionate, the All-merciful,",
+                "audio": 19
+            },
+            {
+                "id": 4,
+                "arabic": "ذُو ٱلْجَلاَلِ وَٱلإِكْرَامِ",
+                "translation": "and the Lord of Majesty and Honor.",
+                "audio": 24
+            },
+            {
+                "id": 5,
+                "arabic": "وَ أَسْأَلُهُ أَنْ يَتُوبَ عَلَيَّ",
+                "translation": "And I ask Him to accept my repentance,",
+                "audio": 31
+            },
+            {
+                "id": 6,
+                "arabic": "تَوْبَةَ عَبْدٍ ذَلِيلٍ خَاضِعٍ",
+                "translation": "like His acceptance of the repentance of a slave who is submissive, acquiescent,",
+                "audio": 36
+            },
+            {
+                "id": 7,
+                "arabic": "فَقِيرٍ بَائِسٍ",
+                "translation": "poor, miserable,",
+                "audio": 45
+            },
+            {
+                "id": 8,
+                "arabic": "مِسْكِينٍ مُسْتَكِينٍ مُسْتَجِيرٍ",
+                "translation": "despondent, dejected, seeking refuge (with Him),",
+                "audio": 51
+            },
+            {
+                "id": 9,
+                "arabic": "لاَ يَمْلِكُ لِنَفْسِهِ نَفْعَاً وَلاَ ضَرّاً",
+                "translation": "not controlling for himself any harm or profit,",
+                "audio": 60
+            },
+            {
+                "id": 10,
+                "arabic": "وَلاَ مَوْتاً وَلاَ حَيَاةً وَلاَ نُشُوراً",
+                "translation": "and not controlling death nor life nor raising (the dead) to life.",
+                "audio": 72
+            },
+            {
+                "id": 11,
+                "arabic": "ا َللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ نَفْسٍ لاَ تَشْبَعُ",
+                "translation": "O Allah, I surely seek Your protection against a self that never has enough,",
+                "audio": 82
+            },
+            {
+                "id": 12,
+                "arabic": "وَمِنْ قَلْبٍ لاَ يَخْشَعُ",
+                "translation": "a heart that does not feel apprehension,",
+                "audio": 91
+            },
+            {
+                "id": 13,
+                "arabic": "وَمِنْ عِلْمٍ لاَ يَنْفَعُ",
+                "translation": "knowledge that does not avail,",
+                "audio": 95
+            },
+            {
+                "id": 14,
+                "arabic": "وَمِنْ صَلاَةٍ لاَ تُرْفَعُ",
+                "translation": "a prayer that is not accepted,",
+                "audio": 100
+            },
+            {
+                "id": 15,
+                "arabic": "وَمِنْ دُعَاءٍ لاَ يُسْمَعُ",
+                "translation": "and a supplication that is not responded.",
+                "audio": 105
+            },
+            {
+                "id": 16,
+                "arabic": "اَللَّهُمَّ إِنِّي أَسْأَلُكَ ٱلْيُسْرَ بَعْدَ ٱلْعُسْرِ",
+                "translation": "O Allah, I surely beseech You for easiness after difficulty,",
+                "audio": 114
+            },
+            {
+                "id": 17,
+                "arabic": "وَٱلْفَرَجَ بَعْدَ ٱلْكَرْبِ",
+                "translation": "relief after misfortune,",
+                "audio": 127
+            },
+            {
+                "id": 18,
+                "arabic": "وَٱلرَّخَاءَ بَعْدَ ٱلشِّدَّةِ",
+                "translation": "and comfort after hardship.",
+                "audio": 132
+            },
+            {
+                "id": 19,
+                "arabic": "اَللَّهُمَّ مَا بِنَا مِنْ نِعْمَةٍ فَمِنْكَ",
+                "translation": "O Allah, You are certainly the source of each and every favor that covers us.",
+                "audio": 138
+            },
+            {
+                "id": 20,
+                "arabic": "لاَ إِلٰهَ إِلاَّ أَنْتَ",
+                "translation": "There is no god save You.",
+                "audio": 146
+            },
+            {
+                "id": 21,
+                "arabic": "أَسْتَغْفِرُكَ وَ أَتُوبُ إِلَيْكَ",
+                "translation": "I pray Your forgiveness and repent before You.",
+                "audio": 153
+            }
+        ],
+        "audio": "Asr"
+    },
+    {
+        "id": 4,
+        "type": "Maghrib Du'a",
+        "time": "Evening",
+        "verses": [
+            {
+                "id": 1,
+                "arabic": "اَللَّهُمَّ إِنِّي أَسْأَلُكَ مُوجِبَاتِ رَحْمَتِكَ",
+                "translation": "O Allah! I beseech You for the motives of Your mercy,",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "arabic": "وَعَزَائِمِ مَغْفِرَتِكَ",
+                "translation": "the determining causes of Your forgiveness,",
+                "audio": 39
+            },
+            {
+                "id": 3,
+                "arabic": "وَٱلنَّجَاةَ مِنَ ٱلنَّارِ",
+                "translation": "deliverance from Hellfire",
+                "audio": 42
+            },
+            {
+                "id": 4,
+                "arabic": "وَمِنْ كُلِّ بِلِيَّةٍ",
+                "translation": "and all misfortunes,",
+                "audio": 47
+            },
+            {
+                "id": 5,
+                "arabic": "وَٱلْفَوْزَ بِٱلْجَنَّةِ",
+                "translation": "winning Paradise,",
+                "audio": 51
+            },
+            {
+                "id": 6,
+                "arabic": "وَٱلرِّضْوَانِ في دَارِ ٱلسَّلاَمِ",
+                "translation": "Divine Contentment in the Abode of Peace,",
+                "audio": 54
+            },
+            {
+                "id": 7,
+                "arabic": "وَجَوَارِ نَبِيِّكَ مُحَمَّدٍ عَلَيْهِ وَآلِهِ ٱلسَّلاَمُ",
+                "translation": "and the vicinity of Your Prophet Muhammad—peace be upon him and his Household.",
+                "audio": 58
+            },
+            {
+                "id": 8,
+                "arabic": "اَللَّهُمَّ مَا بِنَا مِنْ نِعْمَةٍ فَمِنْكَ",
+                "translation": "O Allah, You are certainly the source of each and every favor that covers us.",
+                "audio": 69
+            },
+            {
+                "id": 9,
+                "arabic": "لاَ إِلٰهَ إِلاَّ أَنْتَ",
+                "translation": "There is no god save You.",
+                "audio": 74
+            },
+            {
+                "id": 10,
+                "arabic": "أَسْتَغْفِرُكَ وَ أَتُوبُ إِلَيْكَ",
+                "translation": "I pray Your forgiveness and I repent before You.",
+                "audio": 79
+            }
+        ],
+        "audio": "Maghrib"
+    },
+    {
+        "id": 5,
+        "type": "Isha Du'a",
+        "time": "Night",
+        "verses": [
+            {
+                "id": 1,
+                "arabic": "اَللَّهُمَّ إِنَّهُ لَيْسَ لِي عِلْمٌ بِمَوْضِعِ رِزْقِي",
+                "translation": "O Allah! verily, I lack acquaintance with the place of my sustenance;",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "arabic": "وَإِنَّمَا أَطْلُبُهُ بِخَطَرَاتٍ تَخْطُرُ عَلَىٰ قَلْبِي",
+                "translation": "rather, I am seeking it owing to ideas that come upon my mind.",
+                "audio": 27
+            },
+            {
+                "id": 3,
+                "arabic": "فَأَجُولُ فِي طَلَبِهِ ٱلْبُلْدَانَ",
+                "translation": "I consequently wander in countries searching for it.",
+                "audio": 42
+            },
+            {
+                "id": 4,
+                "arabic": "فَأَنَا فِيمَا أَنَا طَالِبٌ كَٱلْحَيْرَانِ",
+                "translation": "By doing such, I am as confused as the confounded,",
+                "audio": 53
+            },
+            {
+                "id": 5,
+                "arabic": "لاَ أَدْرِي أَفِي سَهْلٍ هَوُ أَمْ فِي جَبَلٍ",
+                "translation": "since I do not know whether my sustenance lies in a plain, on a mountain,",
+                "audio": 65
+            },
+            {
+                "id": 6,
+                "arabic": "أَمْ في أَرْضٍ أَمْ في سَمَاءٍ",
+                "translation": "on the ground, in the air,",
+                "audio": 74
+            },
+            {
+                "id": 7,
+                "arabic": "أَمْ فِي بَرٍّ أَمْ فِي بَحْرٍ",
+                "translation": "on lands, in seas,",
+                "audio": 86
+            },
+            {
+                "id": 8,
+                "arabic": "وَعَلَىٰ يَدَيْ مَنْ",
+                "translation": "at whose hands,",
+                "audio": 93
+            },
+            {
+                "id": 9,
+                "arabic": "وَمِنْ قِبَلِ مَنْ",
+                "translation": "or who the source of it is.",
+                "audio": 100
+            },
+            {
+                "id": 10,
+                "arabic": "وَقَدْ عَلِمْتُ أَنَّ عِلْمَهُ عِنْدَكَ",
+                "translation": "I have full knowledge that You know all these,",
+                "audio": 107
+            },
+            {
+                "id": 11,
+                "arabic": "وَ أَسْبَابَهُ بِيَدِكَ",
+                "translation": "the causes of them are in Your Hands,",
+                "audio": 115
+            },
+            {
+                "id": 12,
+                "arabic": "وَ أَنْتَ ٱلَّذي تَقْسِمُهُ بِلُطْفِكَ",
+                "translation": "and it is You Who distribute it out of Your compassion",
+                "audio": 122
+            },
+            {
+                "id": 13,
+                "arabic": "وَتُسَبِّبُهُ بِرَحْمَتِكَ",
+                "translation": "and cause it out of Your mercy.",
+                "audio": 131
+            },
+            {
+                "id": 14,
+                "arabic": "اَللَّهُمَّ فَصَلِّ عَلَىٰ مُحَمَّدٍ وَآلِهِ",
+                "translation": "O Allah, please send blessings to Muhammad and his Household",
+                "audio": 138
+            },
+            {
+                "id": 15,
+                "arabic": "وَٱجْعَلْ يَا رَبِّ رِزْقَكَ لِي وَاسِعاً",
+                "translation": "and make, O Lord, Your sustenance that is provided (by You) to me expansive,",
+                "audio": 151
+            },
+            {
+                "id": 16,
+                "arabic": "وَمَطْلَبَهُ سَهْلاً",
+                "translation": "my seeking for it easy for me,",
+                "audio": 160
+            },
+            {
+                "id": 17,
+                "arabic": "وَمَاْخَذَهُ قَرِيباً",
+                "translation": "and its source close to me.",
+                "audio": 166
+            },
+            {
+                "id": 18,
+                "arabic": "وَلاَ تُعَنِّنِي بِطَلَبِ مَا لَمْ تُقَدِّرْ لِي فيهِ رِزْقاً",
+                "translation": "Please, do not fatigue me by seeking that which You have not decided for me to take,",
+                "audio": 174
+            },
+            {
+                "id": 19,
+                "arabic": "فَإِنَّكَ غَنِيٌّ عَنْ عَذَابِي",
+                "translation": "because You are certainly in no need for tormenting me",
+                "audio": 186
+            },
+            {
+                "id": 20,
+                "arabic": "وَ أَنَا فَقِيـرٌ إِلَىٰ رَحْمَتِكَ",
+                "translation": "while I am in full need for Your mercy.",
+                "audio": 193
+            },
+            {
+                "id": 21,
+                "arabic": "فَصَلِّ عَلَىٰ مُحَمَّدٍ وَآلِهِ",
+                "translation": "(Please) Send blessings upon Muhammad and his Household",
+                "audio": 199
+            },
+            {
+                "id": 22,
+                "arabic": "وَجُدْ عَلَىٰ عَبْدِكَ بِفَضْلِكَ",
+                "translation": "and confer liberally upon me, Your slave, out of Your graciousness.",
+                "audio": 207
+            },
+            {
+                "id": 23,
+                "arabic": "إِنَّكَ ذُو فَضْلٍ عَظيم",
+                "translation": "You are surely the Lord of great favor.",
+                "audio": 212
+            }
+        ],
+        "audio": "Isha"
+    }
+]
