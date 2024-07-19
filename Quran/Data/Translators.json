@@ -1,0 +1,409 @@
+[
+    {
+        "id": 85,
+        "name": "M.A.S. Abdel Haleem",
+        "author_name": "Abdul Haleem",
+        "slug": "en-haleem",
+        "language_name": "english",
+        "translated_name": {
+            "name": "M.A.S. Abdel Haleem",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 131,
+        "name": "Dr. Mustafa Khattab, The Clear Quran",
+        "author_name": "Dr. Mustafa Khattab",
+        "slug": "clearquran-with-tafsir",
+        "language_name": "english",
+        "translated_name": {
+            "name": "Dr. Mustafa Khattab",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 84,
+        "name": "T. Usmani",
+        "author_name": "Mufti Taqi Usmani",
+        "slug": "en-taqi-usmani",
+        "language_name": "english",
+        "translated_name": {
+            "name": "T. Usmani",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 95,
+        "name": "A. Maududi (Tafhim commentary)",
+        "author_name": "Sayyid Abul Ala Maududi",
+        "slug": "en-al-maududi",
+        "language_name": "english",
+        "translated_name": {
+            "name": "A. Maududi (Tafhim commentary)",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 19,
+        "name": "M. Pickthall",
+        "author_name": "Mohammed Marmaduke William Pickthall",
+        "slug": "quran.en.pickthall",
+        "language_name": "english",
+        "translated_name": {
+            "name": "M. Pickthall",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 83,
+        "name": "Sheikh Isa Garcia",
+        "author_name": "Sheikh Isa Garcia",
+        "slug": "es-isa-garcia",
+        "language_name": "spanish",
+        "translated_name": {
+            "name": "Sheikh Isa Garcia",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 22,
+        "name": "A. Yusuf Ali",
+        "author_name": "Abdullah Yusuf Ali",
+        "slug": "quran.en.yusufali",
+        "language_name": "english",
+        "translated_name": {
+            "name": "A. Yusuf Ali",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 20,
+        "name": "Saheeh International",
+        "author_name": "Saheeh International",
+        "slug": "en-sahih-international",
+        "language_name": "english",
+        "translated_name": {
+            "name": "Saheeh International",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 203,
+        "name": "Al-Hilali & Khan",
+        "author_name": "Muhammad Taqi-ud-Din al-Hilali & Muhammad Muhsin Khan",
+        "slug": "",
+        "language_name": "english",
+        "translated_name": {
+            "name": "Al-Hilali & Khan",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 234,
+        "name": "Fatah Muhammad Jalandhari",
+        "author_name": "Fatah Muhammad Jalandhari",
+        "slug": "ur-fatah-muhammad-jalandhari",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Fatah Muhammad Jalandhari",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 57,
+        "name": "Transliteration",
+        "author_name": "Transliteration",
+        "slug": "transliteration",
+        "language_name": "english",
+        "translated_name": {
+            "name": "Transliteration",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 54,
+        "name": "Maulana Muhammad Junagarhi",
+        "author_name": "Maulana Muhammad Junagarhi",
+        "slug": "ur-junagarri",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Maulana Muhammad Junagarhi",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 156,
+        "name": "Fe Zilal al-Qur'an",
+        "author_name": "Sayyid Ibrahim Qutb",
+        "slug": "urdu-sayyid-qatab",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Fi Zilal al-Qur'an",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 151,
+        "name": "Shaykh al-Hind Mahmud al-Hasan(with Tafsir E Usmani)",
+        "author_name": "Shaykh al-Hind Mahmud al-Hasan",
+        "slug": "tafsir-e-usmani",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Shaykh al-Hind Mahmud al-Hasan(with Tafsir E Usmani)",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 158,
+        "name": "Bayan-ul-Quran",
+        "author_name": "Dr. Israr Ahmad",
+        "slug": "bayan-ul-quran",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Bayan-ul-Quran (Dr. Israr Ahmad)",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 97,
+        "name": "Tafheem e Qur'an - Syed Abu Ali Maududi",
+        "author_name": "Syed Abu Ali Maududi",
+        "slug": "ur-al-maududi",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Tafheem e Qur'an - Syed Abu Ali Maududi",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 136,
+        "name": "Montada Islamic Foundation",
+        "author_name": "Montada Islamic Foundation",
+        "slug": null,
+        "language_name": "french",
+        "translated_name": {
+            "name": "Montada Islamic Foundation",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 35,
+        "name": "Ryoichi Mita",
+        "author_name": "Ryoichi Mita",
+        "slug": "ja-ryoichi-mita",
+        "language_name": "japanese",
+        "translated_name": {
+            "name": "Ryoichi Mita",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 210,
+        "name": "Dar Al-Salam Center",
+        "author_name": "Dar Al-Salam Center",
+        "slug": null,
+        "language_name": "turkish",
+        "translated_name": {
+            "name": "Dar Al-Salam Center",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 140,
+        "name": "Montada Islamic Foundation",
+        "author_name": "Montada Islamic Foundation",
+        "slug": null,
+        "language_name": "spanish",
+        "translated_name": {
+            "name": "Montada Islamic Foundation",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 77,
+        "name": "Turkish Translation(Diyanet)",
+        "author_name": "Diyanet Isleri",
+        "slug": "quran.tr.diyanet",
+        "language_name": "turkish",
+        "translated_name": {
+            "name": "Turkish Translation(Diyanet)",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 36,
+        "name": "Korean",
+        "author_name": "Korean",
+        "slug": "ko-unknown",
+        "language_name": "korean",
+        "translated_name": {
+            "name": "Korean",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 124,
+        "name": "Muslim Shahin",
+        "author_name": "Muslim Shahin",
+        "slug": null,
+        "language_name": "turkish",
+        "translated_name": {
+            "name": "Muslim Shahin",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 112,
+        "name": "Shaban Britch",
+        "author_name": "Shaban Britch",
+        "slug": null,
+        "language_name": "turkish",
+        "translated_name": {
+            "name": "Shaban Britch",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 56,
+        "name": "Chinese Translation (Simplified) - Ma Jain",
+        "author_name": "Ma Jian",
+        "slug": "quran.zh.ma.jain",
+        "language_name": "chinese",
+        "translated_name": {
+            "name": "Chinese Translation (Simplified) - Ma Jain",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 28,
+        "name": "Spanish Translation(Cortes)",
+        "author_name": "Julio Cortes",
+        "slug": "quran.es.cortes",
+        "language_name": "spanish",
+        "translated_name": {
+            "name": "Spanish Translation(Cortes)",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 31,
+        "name": "Muhammad Hamidullah",
+        "author_name": "Muhammad Hamidullah",
+        "slug": "quran.fr.hamidullah",
+        "language_name": "french",
+        "translated_name": {
+            "name": "Muhammad Hamidullah",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 208,
+        "name": "Abu Reda Muhammad ibn Ahmad",
+        "author_name": "Abu Reda Muhammad ibn Ahmad",
+        "slug": null,
+        "language_name": "german",
+        "translated_name": {
+            "name": "Abu Reda Muhammad ibn Ahmad",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 219,
+        "name": "Hamed Choi",
+        "author_name": "Hamed Choi",
+        "slug": null,
+        "language_name": "korean",
+        "translated_name": {
+            "name": "Hamed Choi",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 52,
+        "name": "Elmalili Hamdi Yazir",
+        "author_name": "Elmalili Hamdi Yazir\t",
+        "slug": "tr-hamdi",
+        "language_name": "turkish",
+        "translated_name": {
+            "name": "Elmalili Hamdi Yazir",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 199,
+        "name": "Noor International Center",
+        "author_name": "Noor International Center",
+        "slug": null,
+        "language_name": "spanish",
+        "translated_name": {
+            "name": "Noor International Center",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 218,
+        "name": "Saeed Sato",
+        "author_name": "Saeed Sato",
+        "slug": null,
+        "language_name": "japanese",
+        "translated_name": {
+            "name": "Saeed Sato",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 109,
+        "name": "Muhammad Makin",
+        "author_name": "Muhammad Makin",
+        "slug": null,
+        "language_name": "chinese",
+        "translated_name": {
+            "name": "Muhammad Makin",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 27,
+        "name": "Frank Bubenheim and Nadeem",
+        "author_name": "Frank Bubenheim and Nadeem",
+        "slug": "de-bubenheim",
+        "language_name": "german",
+        "translated_name": {
+            "name": "Frank Bubenheim and Nadeem",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 819,
+        "name": "Maulana Wahiduddin Khan",
+        "author_name": "Maulana Wahiduddin Khan",
+        "slug": "maulana-wahid-uddin-khan-urdu",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Maulana Wahiduddin Khan",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 779,
+        "name": "Rashid Maash",
+        "author_name": "Rashid Maash",
+        "slug": "fr-rashid-maash",
+        "language_name": "french",
+        "translated_name": {
+            "name": "Rashid Maash",
+            "language_name": "english"
+        }
+    },
+    {
+        "id": 831,
+        "name": "Abul Ala Maududi(Roman Urdu)",
+        "author_name": "Abul Ala Maududi",
+        "slug": "maududi-roman-urdu",
+        "language_name": "urdu",
+        "translated_name": {
+            "name": "Abul Ala Maududi(Roman Urdu)",
+            "language_name": "english"
+        }
+    }
+]

@@ -79,7 +79,7 @@ struct BookmarkedFolderCard: View {
     
     private var folderInformation: some View {
         Group {
-            Image(systemName: "folder")
+            Image(systemName: folder.questionFolder ? "questionmark.folder" : "folder")
                 .font(.system(.title))
             
             VStack(alignment: .leading) {

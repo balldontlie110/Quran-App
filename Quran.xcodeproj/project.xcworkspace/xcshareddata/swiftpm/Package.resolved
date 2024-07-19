@@ -1,5 +1,5 @@
 {
-  "originHash" : "4ce1eebb808d8860e5a0e573aff0d9a56e85195d242026b9cd0bb31144dac950",
+  "originHash" : "988285782b3be5b5863a098410b7d7a87875157300308c4ca1f0d28ac23d5f76",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -83,6 +83,15 @@
       }
     },
     {
+      "identity" : "icalendarparser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dmail-me/iCalendarParser.git",
+      "state" : {
+        "revision" : "f87378ca7b2d59533c9562324b17a8caf20f26a2",
+        "version" : "0.2.0"
+      }
+    },
+    {
       "identity" : "interop-ios-for-google-sdks",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/interop-ios-for-google-sdks.git",
@@ -152,6 +161,15 @@
       "state" : {
         "revision" : "028487d4a8a291b2fe1b4392b5425b6172056148",
         "version" : "2.7.2"
+      }
+    },
+    {
+      "identity" : "swiftycrop",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/benedom/SwiftyCrop.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "24a67bf73595994ccf4b60cdad0021b37ca45c45"
       }
     }
   ],

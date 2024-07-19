@@ -12,14 +12,18 @@ import SwiftSoup
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), prayerTimes: [:])
+        SimpleEntry(date: Date(), prayerTimes: [:], islamicDate: "")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         fetchPrayerTimes { prayerTimes in
             if let prayerTimes = prayerTimes {
-                let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes)
-                completion(entry)
+                fetchDate { islamicDate in
+                    if let islamicDate = islamicDate {
+                        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
+                        completion(entry)
+                    }
+                }
             }
         }
     }
@@ -29,13 +33,17 @@ struct Provider: TimelineProvider {
         
         fetchPrayerTimes { prayerTimes in
             if let prayerTimes = prayerTimes {
-                let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes)
-                entries.append(entry)
-            }
-            
-            if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
-                let timeline = Timeline(entries: entries, policy: .after(updateDate))
-                completion(timeline)
+                fetchDate { islamicDate in
+                    if let islamicDate = islamicDate {
+                        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
+                        entries.append(entry)
+                    }
+                    
+                    if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
+                        let timeline = Timeline(entries: entries, policy: .after(updateDate))
+                        completion(timeline)
+                    }
+                }
             }
         }
     }
@@ -71,11 +79,46 @@ struct Provider: TimelineProvider {
             }
         }
     }
+    
+    private func fetchDate(completion: @escaping (String?) -> Void) {
+        let url = "https://najaf.org/english/"
+
+        AF.request(url).responseString { response in
+            switch response.result {
+            case .success(let html):
+                do {
+                    let document = try SwiftSoup.parse(html)
+                    let elements = try document.select("div.my-time-top strong.my-blue")
+                    
+                    if let date = try elements.last()?.text() {
+                        let splitDate = date.split(separator: " / ")
+                        
+                        if splitDate.count == 3 {
+                            let day = String(splitDate[0])
+                            let month = String(splitDate[1])
+                            let year = String(splitDate[2])
+                            
+                            let islamicDate = "\(day) \(month) \(year)"
+                            
+                            completion(islamicDate)
+                        }
+                    }
+                } catch {
+                    print("Error parsing HTML: \(error)")
+                    completion(nil)
+                }
+            case .failure(let error):
+                print("Request failed with error: \(error)")
+                completion(nil)
+            }
+        }
+    }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let prayerTimes: [String : String]
+    let islamicDate: String
 }
 
 struct QuranWidgetEntryView : View {
@@ -108,6 +151,12 @@ struct QuranWidgetEntryView : View {
             }
         case .systemMedium:
             VStack(spacing: 0) {
+                Spacer()
+                
+                Text(entry.islamicDate)
+                    .bold()
+                    .multilineTextAlignment(.center)
+                
                 Spacer()
                 
                 LazyVGrid(columns: rows) {
@@ -197,7 +246,7 @@ struct QuranWidget: Widget {
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"])
+    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"], islamicDate: "")
 }
 
 #Preview(as: .systemMedium) {
@@ -205,5 +254,5 @@ struct QuranWidget: Widget {
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"])
+    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"], islamicDate: "")
 }

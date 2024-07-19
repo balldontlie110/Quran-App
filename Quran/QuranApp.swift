@@ -22,6 +22,7 @@ struct QuranApp: App {
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(QuranModel())
                 .environmentObject(PreferencesModel())
+                .environmentObject(CalendarModel())
                 .onAppear {
                     NotificationManager.shared.requestAuthorization()
                 }

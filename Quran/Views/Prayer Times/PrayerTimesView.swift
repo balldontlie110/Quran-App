@@ -16,24 +16,20 @@ struct PrayerTimesView: View {
     private let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
-        LazyVStack(spacing: 0) {
-            HStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    ForEach(prayerTimes, id: \.key) { prayer in
-                        LazyVGrid(columns: columns) {
-                            Text(prayersRenamed[prayer.key] ?? prayer.key)
-                                .foregroundStyle(Color.secondary)
-                            
-                            Text(prayerTimeString(prayer.value))
-                                .bold()
-                        }
-                        .multilineTextAlignment(.center)
-                        .font(.system(.title2))
-                        .padding(.vertical, 10)
-                    }
+        VStack(spacing: 0) {
+            ForEach(prayerTimes, id: \.key) { prayer in
+                LazyVGrid(columns: columns) {
+                    Text(prayersRenamed[prayer.key] ?? prayer.key)
+                        .foregroundStyle(Color.secondary)
+                    
+                    Text(prayerTimeString(prayer.value))
+                        .bold()
                 }
+                .multilineTextAlignment(.center)
+                .font(.system(.title2))
+                .padding(.vertical, 10)
             }
-        }.padding(50)
+        }.padding(.horizontal, 50)
     }
     
     private var prayerTimes: [Dictionary<String, Date>.Element] {

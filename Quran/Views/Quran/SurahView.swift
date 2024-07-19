@@ -41,12 +41,14 @@ struct SurahView: View {
     
     var body: some View {
         GeometryReader { proxy in
-            VStack {
-                ScrollView {
+            VStack(spacing: 0) {
+                if proxy.size.height >= proxy.size.width {
                     searchBar
                     
                     Divider()
-                    
+                }
+                
+                ScrollView {
                     header
                     
                     if surahFilterModel.isLoading {
@@ -55,11 +57,12 @@ struct SurahView: View {
                         ProgressView()
                     } else {
                         LazyVStack(spacing: 20) {
-                            ForEach(surahFilterModel.filteredVerses) { verse in
+                            ForEach(Array(zip(surahFilterModel.filteredVerses.indices, surahFilterModel.filteredVerses)), id: \.0) { index, verse in
                                 VerseRow(
                                     preferencesModel: preferencesModel,
                                     verse: verse,
-                                    versesCount: surah.total_verses,
+                                    versesCount: surahFilterModel.filteredVerses.count,
+                                    verseIndex: index,
                                     surahId: surah.id,
                                     readingMode: readingMode,
                                     bookmarkedVerses: bookmarkedVerses,
@@ -71,7 +74,7 @@ struct SurahView: View {
                                     },
                                     audioPlayer: audioPlayer,
                                     nextVerse: nextVerse
-                                )
+                                ).id(verse.id)
                             }
                         }.scrollTargetLayout()
                     }
@@ -80,6 +83,14 @@ struct SurahView: View {
                         .frame(height: 50)
                 }
                 .scrollPosition(id: $scrollPosition, anchor: .top)
+                .onChange(of: surahFilterModel.filteredVerses) { _, _ in
+                    if let previousScrollPosition {
+                        scrollPosition = dummyId
+                        Task { @MainActor in
+                            scrollPosition = previousScrollPosition
+                        }
+                    }
+                }
                 .onChange(of: scrollPosition) { oldVal, newVal in
                     if let newVal, newVal != dummyId {
                         previousScrollPosition = newVal
@@ -232,13 +243,13 @@ struct SurahView: View {
     }
     
     private var header: some View {
-        VStack(spacing: 5) {
+        VStack(spacing: 0) {
             Text(surah.name)
                 .font(.system(size: 50, weight: .bold))
             
             Text(surah.translation)
                 .font(.system(size: 20, weight: .semibold))
-        }
+        }.padding(.top)
     }
     
     private var verseSelectorButton: some View {
@@ -367,6 +378,7 @@ struct VerseRow: View {
     
     let verse: Verse
     let versesCount: Int
+    let verseIndex: Int
     let surahId: Int
     
     let readingMode: Bool
@@ -396,7 +408,7 @@ struct VerseRow: View {
                 contextMenuAudioButton
             }
             
-            if verse.id != versesCount && !readingMode {
+            if verseIndex != versesCount - 1 && !readingMode {
                 Divider()
             }
         }

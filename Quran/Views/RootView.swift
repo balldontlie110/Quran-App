@@ -14,6 +14,7 @@ struct RootView: View {
     
     @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
+    @EnvironmentObject private var calendarModel: CalendarModel
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: true)],
@@ -30,9 +31,12 @@ struct RootView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    NavigationButton(namespace: namespace, view: QuranView(), systemImage: "book", text: "Quran")
-                    NavigationButton(namespace: namespace, view: DuasView(), systemImage: "book.closed", text: "Du'as")
-                    NavigationButton(namespace: namespace, view: QuestionsView(), systemImage: "questionmark.bubble", text: "Questions")
+                    NavigationButton(namespace: namespace, view: QuranView(), image: "quran", text: "Quran")
+                    NavigationButton(namespace: namespace, view: DuasView(), image: "duas", text: "Du'as")
+                    NavigationButton(namespace: namespace, view: EmptyView(), image: "ziaraah", text: "Ziaraah")
+                    NavigationButton(namespace: namespace, view: EmptyView(), image: "amaal", text: "Amaal")
+                    NavigationButton(namespace: namespace, view: CalendarView(), image: "calendar", text: "Calendar")
+                    NavigationButton(namespace: namespace, view: QuestionsView(), image: "questions", text: "Questions")
                 }
                 .padding(.horizontal, 10)
                 .toolbar {
@@ -40,6 +44,8 @@ struct RootView: View {
                         settingsToolbarButton
                     }
                 }
+                
+                islamicDate
                 
                 PrayerTimesView()
             }
@@ -60,6 +66,28 @@ struct RootView: View {
             Image(systemName: "gear")
                 .foregroundStyle(Color.primary)
         }
+    }
+    
+    private var islamicDate: some View {
+        VStack {
+            Text(todaysDate())
+                .foregroundStyle(Color.secondary)
+                .font(.system(.caption, weight: .bold))
+            
+            HStack {
+                Text(calendarModel.day)
+                Text(calendarModel.month)
+                Text(calendarModel.year)
+            }.font(.system(.title2, weight: .bold))
+        }
+        .padding(.top)
+    }
+    
+    private func todaysDate() -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        
+        return formatter.string(from: Date())
     }
     
     private func createQuestionsBookmarkFolder() {
@@ -88,10 +116,12 @@ struct RootView: View {
 }
 
 struct NavigationButton: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let namespace: Namespace.ID
     
     let view: any View
-    let systemImage: String
+    let image: String
     let text: String
     
     let sourceId = UUID()
@@ -108,12 +138,14 @@ struct NavigationButton: View {
             VStack(spacing: 15) {
                 if #available(iOS 18.0, *) {
                     Group {
-                        Image(systemName: systemImage)
+                        symbol
+                        
                         Text(text)
                     }.matchedTransitionSource(id: sourceId, in: namespace)
                 } else {
                     Group {
-                        Image(systemName: systemImage)
+                        symbol
+                        
                         Text(text)
                     }
                 }
@@ -127,6 +159,13 @@ struct NavigationButton: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(2.5)
         }
+    }
+    
+    private var symbol: some View {
+        Image("\(image)-\(colorScheme == .dark ? "dark" : "light")")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 30, height: 30)
     }
 }
 

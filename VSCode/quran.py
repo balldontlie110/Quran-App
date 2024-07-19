@@ -3,7 +3,6 @@
 
 import json
 import re
-<<<<<<< HEAD
 import requests
 
 
@@ -36,7 +35,6 @@ import requests
 # verseNumber = 0
 # for line in uthmani:
 #     arabic[surahNumber]["verses"][verseNumber]["text"] = line.rstrip()
-=======
 
 
 # - CHANGE TRANSLATION -
@@ -61,7 +59,6 @@ import requests
 #     text = re.sub(r'˺', ']', text)
 
 #     arabic[surahNumber]["verses"][verseNumber]["translation"] = text
->>>>>>> main
 
 #     if verseNumber >= versesCount[surahNumber] - 1:
 #         surahNumber += 1
@@ -72,37 +69,33 @@ import requests
 # with open("arabic.json", "w", encoding='utf-8') as file:
 #     json.dump(arabic, file, ensure_ascii=False, indent=4)
 
-<<<<<<< HEAD
 
 # - REMOVE ALL TRANSLATIONS (THAT AREN'T OF SOME ID) -
 
-with open("arabic.json", "r") as file:
-    arabic = json.load(file)
+# with open("arabic.json", "r") as file:
+#     arabic = json.load(file)
 
-for surahIndex, surah in enumerate(arabic):
-    for verseIndex, verse in enumerate(surah["verses"]):
-        for translationIndex, translation in enumerate(verse["translations"]):
-            if translation["id"] != 131:
-                arabic[surahIndex]["verses"][verseIndex]["translations"].pop(translationIndex)
+# for surahIndex, surah in enumerate(arabic):
+#     for verseIndex, verse in enumerate(surah["verses"]):
+#         for translationIndex, translation in enumerate(verse["translations"]):
+#             if translation["id"] != 131:
+#                 arabic[surahIndex]["verses"][verseIndex]["translations"].pop(translationIndex)
 
-with open("arabic.json", "w", encoding='utf-8') as file:
-    json.dump(arabic, file, ensure_ascii=False, indent=4)
+# with open("arabic.json", "w", encoding='utf-8') as file:
+#     json.dump(arabic, file, ensure_ascii=False, indent=4)
 
-=======
 # with open("arabic.json", "r") as file:
 #     print(json.load(file)[0])
 
 
 # - ADD AUDIO -
 
-with open("audio.json", "r") as file:
-    newArabic = json.load(file)["quran"]
->>>>>>> main
+# with open("audio.json", "r") as file:
+#     newArabic = json.load(file)["quran"]
 
-with open("arabic.json", "r") as file:
-    arabic = json.load(file)
+# with open("arabic.json", "r") as file:
+#     arabic = json.load(file)
 
-<<<<<<< HEAD
 
 # - GET TRANSLATION -
 
@@ -180,15 +173,13 @@ with open("arabic.json", "r") as file:
 
 # with open("arabic.json", "w", encoding='utf-8') as file:
 #     json.dump(quran, file, ensure_ascii=False, indent=4)
-=======
-quran = []
+# quran = []
 
-for surah in arabic:
-    for ayat in surah["verses"]:
-        surah["verses"][ayat["id"] - 1]["text"] = [ re.sub("\u200f", "", new["text"]) for new in newArabic if new["chapter"] == surah["id"] and new["verse"] == ayat["id"] ][0]
+# for surah in arabic:
+#     for ayat in surah["verses"]:
+#         surah["verses"][ayat["id"] - 1]["text"] = [ re.sub("\u200f", "", new["text"]) for new in newArabic if new["chapter"] == surah["id"] and new["verse"] == ayat["id"] ][0]
 
-    quran.append(surah)
+#     quran.append(surah)
 
-with open("arabic.json", "w", encoding='utf-8') as file:
-    json.dump(quran, file, ensure_ascii=False, indent=4)
->>>>>>> main
+# with open("arabic.json", "w", encoding='utf-8') as file:
+#     json.dump(quran, file, ensure_ascii=False, indent=4)

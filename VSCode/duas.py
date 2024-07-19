@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 import json
 
 # with open('duas.txt', 'r') as file:
@@ -58,7 +57,6 @@ for duaIndex, dua in enumerate(duas):
 
 with open('duas.json', 'w', encoding='utf-8') as file:
     json.dump(duas, file, ensure_ascii=False, indent=4)
-=======
 with open('duas.txt', 'r') as file:
     lines = file.readlines()
 
@@ -107,4 +105,3 @@ with open('duas.json', 'w', encoding='utf-8') as file:
         lines.append(line)
 
     json.dump(lines, file, ensure_ascii=False, indent=4)
->>>>>>> main
