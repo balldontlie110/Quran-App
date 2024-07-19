@@ -1,5 +1,5 @@
 {
-  "originHash" : "eecf9e7f68274d26fec16313f88ddadcade479ff3181bb09ee7bfca1d1e243cf",
+  "originHash" : "e6ff748ebe477efa647a000e54bec7d7475ae6bc44dcb49234ddcde1a6ff1f36",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk.git",
       "state" : {
-        "revision" : "e57841b296d04370ea23580f908881b0ccab17b9",
-        "version" : "10.28.1"
+        "revision" : "eca84fd638116dd6adb633b5a3f31cc7befcbb7d",
+        "version" : "10.29.0"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "b8523c1642f3c142b06dd98443ea7c48343a4dfd",
-        "version" : "5.19.3"
+        "revision" : "be0bcd7823ce56629948491f2eaeaa19979514f7",
+        "version" : "5.19.4"
       }
     },
     {
@@ -141,16 +141,16 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
       "state" : {
-        "revision" : "02b2579a93aaa8ac0146a46f18d9056253c03096",
-        "version" : "3.1.0"
+        "revision" : "5d462f7530677ae0c2b9510c26383aa25ba48751",
+        "version" : "3.1.1"
       }
     },
     {
-      "identity" : "stripe-ios-spm",
+      "identity" : "stripe-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stripe/stripe-ios-spm",
+      "location" : "https://github.com/stripe/stripe-ios.git",
       "state" : {
-        "revision" : "b07c7f6bfc2d5627dd4a8d6095e67019b846f733",
+        "revision" : "e4a08652aaca9c08440d6a8055c6e721d6fa043e",
         "version" : "23.28.1"
       }
     },
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "9f0c76544701845ad98716f3f6a774a892152bcb",
-        "version" : "1.26.0"
+        "revision" : "d57a5aecf24a25b32ec4a74be2f5d0a995a47c4b",
+        "version" : "1.27.0"
       }
     },
     {

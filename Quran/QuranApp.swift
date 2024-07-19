@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseCore
+import Stripe
 
 @main
 struct QuranApp: App {
@@ -14,6 +15,8 @@ struct QuranApp: App {
     
     init() {
         FirebaseApp.configure()
+        
+        StripeAPI.defaultPublishableKey = "pk_test_51Pe4tQ2MMIgwRw7skabvi1bZLAmJBVMG8T5PYugUmLp9giwIaY5IjfK8XfPVI1tUh98MSbcIt49Fh7mBp5HatF9I008DVb0UWm"
     }
     
     var body: some Scene {
@@ -22,9 +25,12 @@ struct QuranApp: App {
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(QuranModel())
                 .environmentObject(PreferencesModel())
-                .environmentObject(CalendarModel())
+                .environmentObject(EventsModel())
                 .onAppear {
                     NotificationManager.shared.requestAuthorization()
+                }
+                .onOpenURL { incomingURL in
+                    StripeAPI.handleURLCallback(with: incomingURL)
                 }
         }
     }

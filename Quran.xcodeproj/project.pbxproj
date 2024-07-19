@@ -34,14 +34,18 @@
 		A266AC5D2C335EBE0058156B /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = A266AC5C2C335EBE0058156B /* Question.swift */; };
 		A266AC5F2C335FFC0058156B /* QuestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A266AC5E2C335FFC0058156B /* QuestionsView.swift */; };
 		A26A351B2C1DF96700C60561 /* PrayerTimesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */; };
+		A2744C1E2C4ACA0500411882 /* EventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2744C1B2C4ACA0500411882 /* EventsView.swift */; };
+		A2744C1F2C4ACA0500411882 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2744C1C2C4ACA0500411882 /* EventView.swift */; };
+		A2744C212C4AE27400411882 /* StripePaymentSheet in Frameworks */ = {isa = PBXBuildFile; productRef = A2744C202C4AE27400411882 /* StripePaymentSheet */; };
+		A289AA5C2C4AB3E00051C8CC /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = A289AA5B2C4AB3E00051C8CC /* Stripe */; };
+		A289AA642C4AC6850051C8CC /* PaymentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A289AA632C4AC6850051C8CC /* PaymentModel.swift */; };
 		A2975CEE2C1CBDAC005FA616 /* Duas.json in Resources */ = {isa = PBXBuildFile; fileRef = A2975CED2C1CBDAC005FA616 /* Duas.json */; };
 		A2975CF02C1CC414005FA616 /* Dua.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CEF2C1CC414005FA616 /* Dua.swift */; };
 		A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF32C1CC4AF005FA616 /* DuaView.swift */; };
 		A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF52C1CC685005FA616 /* DuasView.swift */; };
 		A2975CF82C1CC898005FA616 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF72C1CC898005FA616 /* RootView.swift */; };
-		A2A9C86D2C49287B00F114FD /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C86C2C49287B00F114FD /* CalendarView.swift */; };
 		A2A9C86F2C49290000F114FD /* DuaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C86E2C49290000F114FD /* DuaModel.swift */; };
-		A2A9C8712C49291A00F114FD /* CalendarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8702C49291A00F114FD /* CalendarModel.swift */; };
+		A2A9C8712C49291A00F114FD /* EventsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8702C49291A00F114FD /* EventsModel.swift */; };
 		A2A9C8762C492CF200F114FD /* Reciter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8742C492CF200F114FD /* Reciter.swift */; };
 		A2A9C8772C492CF200F114FD /* Translator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8752C492CF200F114FD /* Translator.swift */; };
 		A2A9C87A2C492E6F00F114FD /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = A2A9C8792C492E6F00F114FD /* SwiftyCrop */; };
@@ -55,8 +59,8 @@
 		A2A9C88B2C49311700F114FD /* Isha.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2A9C8832C49311700F114FD /* Isha.mp3 */; };
 		A2A9C88C2C49311700F114FD /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A2A9C8842C49311700F114FD /* LICENSE */; };
 		A2A9C88F2C49372100F114FD /* iCalendarParser in Frameworks */ = {isa = PBXBuildFile; productRef = A2A9C88E2C49372100F114FD /* iCalendarParser */; };
-		A2A9C8912C493F4C00F114FD /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8902C493F4C00F114FD /* EventView.swift */; };
 		A2BEC6422C1EF3330058017F /* BookmarkedFoldersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */; };
+		A2C273D92C4AA9E700815AC8 /* DonationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C273D82C4AA9E700815AC8 /* DonationsView.swift */; };
 		A2C781562C3168CC007DAFD3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2C781552C3168CC007DAFD3 /* GoogleService-Info.plist */; };
 		A2C781592C316931007DAFD3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A2C781582C316931007DAFD3 /* FirebaseAuth */; };
 		A2C7815B2C316931007DAFD3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A2C7815A2C316931007DAFD3 /* FirebaseFirestore */; };
@@ -130,15 +134,17 @@
 		A266AC5C2C335EBE0058156B /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		A266AC5E2C335FFC0058156B /* QuestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionsView.swift; sourceTree = "<group>"; };
 		A26A351A2C1DF96700C60561 /* PrayerTimesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesView.swift; sourceTree = "<group>"; };
+		A2744C1B2C4ACA0500411882 /* EventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsView.swift; sourceTree = "<group>"; };
+		A2744C1C2C4ACA0500411882 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		A27F38852C23960500169976 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A289AA632C4AC6850051C8CC /* PaymentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentModel.swift; sourceTree = "<group>"; };
 		A2975CED2C1CBDAC005FA616 /* Duas.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Duas.json; sourceTree = "<group>"; };
 		A2975CEF2C1CC414005FA616 /* Dua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dua.swift; sourceTree = "<group>"; };
 		A2975CF32C1CC4AF005FA616 /* DuaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaView.swift; sourceTree = "<group>"; };
 		A2975CF52C1CC685005FA616 /* DuasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuasView.swift; sourceTree = "<group>"; };
 		A2975CF72C1CC898005FA616 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		A2A9C86C2C49287B00F114FD /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		A2A9C86E2C49290000F114FD /* DuaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaModel.swift; sourceTree = "<group>"; };
-		A2A9C8702C49291A00F114FD /* CalendarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarModel.swift; sourceTree = "<group>"; };
+		A2A9C8702C49291A00F114FD /* EventsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsModel.swift; sourceTree = "<group>"; };
 		A2A9C8742C492CF200F114FD /* Reciter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reciter.swift; sourceTree = "<group>"; };
 		A2A9C8752C492CF200F114FD /* Translator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translator.swift; sourceTree = "<group>"; };
 		A2A9C87B2C492E9800F114FD /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -150,8 +156,8 @@
 		A2A9C8842C49311700F114FD /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A2A9C8852C49311700F114FD /* Maghrib.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Maghrib.mp3; sourceTree = "<group>"; };
 		A2A9C8862C49311700F114FD /* Zuhr.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Zuhr.mp3; sourceTree = "<group>"; };
-		A2A9C8902C493F4C00F114FD /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedFoldersView.swift; sourceTree = "<group>"; };
+		A2C273D82C4AA9E700815AC8 /* DonationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationsView.swift; sourceTree = "<group>"; };
 		A2C781552C3168CC007DAFD3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A2C781602C316A6D007DAFD3 /* AuthenticationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModel.swift; sourceTree = "<group>"; };
 		A2C781632C316F2B007DAFD3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -195,9 +201,11 @@
 				A2C7815D2C316931007DAFD3 /* FirebaseFirestoreSwift in Frameworks */,
 				A222F86A2C1DF0D300405860 /* Alamofire in Frameworks */,
 				A2C7815B2C316931007DAFD3 /* FirebaseFirestore in Frameworks */,
+				A289AA5C2C4AB3E00051C8CC /* Stripe in Frameworks */,
 				A2A9C87A2C492E6F00F114FD /* SwiftyCrop in Frameworks */,
 				A2C781592C316931007DAFD3 /* FirebaseAuth in Frameworks */,
 				A222F86F2C1DF0DF00405860 /* SwiftSoup in Frameworks */,
+				A2744C212C4AE27400411882 /* StripePaymentSheet in Frameworks */,
 				A2C7815F2C316931007DAFD3 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,7 +249,8 @@
 				A2E4E3BE2C1DF140007D28A4 /* Quran */,
 				A2E4E3BF2C1DF14A007D28A4 /* Duas */,
 				A220AC9B2C49D8860052F245 /* Ziaraah */,
-				A2A9C86B2C49286B00F114FD /* Calendar */,
+				A2744C1D2C4ACA0500411882 /* Events */,
+				A2C273D72C4AA9CD00815AC8 /* Donations */,
 				A266AC572C3357B00058156B /* Questions */,
 				A26A35192C1DF94900C60561 /* Prayer Times */,
 				A2C781622C316F17007DAFD3 /* Settings */,
@@ -269,13 +278,21 @@
 			path = "Prayer Times";
 			sourceTree = "<group>";
 		};
-		A2A9C86B2C49286B00F114FD /* Calendar */ = {
+		A2744C1D2C4ACA0500411882 /* Events */ = {
 			isa = PBXGroup;
 			children = (
-				A2A9C86C2C49287B00F114FD /* CalendarView.swift */,
-				A2A9C8902C493F4C00F114FD /* EventView.swift */,
+				A2744C1B2C4ACA0500411882 /* EventsView.swift */,
+				A2744C1C2C4ACA0500411882 /* EventView.swift */,
 			);
-			path = Calendar;
+			path = Events;
+			sourceTree = "<group>";
+		};
+		A2C273D72C4AA9CD00815AC8 /* Donations */ = {
+			isa = PBXGroup;
+			children = (
+				A2C273D82C4AA9E700815AC8 /* DonationsView.swift */,
+			);
+			path = Donations;
 			sourceTree = "<group>";
 		};
 		A2C781622C316F17007DAFD3 /* Settings */ = {
@@ -360,7 +377,8 @@
 				A2D43E642C190AF200C3F21F /* QuranModel.swift */,
 				A2A9C86E2C49290000F114FD /* DuaModel.swift */,
 				A220AC972C49D6FF0052F245 /* ZiyaratModel.swift */,
-				A2A9C8702C49291A00F114FD /* CalendarModel.swift */,
+				A2A9C8702C49291A00F114FD /* EventsModel.swift */,
+				A289AA632C4AC6850051C8CC /* PaymentModel.swift */,
 				A266AC5A2C335E590058156B /* QuestionsModel.swift */,
 				A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */,
 				A2C781602C316A6D007DAFD3 /* AuthenticationModel.swift */,
@@ -468,6 +486,8 @@
 				A2C781662C31A0B7007DAFD3 /* SDWebImageSwiftUI */,
 				A2A9C8792C492E6F00F114FD /* SwiftyCrop */,
 				A2A9C88E2C49372100F114FD /* iCalendarParser */,
+				A289AA5B2C4AB3E00051C8CC /* Stripe */,
+				A2744C202C4AE27400411882 /* StripePaymentSheet */,
 			);
 			productName = Quran;
 			productReference = A2D43E4F2C190A0900C3F21F /* Quran.app */;
@@ -507,7 +527,7 @@
 				A2C781652C31A0B7007DAFD3 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				A2A9C8782C492E6F00F114FD /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
 				A2A9C88D2C49372100F114FD /* XCRemoteSwiftPackageReference "iCalendarParser" */,
-				A2BA4E8C2C49EE4100236587 /* XCRemoteSwiftPackageReference "stripe-ios-spm" */,
+				A289AA5A2C4AB3E00051C8CC /* XCRemoteSwiftPackageReference "stripe-ios" */,
 			);
 			productRefGroup = A2D43E502C190A0900C3F21F /* Products */;
 			projectDirPath = "";
@@ -571,22 +591,23 @@
 				A2C781612C316A6D007DAFD3 /* AuthenticationModel.swift in Sources */,
 				A26A351B2C1DF96700C60561 /* PrayerTimesView.swift in Sources */,
 				A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */,
-				A2A9C8912C493F4C00F114FD /* EventView.swift in Sources */,
 				A2C781642C316F2B007DAFD3 /* SettingsView.swift in Sources */,
 				A2CEA4E62C3A08D900D59BF8 /* AppDelegate.swift in Sources */,
 				A2CEA4DF2C385F4D00D59BF8 /* AddBookmarkView.swift in Sources */,
 				A266AC5F2C335FFC0058156B /* QuestionsView.swift in Sources */,
 				A2D43E552C190A0900C3F21F /* SurahView.swift in Sources */,
+				A2744C1E2C4ACA0500411882 /* EventsView.swift in Sources */,
+				A2744C1F2C4ACA0500411882 /* EventView.swift in Sources */,
 				A2FD25BE2C1EEBF9003785CF /* QuranApp.xcdatamodeld in Sources */,
 				A220AC9A2C49D7100052F245 /* Ziyarat.swift in Sources */,
 				A23C6B8B2C35A88800F67DDA /* QuestionCard.swift in Sources */,
 				A2A9C87C2C492E9800F114FD /* AudioPlayer.swift in Sources */,
 				A2A9C8762C492CF200F114FD /* Reciter.swift in Sources */,
+				A289AA642C4AC6850051C8CC /* PaymentModel.swift in Sources */,
 				A2A9C8772C492CF200F114FD /* Translator.swift in Sources */,
 				A2975CF02C1CC414005FA616 /* Dua.swift in Sources */,
 				A2BEC6422C1EF3330058017F /* BookmarkedFoldersView.swift in Sources */,
 				A2A9C86F2C49290000F114FD /* DuaModel.swift in Sources */,
-				A2A9C86D2C49287B00F114FD /* CalendarView.swift in Sources */,
 				A220ACA02C49D9110052F245 /* ZiyaratView.swift in Sources */,
 				A214A7122C34BB03000D12A5 /* QuestionDetailView.swift in Sources */,
 				A220AC982C49D6FF0052F245 /* ZiyaratModel.swift in Sources */,
@@ -599,8 +620,9 @@
 				A2FD25BA2C1EEB9A003785CF /* Persistence.swift in Sources */,
 				A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */,
 				A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */,
+				A2C273D92C4AA9E700815AC8 /* DonationsView.swift in Sources */,
 				A266AC592C3357C20058156B /* NewQuestionView.swift in Sources */,
-				A2A9C8712C49291A00F114FD /* CalendarModel.swift in Sources */,
+				A2A9C8712C49291A00F114FD /* EventsModel.swift in Sources */,
 				A2D43E532C190A0900C3F21F /* QuranApp.swift in Sources */,
 				A2E4E3C12C1DF174007D28A4 /* PrayerTimesModel.swift in Sources */,
 				A2CEA4E12C38917B00D59BF8 /* BookmarkedVerseCard.swift in Sources */,
@@ -809,6 +831,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quran/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To scan card information for donations.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "To verify the it's really you when making donations.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -840,6 +864,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quran/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To scan card information for donations.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "To verify the it's really you when making donations.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -908,6 +934,14 @@
 				minimumVersion = 2.7.2;
 			};
 		};
+		A289AA5A2C4AB3E00051C8CC /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stripe/stripe-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 23.28.1;
+			};
+		};
 		A2A9C8782C492E6F00F114FD /* XCRemoteSwiftPackageReference "SwiftyCrop" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/benedom/SwiftyCrop.git";
@@ -922,14 +956,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.2.0;
-			};
-		};
-		A2BA4E8C2C49EE4100236587 /* XCRemoteSwiftPackageReference "stripe-ios-spm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stripe/stripe-ios-spm";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 23.28.1;
 			};
 		};
 		A2C781572C316931007DAFD3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -970,6 +996,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A222F86D2C1DF0DF00405860 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		A2744C202C4AE27400411882 /* StripePaymentSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A289AA5A2C4AB3E00051C8CC /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripePaymentSheet;
+		};
+		A289AA5B2C4AB3E00051C8CC /* Stripe */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A289AA5A2C4AB3E00051C8CC /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = Stripe;
 		};
 		A2A9C8792C492E6F00F114FD /* SwiftyCrop */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -10,11 +10,12 @@ import CoreData
 
 struct RootView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     @Namespace private var namespace
     
     @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
-    @EnvironmentObject private var calendarModel: CalendarModel
+    @EnvironmentObject private var calendarModel: EventsModel
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: true)],
@@ -32,11 +33,16 @@ struct RootView: View {
             ScrollView {
                 LazyVGrid(columns: columns) {
                     NavigationButton(namespace: namespace, view: QuranView(), image: "quran", text: "Quran")
+                    NavigationButton(namespace: namespace, view: EmptyView(), image: "calendar", text: "Calendar")
+                    NavigationButton(namespace: namespace, view: EventsView(), image: "events", text: "Events")
+                    
                     NavigationButton(namespace: namespace, view: DuasView(), image: "duas", text: "Du'as")
                     NavigationButton(namespace: namespace, view: ZiaraahView(), image: "ziaraah", text: "Ziaraah")
                     NavigationButton(namespace: namespace, view: EmptyView(), image: "amaal", text: "Amaal")
-                    NavigationButton(namespace: namespace, view: CalendarView(), image: "calendar", text: "Calendar")
+                    
                     NavigationButton(namespace: namespace, view: QuestionsView(), image: "questions", text: "Questions")
+                    NavigationButton(namespace: namespace, view: DonationsView(), image: "donations", text: "Donations")
+                    youtubeButton
                 }.padding(.horizontal, 10)
                 
                 islamicDate
@@ -80,6 +86,31 @@ struct RootView: View {
             }.font(.system(.title2, weight: .bold))
         }
         .padding(.top)
+    }
+    
+    private var youtubeButton: some View {
+        Group {
+            if let hyderiUrl = URL(string: "https://www.youtube.com/@hyderi/live") {
+                Link(destination: hyderiUrl) {
+                    VStack(spacing: 15) {
+                        Image("\("youtube")-\(colorScheme == .dark ? "dark" : "light")")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                        
+                        Text("Live")
+                    }
+                    .foregroundStyle(Color.primary)
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .frame(maxHeight: 75)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(2.5)
+                }
+            }
+        }
     }
     
     private func todaysDate() -> String {

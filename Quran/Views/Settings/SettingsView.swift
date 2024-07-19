@@ -20,7 +20,6 @@ struct Prayer: Identifiable {
 
 struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.colorScheme) private var colorScheme
     
     @StateObject private var authenticationModel: AuthenticationModel = AuthenticationModel()
     @EnvironmentObject private var preferencesModel: PreferencesModel
@@ -172,6 +171,7 @@ struct SettingsView: View {
                         
                         SwiftyCropView(imageToCrop: image, maskShape: .square, configuration: configuration) { croppedImage in
                             authenticationModel.photoImage = croppedImage
+                            imageToResize = nil
                         }
                     }
                     .disabled(editMode == false)
@@ -179,7 +179,6 @@ struct SettingsView: View {
                     if authenticationModel.photoImage != nil {
                         Button {
                             authenticationModel.updatePhoto()
-                            editMode = false
                         } label: {
                             Text("Update Photo")
                                 .bold()
@@ -194,13 +193,13 @@ struct SettingsView: View {
         Group {
             TextField("", text: $authenticationModel.username)
                 .font(.system(.title, weight: .bold))
+                .foregroundStyle(editMode ? Color.accentColor : Color.primary)
                 .multilineTextAlignment(.center)
                 .disabled(editMode == false)
             
             if authenticationModel.username != authenticationModel.user?.displayName {
                 Button {
                     authenticationModel.updateUsername()
-                    editMode = false
                 } label: {
                     Text("Update Username")
                         .bold()
@@ -215,8 +214,7 @@ struct SettingsView: View {
             authenticationModel.resetFields()
         } label: {
             if editMode {
-                Text("Cancel")
-                    .foregroundStyle(Color.red)
+                Text("Done")
             } else {
                 HStack {
                     Text("Edit")
@@ -307,11 +305,19 @@ struct SettingsView: View {
                     .overlay { Circle().stroke(lineWidth: 2.5) }
                     .frame(width: 150, height: 150)
                     .foregroundStyle(Color.primary)
-                }.onChange(of: authenticationModel.photoItem) { _, _ in
+                }
+                .onChange(of: authenticationModel.photoItem) { _, _ in
                     Task {
                         if let data = try await authenticationModel.photoItem?.loadTransferable(type: Data.self) {
-                            authenticationModel.photoImage = UIImage(data: data)
+                            imageToResize = UIImage(data: data)
                         }
+                    }
+                }
+                .fullScreenCover(item: $imageToResize) { image in
+                    let configuration = SwiftyCropConfiguration(maxMagnificationScale: 2.0, cropImageCircular: false, rotateImage: false)
+                    
+                    SwiftyCropView(imageToCrop: image, maskShape: .square, configuration: configuration) { croppedImage in
+                        authenticationModel.photoImage = croppedImage
                     }
                 }
             }
@@ -321,7 +327,7 @@ struct SettingsView: View {
     private var emailField: some View {
         TextField("Email", text: $authenticationModel.email)
             .padding(10)
-            .background(colorScheme == .dark ? Color.black : Color(.secondarySystemBackground))
+            .background(Color(.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 5))
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
@@ -347,7 +353,7 @@ struct SettingsView: View {
 
         }
         .padding(10)
-        .background(colorScheme == .dark ? Color.black : Color(.secondarySystemBackground))
+        .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 5))
     }
 
@@ -359,7 +365,7 @@ struct SettingsView: View {
                 
                 TextField("Username", text: $authenticationModel.username)
                     .padding(10)
-                    .background(colorScheme == .dark ? Color.black : Color(.secondarySystemBackground))
+                    .background(Color(.secondarySystemBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
@@ -409,17 +415,17 @@ struct SettingsView: View {
         VStack(spacing: 20) {
             fontSizeSlider
                 .padding()
-                .background(Color(.tertiarySystemFill))
+                .background(Color(.secondarySystemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             
             translatorPicker
                 .padding()
-                .background(Color(.tertiarySystemFill))
+                .background(Color(.secondarySystemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             
             reciterPicker
                 .padding()
-                .background(Color(.tertiarySystemFill))
+                .background(Color(.secondarySystemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }.padding(.bottom, 10)
     }

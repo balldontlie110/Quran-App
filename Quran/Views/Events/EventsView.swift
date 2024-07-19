@@ -1,5 +1,5 @@
 //
-//  CalendarView.swift
+//  EventsView.swift
 //  Quran
 //
 //  Created by Ali Earp on 18/07/2024.
@@ -8,8 +8,8 @@
 import SwiftUI
 import iCalendarParser
 
-struct CalendarView: View {
-    @EnvironmentObject private var calendarModel: CalendarModel
+struct EventsView: View {
+    @EnvironmentObject private var calendarModel: EventsModel
     
     var body: some View {
         ScrollView {
@@ -134,5 +134,5 @@ extension Date {
 }
 
 #Preview {
-    CalendarView()
+    EventsView()
 }

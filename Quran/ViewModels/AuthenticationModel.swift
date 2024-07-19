@@ -189,7 +189,8 @@ class AuthenticationModel: ObservableObject {
                         }
                         
                         self.user = Auth.auth().currentUser
-                        self.resetFields()
+                        self.photoItem = nil
+                        self.photoImage = nil
                         self.loading = false
                     }
                 }
@@ -220,7 +221,7 @@ class AuthenticationModel: ObservableObject {
                 ])
                 
                 self.user = Auth.auth().currentUser
-                self.resetFields()
+                self.username = self.user?.displayName ?? ""
                 self.loading = false
             }
         } else {

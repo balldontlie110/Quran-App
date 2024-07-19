@@ -1,5 +1,5 @@
 //
-//  CalendarModel.swift
+//  EventsModel.swift
 //  Quran
 //
 //  Created by Ali Earp on 18/07/2024.
@@ -10,7 +10,7 @@ import iCalendarParser
 import Alamofire
 import SwiftSoup
 
-class CalendarModel: ObservableObject {
+class EventsModel: ObservableObject {
     @Published var day: String = ""
     @Published var month: String = ""
     @Published var year: String = ""

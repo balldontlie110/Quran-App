@@ -27,7 +27,7 @@ struct PrayerTimesView: View {
                 }
                 .multilineTextAlignment(.center)
                 .font(.system(.title2))
-                .padding(.vertical, 10)
+                .padding(.vertical, 7.5)
             }
         }.padding(.horizontal, 50)
     }
