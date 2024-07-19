@@ -39,9 +39,11 @@ struct DuaView: View {
                             if verse.id != dua.verses.count {
                                 Divider()
                             }
-                        }.padding(.horizontal, 10)
+                        }
                     }
-                }.scrollTargetLayout()
+                }
+                .padding(.horizontal, 10)
+                .scrollTargetLayout()
                 
                 Spacer()
                     .frame(height: 50)

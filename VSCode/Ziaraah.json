@@ -1,0 +1,221 @@
+{
+    "verses": [
+        {
+            "id": 1,
+            "text": "السلام عليك يا رسول الله",
+            "translation": "Peace be upon you, O Messenger of Allah.",
+            "transliteration": "As-salamu alayka ya Rasoolullah",
+            "gap": false
+        },
+        {
+            "id": 2,
+            "text": "السلام عليك يا نبي الله",
+            "translation": "Peace be upon you, O Prophet of Allah.",
+            "transliteration": "As-salamu alayka ya Nabi-Allah",
+            "gap": false
+        },
+        {
+            "id": 3,
+            "text": "السلام عليك يا أمير المؤمنين سيد الوصيين",
+            "translation": "Peace be upon you, O Commander of the Faithful, the leader of the successors.",
+            "transliteration": "As-salamu alayka ya Amir al-Mu'mineen Sayid al-Waseen",
+            "gap": false
+        },
+        {
+            "id": 4,
+            "text": "السلام عليك يا فاطمة الزهراء سيدة نساء العالمين",
+            "translation": "Peace be upon you, O Fatimah al-Zahra, the leader of the women of the worlds.",
+            "transliteration": "As-salamu alayka ya Fatimatuz Zahra Sayyidat Nisa'il Alameen",
+            "gap": false
+        },
+        {
+            "id": 5,
+            "text": "السلام عليك يا خديجة الكبرى أم المؤمنين",
+            "translation": "Peace be upon you, O Khadijah al-Kubra, the mother of the believers.",
+            "transliteration": "As-salamu alayka ya Khadijat al-Kubra Umm al-Mu'mineen",
+            "gap": false
+        },
+        {
+            "id": 6,
+            "text": "السلام عليك يا حسن المجتبى",
+            "translation": "Peace be upon you, O Hasan al-Mujtaba.",
+            "transliteration": "As-salamu alayka ya Hasan al-Mujtaba",
+            "gap": false
+        },
+        {
+            "id": 7,
+            "text": "السلام عليك يا أبا عبد الله الحسين وعلى الأرواح التي حلت بفنائك",
+            "translation": "Peace be upon you, O Aba Abdillah al-Husayn, and upon the souls that stayed in your courtyard.",
+            "transliteration": "As-salamu alayka ya Aba Abdillah al-Husayn wa 'ala al-arwah alati hallat bifina'ik",
+            "gap": false
+        },
+        {
+            "id": 8,
+            "text": "عليكم مني جميعاً سلام الله أبداً ما بقيت وبقي الليل والنهار ولا جعله الله آخر العهد مني لزيارتكم",
+            "translation": "Peace be upon you from me forever, as long as I remain and as long as there are night and day. And may Allah not make it the last covenant from me to visit you.",
+            "transliteration": "'Alaykum minni jamee'an salamu Allahi abadan ma baqeetu wa baqiya allayl wa annahar wa la ja'alahu Allahu akhira al-'ahdi minni li ziyaratikum.",
+            "gap": false
+        },
+        {
+            "id": 9,
+            "text": "",
+            "translation": "",
+            "transliteration": "",
+            "gap": true
+        },
+        {
+            "id": 10,
+            "text": "السلام على الحسين",
+            "translation": "Peace be upon al-Husayn,",
+            "transliteration": "As-salamu ala al-Husayn",
+            "gap": false
+        },
+        {
+            "id": 11,
+            "text": "وعلى علي بن الحسين",
+            "translation": "And upon Ali ibn al-Husayn,",
+            "transliteration": "Wa 'ala Ali ibn al-Husayn",
+            "gap": false
+        },
+        {
+            "id": 12,
+            "text": "وعلى أولاد الحسين",
+            "translation": "And upon the children of al-Husayn,",
+            "transliteration": "Wa 'ala awlad al-Husayn",
+            "gap": false
+        },
+        {
+            "id": 13,
+            "text": "وعلى أصحاب الحسين",
+            "translation": "And upon the companions of al-Husayn.",
+            "transliteration": "Wa 'ala ashab al-Husayn",
+            "gap": false
+        },
+        {
+            "id": 14,
+            "text": "",
+            "translation": "",
+            "transliteration": "",
+            "gap": true
+        },
+        {
+            "id": 15,
+            "text": "وعلى أخيك العباس، باب الحوائج مختار زينب وأم كلثوم وبنتك سكينة",
+            "translation": "And upon your brother al-Abbas, the door of needs, the supporter of Zaynab and Umm Kulthum, and your daughter Sakina.",
+            "transliteration": "Wa 'ala Akhik al-Abbas, Bab al-Hawa'ij Mukhtar Zainab wa Umm Kulthum wa Bintika Sakina",
+            "gap": false
+        },
+        {
+            "id": 16,
+            "text": "السلام عليكم جميعاً شهداء كربلاء ورحمة الله وبركاته",
+            "translation": "Peace be upon you all, O martyrs of Karbala, and the mercy of Allah and His blessings.",
+            "transliteration": "As-salamu alaykum jami'an shuhada Karbala wa rahmatullahi wa barakatuh",
+            "gap": false
+        },
+        {
+            "id": 17,
+            "text": "",
+            "translation": "",
+            "transliteration": "",
+            "gap": true
+        },
+        {
+            "id": 18,
+            "text": "السلام عليك يا تسعة المعصومين من ذرية الحسين",
+            "translation": "Peace be upon you, O nine Imams from the progeny of al-Husayn,",
+            "transliteration": "As-salamu alayka ya tis'at al-ma'sumeen min dhurriyat al-Husayn",
+            "gap": false
+        },
+        {
+            "id": 19,
+            "text": "علي بن الحسين زين العابدين",
+            "translation": "Ali ibn al-Husayn Zain al-Abidin,",
+            "transliteration": "Ali ibn al-Husayn Zayn al-Abideen",
+            "gap": false
+        },
+        {
+            "id": 20,
+            "text": "ومحمد بن علي الباقر",
+            "translation": "And Muhammad ibn Ali al-Baqir,",
+            "transliteration": "Wa Muhammad ibn Ali al-Baqir",
+            "gap": false
+        },
+        {
+            "id": 21,
+            "text": "وجعفر بن محمد الصادق",
+            "translation": "And Ja'far ibn Muhammad al-Sadiq,",
+            "transliteration": "Wa Ja'far ibn Muhammad al-Sadiq",
+            "gap": false
+        },
+        {
+            "id": 22,
+            "text": "وموسى بن جعفر الكاظم",
+            "translation": "And Musa ibn Ja'far al-Kazim,",
+            "transliteration": "Wa Musa ibn Ja'far al-Kazim",
+            "gap": false
+        },
+        {
+            "id": 23,
+            "text": "وعلي بن موسى الرضا",
+            "translation": "And Ali ibn Musa al-Ridha,",
+            "transliteration": "Wa Ali ibn Musa al-Ridha",
+            "gap": false
+        },
+        {
+            "id": 24,
+            "text": "ومحمد بن علي الجواد",
+            "translation": "And Muhammad ibn Ali al-Jawad,",
+            "transliteration": "Wa Muhammad ibn Ali al-Jawad",
+            "gap": false
+        },
+        {
+            "id": 25,
+            "text": "وعلي بن محمد الهادي",
+            "translation": "And Ali ibn Muhammad al-Hadi,",
+            "transliteration": "Wa Ali ibn Muhammad al-Hadi",
+            "gap": false
+        },
+        {
+            "id": 26,
+            "text": "وحسن بن علي العسكري",
+            "translation": "And Hasan ibn Ali al-Askari.",
+            "transliteration": "Wa Hasan ibn Ali al-Askari",
+            "gap": false
+        },
+        {
+            "id": 27,
+            "text": "السلام عليك يا مولاي يا صاحب العصر والزمان",
+            "translation": "Peace be upon you, O my master, O the Master of the Age and Time,",
+            "transliteration": "As-salamu alayka ya Mawla ya Sahib al-Asr wa al-Zaman",
+            "gap": false
+        },
+        {
+            "id": 28,
+            "text": "سيدي الأمان الأمان الأمان من فتنة الزمان",
+            "translation": "My leader, safety, safety, safety from the trials of time.",
+            "transliteration": "Sayyidi al-amana al-amana al-amana min fitnat al-zaman",
+            "gap": false
+        },
+        {
+            "id": 29,
+            "text": "السلام عليك يا حجة الله في أرضه",
+            "translation": "Peace be upon you, O proof of Allah on His earth.",
+            "transliteration": "As-salamu alayka ya Hujjat Allah fi ardihee",
+            "gap": false
+        },
+        {
+            "id": 30,
+            "text": "عجل الله فرجك وسهل الله مخرجك وظهورك",
+            "translation": "May Allah hasten your reappearance and make easy your emergence and your appearance.",
+            "transliteration": "Ajjal Allahu farajak wa sahhal Allahu makhrajaka wa dhuhurak",
+            "gap": false
+        },
+        {
+            "id": 31,
+            "text": "ورحمة الله وبركاته",
+            "translation": "And the mercy of Allah and His blessings.",
+            "transliteration": "Wa rahmatullahi wa barakatuh",
+            "gap": false
+        }
+    ]
+}

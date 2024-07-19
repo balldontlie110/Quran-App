@@ -33,21 +33,20 @@ struct RootView: View {
                 LazyVGrid(columns: columns) {
                     NavigationButton(namespace: namespace, view: QuranView(), image: "quran", text: "Quran")
                     NavigationButton(namespace: namespace, view: DuasView(), image: "duas", text: "Du'as")
-                    NavigationButton(namespace: namespace, view: EmptyView(), image: "ziaraah", text: "Ziaraah")
+                    NavigationButton(namespace: namespace, view: ZiaraahView(), image: "ziaraah", text: "Ziaraah")
                     NavigationButton(namespace: namespace, view: EmptyView(), image: "amaal", text: "Amaal")
                     NavigationButton(namespace: namespace, view: CalendarView(), image: "calendar", text: "Calendar")
                     NavigationButton(namespace: namespace, view: QuestionsView(), image: "questions", text: "Questions")
-                }
-                .padding(.horizontal, 10)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        settingsToolbarButton
-                    }
-                }
+                }.padding(.horizontal, 10)
                 
                 islamicDate
                 
                 PrayerTimesView()
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    settingsToolbarButton
+                }
             }
         }
         .sheet(isPresented: $showSettingsView) {
