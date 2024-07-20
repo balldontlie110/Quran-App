@@ -1,24 +1,24 @@
 //
-//  ZiaraahView.swift
+//  AmaalsView.swift
 //  Quran
 //
-//  Created by Ali Earp on 19/07/2024.
+//  Created by Ali Earp on 20/07/2024.
 //
 
 import SwiftUI
 
-struct ZiaraahView: View {
-    @StateObject private var ziyaratModel: ZiyaratModel = ZiyaratModel()
+struct AmaalsView: View {
+    @StateObject private var amaalModel: AmaalModel = AmaalModel()
     
     var body: some View {
         ScrollView {
             LazyVStack {
-                ForEach(ziyaratModel.ziaraah) { ziyarat in
+                ForEach(amaalModel.amaals) { amaal in
                     NavigationLink {
-                        ZiyaratView(ziyarat: ziyarat)
+                        AmaalView(amaal: amaal)
                     } label: {
                         HStack(spacing: 15) {
-                            Text(String(ziyarat.id))
+                            Text(String(amaal.id))
                                 .bold()
                                 .overlay {
                                     Image(systemName: "diamond")
@@ -28,10 +28,10 @@ struct ZiaraahView: View {
                                 .frame(width: 40)
                             
                             VStack(alignment: .leading) {
-                                Text(ziyarat.title)
+                                Text(amaal.title)
                                     .fontWeight(.heavy)
                                 
-                                if let subtitle = ziyarat.subtitle {
+                                if let subtitle = amaal.subtitle {
                                     Text(subtitle)
                                         .font(.system(.subheadline, weight: .semibold))
                                         .foregroundStyle(Color.secondary)
@@ -49,12 +49,12 @@ struct ZiaraahView: View {
                 }
             }.padding(.horizontal)
         }
-        .navigationTitle("Ziaraah")
+        .navigationTitle("Amaals")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
     }
 }
 
 #Preview {
-    ZiaraahView()
+    AmaalsView()
 }

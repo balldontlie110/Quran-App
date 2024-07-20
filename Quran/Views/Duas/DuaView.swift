@@ -25,11 +25,15 @@ struct DuaView: View {
                 LazyVStack(spacing: 10) {
                     ForEach(dua.verses) { verse in
                         VStack(spacing: 0) {
-                            VStack(spacing: 10) {
-                                Text(verse.arabic)
+                            VStack(spacing: 15) {
+                                Text(verse.text)
                                     .font(.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold))
                                     .multilineTextAlignment(.center)
                                     .lineSpacing(20)
+                                
+                                Text(verse.transliteration.uppercased())
+                                    .font(.system(size: 20))
+                                    .multilineTextAlignment(.center)
                                 
                                 Text(verse.translation)
                                     .font(.system(size: 20))

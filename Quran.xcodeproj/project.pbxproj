@@ -29,6 +29,8 @@
 		A231ACE92C4322ED00DA54F2 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		A23C6B8B2C35A88800F67DDA /* QuestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */; };
 		A23C6B8D2C35ABEB00F67DDA /* UserProfileSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23C6B8C2C35ABEB00F67DDA /* UserProfileSection.swift */; };
+		A25515042C4BFB1000554784 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A25515032C4BFB1000554784 /* CalendarView.swift */; };
+		A25515072C4C28C500554784 /* Jummah.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A25515062C4C28C500554784 /* Jummah.mp3 */; };
 		A266AC592C3357C20058156B /* NewQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A266AC582C3357C20058156B /* NewQuestionView.swift */; };
 		A266AC5B2C335E590058156B /* QuestionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A266AC5A2C335E590058156B /* QuestionsModel.swift */; };
 		A266AC5D2C335EBE0058156B /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = A266AC5C2C335EBE0058156B /* Question.swift */; };
@@ -61,6 +63,11 @@
 		A2A9C88F2C49372100F114FD /* iCalendarParser in Frameworks */ = {isa = PBXBuildFile; productRef = A2A9C88E2C49372100F114FD /* iCalendarParser */; };
 		A2BEC6422C1EF3330058017F /* BookmarkedFoldersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */; };
 		A2C273D92C4AA9E700815AC8 /* DonationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C273D82C4AA9E700815AC8 /* DonationsView.swift */; };
+		A2C74A422C4B5F5500D353FC /* AmaalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C74A412C4B5F5500D353FC /* AmaalsView.swift */; };
+		A2C74A442C4B5F5F00D353FC /* AmaalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C74A432C4B5F5F00D353FC /* AmaalView.swift */; };
+		A2C74A482C4B68EB00D353FC /* Amaals.json in Resources */ = {isa = PBXBuildFile; fileRef = A2C74A472C4B68EB00D353FC /* Amaals.json */; };
+		A2C74A4A2C4B692100D353FC /* Amaal.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C74A492C4B692100D353FC /* Amaal.swift */; };
+		A2C74A4C2C4B693D00D353FC /* AmaalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C74A4B2C4B693D00D353FC /* AmaalModel.swift */; };
 		A2C781562C3168CC007DAFD3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2C781552C3168CC007DAFD3 /* GoogleService-Info.plist */; };
 		A2C781592C316931007DAFD3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A2C781582C316931007DAFD3 /* FirebaseAuth */; };
 		A2C7815B2C316931007DAFD3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A2C7815A2C316931007DAFD3 /* FirebaseFirestore */; };
@@ -129,6 +136,8 @@
 		A230CE5E2C1C8F32002DC576 /* QuranView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranView.swift; sourceTree = "<group>"; };
 		A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCard.swift; sourceTree = "<group>"; };
 		A23C6B8C2C35ABEB00F67DDA /* UserProfileSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSection.swift; sourceTree = "<group>"; };
+		A25515032C4BFB1000554784 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		A25515062C4C28C500554784 /* Jummah.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Jummah.mp3; sourceTree = "<group>"; };
 		A266AC582C3357C20058156B /* NewQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionView.swift; sourceTree = "<group>"; };
 		A266AC5A2C335E590058156B /* QuestionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionsModel.swift; sourceTree = "<group>"; };
 		A266AC5C2C335EBE0058156B /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
@@ -158,6 +167,11 @@
 		A2A9C8862C49311700F114FD /* Zuhr.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Zuhr.mp3; sourceTree = "<group>"; };
 		A2BEC6412C1EF3330058017F /* BookmarkedFoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedFoldersView.swift; sourceTree = "<group>"; };
 		A2C273D82C4AA9E700815AC8 /* DonationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationsView.swift; sourceTree = "<group>"; };
+		A2C74A412C4B5F5500D353FC /* AmaalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmaalsView.swift; sourceTree = "<group>"; };
+		A2C74A432C4B5F5F00D353FC /* AmaalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmaalView.swift; sourceTree = "<group>"; };
+		A2C74A472C4B68EB00D353FC /* Amaals.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Amaals.json; sourceTree = "<group>"; };
+		A2C74A492C4B692100D353FC /* Amaal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Amaal.swift; sourceTree = "<group>"; };
+		A2C74A4B2C4B693D00D353FC /* AmaalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmaalModel.swift; sourceTree = "<group>"; };
 		A2C781552C3168CC007DAFD3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A2C781602C316A6D007DAFD3 /* AuthenticationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModel.swift; sourceTree = "<group>"; };
 		A2C781632C316F2B007DAFD3 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -247,15 +261,50 @@
 			children = (
 				A2975CF72C1CC898005FA616 /* RootView.swift */,
 				A2E4E3BE2C1DF140007D28A4 /* Quran */,
+				A25515022C4BFB0200554784 /* Calendar */,
+				A2744C1D2C4ACA0500411882 /* Events */,
 				A2E4E3BF2C1DF14A007D28A4 /* Duas */,
 				A220AC9B2C49D8860052F245 /* Ziaraah */,
-				A2744C1D2C4ACA0500411882 /* Events */,
-				A2C273D72C4AA9CD00815AC8 /* Donations */,
+				A2C74A402C4B5F3E00D353FC /* Amaal */,
 				A266AC572C3357B00058156B /* Questions */,
+				A2C273D72C4AA9CD00815AC8 /* Donations */,
 				A26A35192C1DF94900C60561 /* Prayer Times */,
 				A2C781622C316F17007DAFD3 /* Settings */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A25515022C4BFB0200554784 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				A25515032C4BFB1000554784 /* CalendarView.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		A25515052C4C28B200554784 /* Duas */ = {
+			isa = PBXGroup;
+			children = (
+				A2975CED2C1CBDAC005FA616 /* Duas.json */,
+				A2A9C8822C49311700F114FD /* Fajr.mp3 */,
+				A2A9C8862C49311700F114FD /* Zuhr.mp3 */,
+				A2A9C8812C49311700F114FD /* Asr.mp3 */,
+				A2A9C8852C49311700F114FD /* Maghrib.mp3 */,
+				A2A9C8832C49311700F114FD /* Isha.mp3 */,
+				A25515062C4C28C500554784 /* Jummah.mp3 */,
+			);
+			path = Duas;
+			sourceTree = "<group>";
+		};
+		A25515082C4C290700554784 /* Quran */ = {
+			isa = PBXGroup;
+			children = (
+				A2DC615C2C1A650400E73390 /* Quran.json */,
+				A2A9C8842C49311700F114FD /* LICENSE */,
+				A2A9C87D2C492F3100F114FD /* Reciters.json */,
+				A2A9C87F2C49301800F114FD /* Translators.json */,
+			);
+			path = Quran;
 			sourceTree = "<group>";
 		};
 		A266AC572C3357B00058156B /* Questions */ = {
@@ -293,6 +342,15 @@
 				A2C273D82C4AA9E700815AC8 /* DonationsView.swift */,
 			);
 			path = Donations;
+			sourceTree = "<group>";
+		};
+		A2C74A402C4B5F3E00D353FC /* Amaal */ = {
+			isa = PBXGroup;
+			children = (
+				A2C74A412C4B5F5500D353FC /* AmaalsView.swift */,
+				A2C74A432C4B5F5F00D353FC /* AmaalView.swift */,
+			);
+			path = Amaal;
 			sourceTree = "<group>";
 		};
 		A2C781622C316F17007DAFD3 /* Settings */ = {
@@ -341,9 +399,8 @@
 				A222F8702C1DF0ED00405860 /* Views */,
 				A2E4E3BB2C1DF10D007D28A4 /* Models */,
 				A2E4E3BC2C1DF111007D28A4 /* ViewModels */,
-				A2CEA4E42C3A08B400D59BF8 /* Notifications */,
-				A2FD25BB2C1EEBA5003785CF /* CoreData */,
 				A2E4E3BD2C1DF135007D28A4 /* Data */,
+				A2CEA4E42C3A08B400D59BF8 /* Notifications */,
 				A2D43E562C190A0A00C3F21F /* Assets.xcassets */,
 				A2D43E582C190A0A00C3F21F /* Preview Content */,
 			);
@@ -366,6 +423,7 @@
 				A2A9C8742C492CF200F114FD /* Reciter.swift */,
 				A2975CEF2C1CC414005FA616 /* Dua.swift */,
 				A220AC992C49D7100052F245 /* Ziyarat.swift */,
+				A2C74A492C4B692100D353FC /* Amaal.swift */,
 				A266AC5C2C335EBE0058156B /* Question.swift */,
 			);
 			path = Models;
@@ -375,9 +433,10 @@
 			isa = PBXGroup;
 			children = (
 				A2D43E642C190AF200C3F21F /* QuranModel.swift */,
+				A2A9C8702C49291A00F114FD /* EventsModel.swift */,
 				A2A9C86E2C49290000F114FD /* DuaModel.swift */,
 				A220AC972C49D6FF0052F245 /* ZiyaratModel.swift */,
-				A2A9C8702C49291A00F114FD /* EventsModel.swift */,
+				A2C74A4B2C4B693D00D353FC /* AmaalModel.swift */,
 				A289AA632C4AC6850051C8CC /* PaymentModel.swift */,
 				A266AC5A2C335E590058156B /* QuestionsModel.swift */,
 				A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */,
@@ -391,17 +450,11 @@
 		A2E4E3BD2C1DF135007D28A4 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				A2DC615C2C1A650400E73390 /* Quran.json */,
-				A2A9C8842C49311700F114FD /* LICENSE */,
-				A2A9C87D2C492F3100F114FD /* Reciters.json */,
-				A2A9C87F2C49301800F114FD /* Translators.json */,
-				A2975CED2C1CBDAC005FA616 /* Duas.json */,
-				A2A9C8822C49311700F114FD /* Fajr.mp3 */,
-				A2A9C8862C49311700F114FD /* Zuhr.mp3 */,
-				A2A9C8812C49311700F114FD /* Asr.mp3 */,
-				A2A9C8852C49311700F114FD /* Maghrib.mp3 */,
-				A2A9C8832C49311700F114FD /* Isha.mp3 */,
+				A25515082C4C290700554784 /* Quran */,
+				A25515052C4C28B200554784 /* Duas */,
 				A220AC952C49D6C30052F245 /* Ziaraah.json */,
+				A2C74A472C4B68EB00D353FC /* Amaals.json */,
+				A2FD25BB2C1EEBA5003785CF /* CoreData */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -557,12 +610,14 @@
 				A2C781562C3168CC007DAFD3 /* GoogleService-Info.plist in Resources */,
 				A2CEA4E82C3B174600D59BF8 /* Adhan.wav in Resources */,
 				A220AC962C49D6C30052F245 /* Ziaraah.json in Resources */,
+				A2C74A482C4B68EB00D353FC /* Amaals.json in Resources */,
 				A2975CEE2C1CBDAC005FA616 /* Duas.json in Resources */,
 				A2D43E572C190A0A00C3F21F /* Assets.xcassets in Resources */,
 				A2A9C87E2C492F3100F114FD /* Reciters.json in Resources */,
 				A231ACE92C4322ED00DA54F2 /* (null) in Resources */,
 				A2A9C8802C49301800F114FD /* Translators.json in Resources */,
 				A2A9C8872C49311700F114FD /* Asr.mp3 in Resources */,
+				A25515072C4C28C500554784 /* Jummah.mp3 in Resources */,
 				A2A9C8882C49311700F114FD /* Fajr.mp3 in Resources */,
 				A2A9C8892C49311700F114FD /* Maghrib.mp3 in Resources */,
 				A2A9C88A2C49311700F114FD /* Zuhr.mp3 in Resources */,
@@ -592,6 +647,7 @@
 				A26A351B2C1DF96700C60561 /* PrayerTimesView.swift in Sources */,
 				A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */,
 				A2C781642C316F2B007DAFD3 /* SettingsView.swift in Sources */,
+				A25515042C4BFB1000554784 /* CalendarView.swift in Sources */,
 				A2CEA4E62C3A08D900D59BF8 /* AppDelegate.swift in Sources */,
 				A2CEA4DF2C385F4D00D59BF8 /* AddBookmarkView.swift in Sources */,
 				A266AC5F2C335FFC0058156B /* QuestionsView.swift in Sources */,
@@ -605,6 +661,7 @@
 				A2A9C8762C492CF200F114FD /* Reciter.swift in Sources */,
 				A289AA642C4AC6850051C8CC /* PaymentModel.swift in Sources */,
 				A2A9C8772C492CF200F114FD /* Translator.swift in Sources */,
+				A2C74A442C4B5F5F00D353FC /* AmaalView.swift in Sources */,
 				A2975CF02C1CC414005FA616 /* Dua.swift in Sources */,
 				A2BEC6422C1EF3330058017F /* BookmarkedFoldersView.swift in Sources */,
 				A2A9C86F2C49290000F114FD /* DuaModel.swift in Sources */,
@@ -612,6 +669,7 @@
 				A214A7122C34BB03000D12A5 /* QuestionDetailView.swift in Sources */,
 				A220AC982C49D6FF0052F245 /* ZiyaratModel.swift in Sources */,
 				A2D43E632C190A8F00C3F21F /* Quran.swift in Sources */,
+				A2C74A422C4B5F5500D353FC /* AmaalsView.swift in Sources */,
 				A20E15F52C1F314E00AF9DA4 /* BookmarkedVersesView.swift in Sources */,
 				A2975CF82C1CC898005FA616 /* RootView.swift in Sources */,
 				A266AC5B2C335E590058156B /* QuestionsModel.swift in Sources */,
@@ -622,7 +680,9 @@
 				A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */,
 				A2C273D92C4AA9E700815AC8 /* DonationsView.swift in Sources */,
 				A266AC592C3357C20058156B /* NewQuestionView.swift in Sources */,
+				A2C74A4C2C4B693D00D353FC /* AmaalModel.swift in Sources */,
 				A2A9C8712C49291A00F114FD /* EventsModel.swift in Sources */,
+				A2C74A4A2C4B692100D353FC /* Amaal.swift in Sources */,
 				A2D43E532C190A0900C3F21F /* QuranApp.swift in Sources */,
 				A2E4E3C12C1DF174007D28A4 /* PrayerTimesModel.swift in Sources */,
 				A2CEA4E12C38917B00D59BF8 /* BookmarkedVerseCard.swift in Sources */,

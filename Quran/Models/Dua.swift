@@ -18,7 +18,8 @@ struct Dua: Identifiable, Decodable {
 struct DuaVerse: Identifiable, Decodable {
     let id: Int
     
-    let arabic: String
+    let text: String
     let translation: String
+    let transliteration: String
     let audio: Int
 }

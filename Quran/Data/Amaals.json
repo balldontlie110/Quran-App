@@ -1,0 +1,262 @@
+[
+    {
+        "id": 1,
+        "title": "Tahajjud Salaah",
+        "subtitle": "Salatul Layl (Night Prayer)",
+        "description": "Salatul Layl consists of 11 rakats\n\nThe first 8 in pairs of 2, each with the niyyah of 'Nawafilatul-Layl'\n\nThe next 2 with the niyyah of 'Salatul Shif'a'\n\nAnd the remaining 1 with the niyyah of 'Salatul Witr'",
+        "sections": [
+            {
+                "id": 1,
+                "description": "In Salatul Witr, recite the following surahs:",
+                "details": [
+                    {
+                        "id": "1-1",
+                        "heading": "1x Surah Al-Fatihah (1):",
+                        "body": [
+                            {
+                                "id": "1-1-1",
+                                "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+                                "transliteration": null,
+                                "translation": "In the Name of Allah—the Most Compassionate, Most Merciful."
+                            },
+                            {
+                                "id": "1-1-2",
+                                "text": "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",
+                                "transliteration": null,
+                                "translation": "All praise is for Allah—Lord of all worlds,"
+                            },
+                            {
+                                "id": "1-1-3",
+                                "text": "ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ",
+                                "transliteration": null,
+                                "translation": "the Most Compassionate, Most Merciful,"
+                            },
+                            {
+                                "id": "1-1-4",
+                                "text": "مَـٰلِكِ يَوْمِ ٱلدِّينِ",
+                                "transliteration": null,
+                                "translation": "Master of the Day of Judgment."
+                            },
+                            {
+                                "id": "1-1-5",
+                                "text": "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+                                "transliteration": null,
+                                "translation": "You [alone] we worship and You [alone] we ask for help."
+                            },
+                            {
+                                "id": "1-1-6",
+                                "text": "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+                                "transliteration": null,
+                                "translation": "Guide us along the Straight Path,"
+                            },
+                            {
+                                "id": "1-1-7",
+                                "text": "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ",
+                                "transliteration": null,
+                                "translation": "the Path of those You have blessed—not those You are displeased with, or those who are astray."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1-2",
+                        "heading": "3x Surah Al-Ikhlas (112):",
+                        "body": [
+                            {
+                                "id": "1-2-1",
+                                "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ قُلْ هُوَ ٱللَّهُ أَحَدٌ",
+                                "transliteration": null,
+                                "translation": "Say, [O Prophet,] “He is Allah—One [and Indivisible];"
+                            },
+                            {
+                                "id": "1-2-2",
+                                "text": "ٱللَّهُ ٱلصَّمَدُ",
+                                "transliteration": null,
+                                "translation": "Allah—the Sustainer [needed by all]."
+                            },
+                            {
+                                "id": "1-2-3",
+                                "text": "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+                                "transliteration": null,
+                                "translation": "He has never had offspring, nor was He born."
+                            },
+                            {
+                                "id": "1-2-4",
+                                "text": "وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ",
+                                "transliteration": null,
+                                "translation": "And there is none comparable to Him.”"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1-3",
+                        "heading": "1x Surah Al-Falaq (113):",
+                        "body": [
+                            {
+                                "id": "1-3-1",
+                                "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ",
+                                "transliteration": null,
+                                "translation": "Say, [O Prophet,] “I seek refuge in the Lord of the daybreak"
+                            },
+                            {
+                                "id": "1-3-2",
+                                "text": "مِن شَرِّ مَا خَلَقَ",
+                                "transliteration": null,
+                                "translation": "from the evil of whatever He has created,"
+                            },
+                            {
+                                "id": "1-3-3",
+                                "text": "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+                                "transliteration": null,
+                                "translation": "and from the evil of the night when it grows dark,"
+                            },
+                            {
+                                "id": "1-3-4",
+                                "text": "وَمِن شَرِّ ٱلنَّفَّـٰثَـٰتِ فِى ٱلْعُقَدِ",
+                                "transliteration": null,
+                                "translation": "and from the evil of those [witches casting spells by] blowing onto knots,"
+                            },
+                            {
+                                "id": "1-3-5",
+                                "text": "وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+                                "transliteration": null,
+                                "translation": "and from the evil of an envier when they envy.”"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "1-4",
+                        "heading": "1x Surah An-Nas (114):",
+                        "body": [
+                            {
+                                "id": "1-4-1",
+                                "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ",
+                                "transliteration": null,
+                                "translation": "Say, [O Prophet,] “I seek refuge in the Lord of humankind,"
+                            },
+                            {
+                                "id": "1-4-2",
+                                "text": "مَلِكِ ٱلنَّاسِ",
+                                "transliteration": null,
+                                "translation": "the Master of humankind,"
+                            },
+                            {
+                                "id": "1-4-3",
+                                "text": "إِلَـٰهِ ٱلنَّاسِ",
+                                "transliteration": null,
+                                "translation": "the God of humankind,"
+                            },
+                            {
+                                "id": "1-4-4",
+                                "text": "مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ",
+                                "transliteration": null,
+                                "translation": "from the evil of the lurking whisperer—"
+                            },
+                            {
+                                "id": "1-4-5",
+                                "text": "ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ",
+                                "transliteration": null,
+                                "translation": "who whispers into the hearts of humankind—"
+                            },
+                            {
+                                "id": "1-4-6",
+                                "text": "مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ",
+                                "transliteration": null,
+                                "translation": "from among jinn and humankind.”"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "description": "In the qunoot of Salatul Witr, recite the following du'a:",
+                "details": [
+                    {
+                        "id": "2-1",
+                        "heading": null,
+                        "body": [
+                            {
+                                "id": "2-1-1",
+                                "text": "لآ اِلَهَ اِلاَّ اللّهُ الْحَلِيْمُ الْكَرِيْمُ",
+                                "transliteration": "LAA ILAAHA ILLALLAAHUL HALIMUL KARIM",
+                                "translation": "There is none worth worshipping but Allah Who is Forbearing and Generous"
+                            },
+                            {
+                                "id": "2-1-2",
+                                "text": "لآ اِلَهَ اِلاَّ اللّهُ الْعَلِيُّ الْعَظِيْمُ",
+                                "transliteration": "LAA ILAAHA ILLALLAAHUL ‘ALIYYUL ‘AZIM",
+                                "translation": "There is none worth worshipping but Allah Who is Most High and Great"
+                            },
+                            {
+                                "id": "2-1-3",
+                                "text": "سُبْحَانَ اللّهِ رَبِّ السَّمَاوَاتِ السَّبْعِ",
+                                "transliteration": "SUBHAANALLAAHI RABBIS SAMAAWAATIS SAB'",
+                                "translation": "Glory be to Allah, Who is the Sustainer of the seven heavens and of the seven earth"
+                            },
+                            {
+                                "id": "2-1-4",
+                                "text": "و رَبِّ الاَرْضِيْنَ السَّبْعِ",
+                                "transliteration": "WA RABBIL ‘ARZINAS SAB'",
+                                "translation": "And Who is the Sustainer of all the things"
+                            },
+                            {
+                                "id": "2-1-5",
+                                "text": "و مَا فِيْهِنَّ وَ مَا بَيْنَهُنَّ وَ",
+                                "transliteration": "WA MAA FIHINNA WA MAA BAYNAHUNNA",
+                                "translation": "in them, and between them,"
+                            },
+                            {
+                                "id": "2-1-6",
+                                "text": "رَبُّ الْعَرْشِ الْعَظِيْمِ",
+                                "transliteration": "WA RABBUL 'ARSHIL ‘AZIM",
+                                "translation": "And Who is the Lord of the great ‘Arsh (Divine Center of Authority & Power)"
+                            },
+                            {
+                                "id": "2-1-7",
+                                "text": "و الْحَمْدُ لِلّهِ رَبِّ الْعَالَمِيْنَ",
+                                "transliteration": "WAL HAMDUL LILLAAHI RABBIL 'AALAMIN",
+                                "translation": "And all praise for Allah, the Sustainer of the worlds."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "description": "After Salatul Witr, recite the following istighfar 70 times",
+                "details": [
+                    {
+                        "id": "3-1",
+                        "heading": null,
+                        "body": [
+                            {
+                                "id": "3-1-1",
+                                "text": "اَسْتَغْفِرُ اللّهَ رَبِّي وَ اَتُوْبُ اِلَيْهِ",
+                                "transliteration": "ASTAGHFIRULLAAH RABBI WA ATUUBU ILAYH",
+                                "translation": "I seek forgiveness of Allah my Lord and I turn to Him"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "description": "Finally, recite the following 300 times:",
+                "details": [
+                    {
+                        "id": "4-1",
+                        "heading": null,
+                        "body": [
+                            {
+                                "id": "4-1-1",
+                                "text": "اَلْعَفْوَ",
+                                "transliteration": "AL-'AFWA",
+                                "translation": "(I ask for) forgiveness"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

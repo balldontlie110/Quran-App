@@ -22,7 +22,7 @@ class DuaModel: ObservableObject {
                 
                 self.duas = jsonData
             } catch {
-                print("Failed to load duas JSON from local file.")
+                print("Failed to load duas JSON from local file. \(error)")
             }
         }
     }

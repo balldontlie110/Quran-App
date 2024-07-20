@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "name": "Ziyarat after Salaah",
+        "title": "Ziyarat after Salaah",
         "verses": [
             {
                 "id": 1,
@@ -57,13 +57,6 @@
                 "text": "عَلَيْكُمْ مِنِّي جَمِيعًا سَلَامُ ٱللَّٰهِ أَبَدًا مَا بَقِيتُ وَبَقِيَ ٱللَّيْلُ وَٱلنَّهَارُ وَلَا جَعَلَهُ ٱللَّٰهُ آخِرَ ٱلْعَهْدِ مِنِّي لِزِيَارَتِكُمْ",
                 "translation": "Peace be upon you from me forever, as long as I remain and as long as there are night and day. And may Allah not make it the last covenant from me to visit you.",
                 "transliteration": "'Alaykum minni jamee'an salamu Allahi abadan ma baqeetu wa baqiya allayl wa annahar wa la ja'alahu Allahu akhira al-'ahdi minni li ziyaratikum.",
-                "gap": false
-            },
-            {
-                "id": -1,
-                "text": "",
-                "translation": "",
-                "transliteration": "",
                 "gap": true
             },
             {
@@ -92,13 +85,6 @@
                 "text": "وَعَلَىٰ أَصْحَابِ ٱلْحُسَيْنِ",
                 "translation": "And upon the companions of al-Husayn.",
                 "transliteration": "Wa 'ala ashab al-Husayn",
-                "gap": false
-            },
-            {
-                "id": -2,
-                "text": "",
-                "translation": "",
-                "transliteration": "",
                 "gap": true
             },
             {
@@ -113,13 +99,6 @@
                 "text": "ٱلسَّلَامُ عَلَيْكُمْ جَمِيعًا شُهَدَاءَ كَرْبَلَاءَ وَرَحْمَةُ ٱللَّٰهِ وَبَرَكَاتُهُ",
                 "translation": "Peace be upon you all, O martyrs of Karbala, and the mercy of Allah and His blessings.",
                 "transliteration": "As-salamu alaykum jami'an shuhada Karbala wa rahmatullahi wa barakatuh",
-                "gap": false
-            },
-            {
-                "id": -3,
-                "text": "",
-                "translation": "",
-                "transliteration": "",
                 "gap": true
             },
             {
@@ -218,6 +197,279 @@
                 "text": "وَرَحْمَةُ ٱللَّهِ وَبَرَكَاتُهُ",
                 "translation": "And the mercy of Allah and His blessings.",
                 "transliteration": "Wa rahmatullahi wa barakatuh",
+                "gap": false
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Friday Ziyarat",
+        "subtitle": "Imam Mahdi (as)",
+        "verses": [
+            {
+                "id": 1,
+                "text": "اَلسَّلاَمُ عَلَيْكَ يَا حُجَّةَ ٱللَّهِ فِي أَرْضِهِ",
+                "translation": "Peace be upon you, O argument of Allah in His lands!",
+                "transliteration": "alssalamu `alayka ya hujjata allahi fi ardihi",
+                "gap": false
+            },
+            {
+                "id": 2,
+                "text": "اَلسَّلاَمُ عَلَيْكَ يَا عَيْنَ ٱللَّهِ فِي خَلْقِهِ",
+                "translation": "Peace be upon you, O sight of Allah on His creatures!",
+                "transliteration": "alssalamu `alayka ya `ayna allahi fi khalqihi",
+                "gap": false
+            },
+            {
+                "id": 3,
+                "text": "اَلسَّلاَمُ عَلَيْكَ يَا نُورَ ٱللَّهِ",
+                "translation": "Peace be upon you, O light of Allah",
+                "transliteration": "alssalamu `alayka ya nura allahi",
+                "gap": false
+            },
+            {
+                "id": 4,
+                "text": "ٱلَّذِي يَهْتَدِي بِهِ ٱلْمُهْتَدُونَ",
+                "translation": "by which those who have been guided [to the true guidance] are guided",
+                "transliteration": "alladhi yahtadi bihi almuhtaduna",
+                "gap": false
+            },
+            {
+                "id": 5,
+                "text": "وَيُفَرَّجُ بِهِ عَنِ ٱلْمُؤْمِنِينَ",
+                "translation": "and by which the believers are relieved!",
+                "transliteration": "wa yufarraju bihi `an almu'minina",
+                "gap": false
+            },
+            {
+                "id": 6,
+                "text": "اَلسَّلاَمُ عَلَيْكَ أَيُّهَا ٱلْمُهَذَّبُ ٱلْخَائِفُ",
+                "translation": "Peace be upon you, O polite and fearful!",
+                "transliteration": "alssalamu `alayka ayyuha almuhadhdhabu alkha'ifu",
+                "gap": false
+            },
+            {
+                "id": 7,
+                "text": "اَلسَّلاَمُ عَلَيْكَ أَيُّهَا ٱلْوَلِيُّ ٱلنَّاصِحُ",
+                "translation": "Peace be upon you, O sincere patron!",
+                "transliteration": "alssalamu `alayka ayyuha alwaliyyu alnnasihu",
+                "gap": false
+            },
+            {
+                "id": 8,
+                "text": "اَلسَّلاَمُ عَلَيْكَ يَا سَفِينَةَ ٱلنَّجَاةِ",
+                "translation": "Peace be upon you, O ark of salvation!",
+                "transliteration": "alssalamu `alayka ya safinata alnnajati",
+                "gap": false
+            },
+            {
+                "id": 9,
+                "text": "اَلسَّلاَمُ عَلَيْكَ يَا عَيْنَ ٱلْحَيَاةِ",
+                "translation": "Peace be upon you, O essence of life!",
+                "transliteration": "alssalamu `alayka ya `ayna alhayati",
+                "gap": false
+            },
+            {
+                "id": 10,
+                "text": "اَلسَّلاَمُ عَلَيْكَ",
+                "translation": "Peace be upon you.",
+                "transliteration": "alssalamu `alayka",
+                "gap": false
+            },
+            {
+                "id": 11,
+                "text": "صَلَّىٰ ٱللَّهُ عَلَيْكَ",
+                "translation": "May Allah send blessings to you",
+                "transliteration": "salla allahu `alayka",
+                "gap": false
+            },
+            {
+                "id": 12,
+                "text": "وَعَلَىٰ آلِ بَيْتِكَ",
+                "translation": "and upon your Household,",
+                "transliteration": "wa `ala ali baytika",
+                "gap": false
+            },
+            {
+                "id": 13,
+                "text": "ٱلطَّيِّبينَ ٱلطَّاهِرِينَ",
+                "translation": "the pure and immaculate.",
+                "transliteration": "alttayyibina alttahirina",
+                "gap": false
+            },
+            {
+                "id": 14,
+                "text": "اَلسَّلاَمُ عَلَيْكَ",
+                "translation": "Peace be upon you.",
+                "transliteration": "alssalamu `alayka",
+                "gap": false
+            },
+            {
+                "id": 15,
+                "text": "عَجَّلَ ٱللَّهُ لَكَ مَا وَعَدَكَ",
+                "translation": "May Allah hasten that which He has promised you;",
+                "transliteration": "`ajjala allahu laka ma wa`adaka",
+                "gap": false
+            },
+            {
+                "id": 16,
+                "text": "مِنَ ٱلنَّصْرِ وَظُهُورِ ٱلأَمْرِ",
+                "translation": "namely, victory and prevalence of your authority.",
+                "transliteration": "mina alnnasri wa zuhuri al-amri",
+                "gap": false
+            },
+            {
+                "id": 17,
+                "text": "اَلسَّلاَمُ عَلَيْكَ يَا مَوْلاَيَ",
+                "translation": "Peace be upon you, O my master.",
+                "transliteration": "alssalamu `alayka ya mawlaya",
+                "gap": false
+            },
+            {
+                "id": 18,
+                "text": "أَنَا مَوْلاَكَ",
+                "translation": "I am a servant of you",
+                "transliteration": "ana mawlaka",
+                "gap": false
+            },
+            {
+                "id": 19,
+                "text": "عَارِفٌ بِأُولاَكَ وَأُخْرَاكَ",
+                "translation": "and I recognize the first and the last of your affair.",
+                "transliteration": "`arifun bi'ulaka wa ukhraka",
+                "gap": false
+            },
+            {
+                "id": 20,
+                "text": "أَتَقَرَّبُ إِلَىٰ ٱللَّهِ تَعَالَىٰ بِكَ وَبِآلِ بَيْتِكَ",
+                "translation": "I seek nearness to Allah, the Exalted, through your Household and you",
+                "transliteration": "ataqarrabu ila allahi ta`ala bika wa bi-ali baytika",
+                "gap": false
+            },
+            {
+                "id": 21,
+                "text": "وَأَنْتَظِرُ ظُهُورَكَ وَظُهُورَ ٱلْحَقِّ عَلَىٰ يَدَيْكَ",
+                "translation": "and I am expecting your advent and the prevalence of the truth at your hands.",
+                "transliteration": "wa antaziru zuhuraka wa zuhura alhaqqi `ala yadayka",
+                "gap": false
+            },
+            {
+                "id": 22,
+                "text": "وَأَسْأَلُ ٱللَّهَ أَنْ يُصَلِّيَ عَلَىٰ مُحَمَّدٍ وَآلِ مُحَمَّدٍ",
+                "translation": "And I beseech Allah to send blessings to Muhammad and the Household of Muhammad,",
+                "transliteration": "wa as'alu allaha an yusalliya `ala muhammadin wa ali muhammadin",
+                "gap": false
+            },
+            {
+                "id": 23,
+                "text": "وَأَنْ يَجْعَلَنِي مِنَ ٱلمُنْتَظِرِينَ لَكَ",
+                "translation": "and to include me with those who are expecting you,",
+                "transliteration": "wa an yaj`alani mina almuntazirina laka",
+                "gap": false
+            },
+            {
+                "id": 24,
+                "text": "وَٱلتَّابِعِينَ وَٱلنَّاصِرِينَ لَكَ عَلَىٰ أَعْدَائِكَ",
+                "translation": "those who follow you and support you against your enemies,",
+                "transliteration": "walttabi`ina walnnasirina laka `ala a`da'ika",
+                "gap": false
+            },
+            {
+                "id": 25,
+                "text": "وَٱلْمُسْتَشْهَدِينَ بَيْنَ يَدَيْكَ فِي جُمْلَةِ أَوْلِيَائِكَ",
+                "translation": "and those who will be martyred in front of you in the group of your loyalists.",
+                "transliteration": "walmustash-hadina bayna yadayka fi jumlati awliya'ika",
+                "gap": false
+            },
+            {
+                "id": 26,
+                "text": "يَا مَوْلاَيَ يَا صَاحِبَ ٱلزَّمَانِ",
+                "translation": "O my master, O Patron of the Age!",
+                "transliteration": "ya mawlaya ya sahiba alzzamani",
+                "gap": false
+            },
+            {
+                "id": 27,
+                "text": "صَلَوَاتُ ٱللَّهِ عَلَيْكَ",
+                "translation": "May Allah’s blessings be upon you",
+                "transliteration": "salawatu allahi `alayka",
+                "gap": false
+            },
+            {
+                "id": 28,
+                "text": "وَعَلَىٰ آلِ بَيْتِكَ",
+                "translation": "and upon your Household.",
+                "transliteration": "wa `ala ali baytika",
+                "gap": false
+            },
+            {
+                "id": 29,
+                "text": "هٰذَا يَوْمُ ٱلْجُمُعَةِ",
+                "translation": "Today is Friday,",
+                "transliteration": "hadha yawmu aljumu`ati",
+                "gap": false
+            },
+            {
+                "id": 30,
+                "text": "وَهُوَ يَوْمُكَ ٱلْمُتَوَقَّعُ فِيهِ ظُهُورُكَ",
+                "translation": "which is your day on which your advent is expected",
+                "transliteration": "wa huwa yawmuka almutawaqqa`u fihi zuhuruka",
+                "gap": false
+            },
+            {
+                "id": 31,
+                "text": "وَٱلْفَرَجُ فِيهِ لِلْمُؤْمِنِينَ عَلَىٰ يَدَيْكَ",
+                "translation": "to bring about relief to the believers at your hands,",
+                "transliteration": "walfaraju fihi lilmu'minina `ala yadayka",
+                "gap": false
+            },
+            {
+                "id": 32,
+                "text": "وَقَتْلُ ٱلْكَافِرِينَ بِسَيْفِكَ",
+                "translation": "and killing of the disbelievers with your sword.",
+                "transliteration": "wa qatlu alkafirina bisayfika",
+                "gap": false
+            },
+            {
+                "id": 33,
+                "text": "وَأَنَا يَا مَوْلاَيَ فِيهِ ضَيْفُكَ وَجَارُكَ",
+                "translation": "On this day, O my master, I am your guest and in your vicinity",
+                "transliteration": "wa ana ya mawlaya fihi dayfuka wa jaruka",
+                "gap": false
+            },
+            {
+                "id": 34,
+                "text": "وَأَنْتَ يَا مَوْلاَيَ كَرِيمٌ مِنْ أَوْلاَدِ ٱلْكِرَامِ",
+                "translation": "and you, my master, are generous and the descendant of the generous people,",
+                "transliteration": "wa anta ya mawlaya karimun min awladi alkirami",
+                "gap": false
+            },
+            {
+                "id": 35,
+                "text": "وَمَاْمُورٌ بِٱلضِّيَافَةِ وَٱلإِجَارَةِ",
+                "translation": "and you are commanded to receive your guests and neighbors hospitably;",
+                "transliteration": "wa ma'murun bilddiyafati wal-ijarati",
+                "gap": false
+            },
+            {
+                "id": 36,
+                "text": "فَأَضِفْنِي وَأَجِرْنِي",
+                "translation": "so, receive me as your guest and neighbor.",
+                "transliteration": "fa-adifni wa ajirni",
+                "gap": false
+            },
+            {
+                "id": 37,
+                "text": "صَلَوَاتُ ٱللَّهِ عَلَيْكَ",
+                "translation": "May Allah’s blessings be upon you",
+                "transliteration": "salawatu allahi `alayka",
+                "gap": false
+            },
+            {
+                "id": 38,
+                "text": "وَعَلىٰ أَهْلِ بَيْتِكَ ٱلطَّاهِرينَ",
+                "translation": "and upon your Household, the immaculate.",
+                "transliteration": "wa `ala ahli baytika alttahirina",
                 "gap": false
             }
         ]

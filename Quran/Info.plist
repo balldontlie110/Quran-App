@@ -7,9 +7,5 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>NotoSansArabic-Medium.ttf</string>
-	</array>
 </dict>
 </plist>

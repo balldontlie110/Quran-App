@@ -10,7 +10,8 @@ import Foundation
 struct Ziyarat: Identifiable, Decodable {
     let id: Int
     
-    let name: String
+    let title: String
+    let subtitle: String?
     let verses: [ZiyaratVerse]
 }
 

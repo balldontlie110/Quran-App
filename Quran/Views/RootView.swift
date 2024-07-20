@@ -8,10 +8,17 @@
 import SwiftUI
 import CoreData
 
+struct RootViewButton: Identifiable {
+    let id: UUID = UUID()
+    
+    let view: AnyView
+    let image: String
+    let text: String
+}
+
 struct RootView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
-    @Namespace private var namespace
     
     @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
@@ -26,26 +33,45 @@ struct RootView: View {
     
     @State private var showSettingsView: Bool = false
     
+    @Namespace private var namespace
+    
     private let columns = [GridItem](repeating: GridItem(.flexible()), count: 3)
+    private let rootViewButtons: [RootViewButton] = [
+        RootViewButton(view: AnyView(QuranView()), image: "quran", text: "Quran"),
+        RootViewButton(view: AnyView(CalendarView()), image: "calendar", text: "Calendar"),
+        RootViewButton(view: AnyView(EventsView()), image: "events", text: "Events"),
+        RootViewButton(view: AnyView(DuasView()), image: "duas", text: "Du'as"),
+        RootViewButton(view: AnyView(ZiaraahView()), image: "ziaraah", text: "Ziaraah"),
+        RootViewButton(view: AnyView(AmaalsView()), image: "amaal", text: "Amaal"),
+        RootViewButton(view: AnyView(QuestionsView()), image: "questions", text: "Questions"),
+        RootViewButton(view: AnyView(DonationsView()), image: "donations", text: "Donations")
+    ]
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    NavigationButton(namespace: namespace, view: QuranView(), image: "quran", text: "Quran")
-                    NavigationButton(namespace: namespace, view: EmptyView(), image: "calendar", text: "Calendar")
-                    NavigationButton(namespace: namespace, view: EventsView(), image: "events", text: "Events")
+                    ForEach(rootViewButtons) { button in
+                        if #available(iOS 18.0, *) {
+                            NavigationLink {
+                                button.view
+                                    .navigationTransition(.zoom(sourceID: button.id, in: namespace))
+                            } label: {
+                                NavigationButton(button: button)
+                            }.matchedTransitionSource(id: button.id, in: namespace)
+                        } else {
+                            NavigationLink {
+                                button.view
+                            } label: {
+                                NavigationButton(button: button)
+                            }
+                        }
+                    }
                     
-                    NavigationButton(namespace: namespace, view: DuasView(), image: "duas", text: "Du'as")
-                    NavigationButton(namespace: namespace, view: ZiaraahView(), image: "ziaraah", text: "Ziaraah")
-                    NavigationButton(namespace: namespace, view: EmptyView(), image: "amaal", text: "Amaal")
-                    
-                    NavigationButton(namespace: namespace, view: QuestionsView(), image: "questions", text: "Questions")
-                    NavigationButton(namespace: namespace, view: DonationsView(), image: "donations", text: "Donations")
                     youtubeButton
                 }.padding(.horizontal, 10)
                 
-                islamicDate
+                dateSection
                 
                 PrayerTimesView()
             }
@@ -73,7 +99,7 @@ struct RootView: View {
         }
     }
     
-    private var islamicDate: some View {
+    private var dateSection: some View {
         VStack {
             Text(todaysDate())
                 .foregroundStyle(Color.secondary)
@@ -148,51 +174,26 @@ struct RootView: View {
 struct NavigationButton: View {
     @Environment(\.colorScheme) private var colorScheme
     
-    let namespace: Namespace.ID
-    
-    let view: any View
-    let image: String
-    let text: String
-    
-    let sourceId = UUID()
+    let button: RootViewButton
     
     var body: some View {
-        NavigationLink {
-            if #available(iOS 18.0, *) {
-                AnyView(view)
-                    .navigationTransition(.zoom(sourceID: sourceId, in: namespace))
-            } else {
-                AnyView(view)
-            }
-        } label: {
-            VStack(spacing: 15) {
-                if #available(iOS 18.0, *) {
-                    Group {
-                        symbol
-                        
-                        Text(text)
-                    }.matchedTransitionSource(id: sourceId, in: namespace)
-                } else {
-                    Group {
-                        symbol
-                        
-                        Text(text)
-                    }
-                }
-            }
-            .foregroundStyle(Color.primary)
-            .bold()
-            .frame(maxWidth: .infinity)
-            .frame(maxHeight: 75)
-            .padding()
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            .padding(2.5)
+        VStack(spacing: 15) {
+            symbol
+            
+            Text(button.text)
         }
+        .foregroundStyle(Color.primary)
+        .bold()
+        .frame(maxWidth: .infinity)
+        .frame(maxHeight: 75)
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(2.5)
     }
     
     private var symbol: some View {
-        Image("\(image)-\(colorScheme == .dark ? "dark" : "light")")
+        Image("\(button.image)-\(colorScheme == .dark ? "dark" : "light")")
             .resizable()
             .scaledToFit()
             .frame(width: 30, height: 30)
