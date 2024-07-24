@@ -79,7 +79,7 @@ struct BookmarkedFolderCard: View {
     
     private var folderInformation: some View {
         Group {
-            Image(systemName: "folder")
+            Image(systemName: folder.questionFolder ? "questionmark.folder" : "folder")
                 .font(.system(.title))
             
             VStack(alignment: .leading) {
@@ -124,11 +124,7 @@ struct BookmarkedFolderCard: View {
     private func deleteFolder(_ folder: BookmarkedFolder) {
         viewContext.delete(folder)
         
-        do {
-            try viewContext.save()
-        } catch {
-            print(error)
-        }
+        try? viewContext.save()
     }
 }
 

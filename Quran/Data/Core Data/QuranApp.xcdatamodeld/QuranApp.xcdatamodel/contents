@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23173.10" systemVersion="24A5298h" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="BookmarkedFolder" representedClassName="BookmarkedFolder" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="questionFolder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="verses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BookmarkedVerse" inverseName="relationship" inverseEntity="BookmarkedVerse"/>
+    </entity>
+    <entity name="BookmarkedVerse" representedClassName="BookmarkedVerse" syncable="YES" codeGenerationType="class">
+        <attribute name="answer" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="question" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="readingBookmark" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="surahId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="surahName" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="verseId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookmarkedFolder" inverseName="verses" inverseEntity="BookmarkedFolder"/>
+    </entity>
+    <entity name="Favorite" representedClassName="Favorite" syncable="YES" codeGenerationType="class">
+        <attribute name="amaalId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duaId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="surahId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="ziyaratId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="PrayerNotification" representedClassName="PrayerNotification" syncable="YES" codeGenerationType="class">
+        <attribute name="active" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="prayer" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Preferences" representedClassName="Preferences" syncable="YES" codeGenerationType="class">
+        <attribute name="fontSize" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isDefaultFont" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="reciterName" optional="YES" attributeType="String"/>
+        <attribute name="reciterSubfolder" optional="YES" attributeType="String"/>
+        <attribute name="translationId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+</model>

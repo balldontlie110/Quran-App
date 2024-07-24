@@ -7,10 +7,20 @@
 
 import SwiftUI
 import Combine
+import CoreData
 
 struct QuranView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    
     @EnvironmentObject private var quranModel: QuranModel
     @StateObject private var quranFilterModel: QuranFilterModel = QuranFilterModel(quranModel: QuranModel())
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Favorite.date, ascending: true)],
+        animation: .default
+    )
+    
+    private var favorites: FetchedResults<Favorite>
     
     var body: some View {
         VStack(spacing: 0) {
@@ -31,10 +41,9 @@ struct QuranView: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(quranFilterModel.filteredQuran) { surah in
-                            SurahCard(surah: surah, initalScroll: getVerse(surah: surah))
+                            SurahCard(context: viewContext, favorites: favorites, surah: surah, initalScroll: getVerse(surah: surah))
                         }
-                    }
-                    .padding()
+                    }.padding()
                 }
             }
         }
@@ -103,6 +112,9 @@ struct QuranView: View {
 }
 
 struct SurahCard: View {
+    let context: NSManagedObjectContext
+    let favorites: FetchedResults<Favorite>
+    
     let surah: Surah
     let initalScroll: Int?
     
@@ -142,103 +154,43 @@ struct SurahCard: View {
             .padding()
             .background(Color(.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 5))
-        }
-    }
-}
-
-class QuranFilterModel: ObservableObject {
-    @Published var searchText: String = ""
-    @Published var filteredQuran: [Surah] = []
-    @Published var isLoading: Bool = false
-    
-    private var cancellables = Set<AnyCancellable>()
-    @Published var quranModel: QuranModel
-
-    init(quranModel: QuranModel) {
-        self.quranModel = quranModel
-        
-        $searchText
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .receive(on: DispatchQueue.global(qos: .userInitiated))
-            .map { [weak self] text in
-                self?.setLoading(true)
-                let result = self?.filterQuran(with: text) ?? []
-                self?.setLoading(false)
-                return result
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.filteredQuran, on: self)
-            .store(in: &cancellables)
-    }
-
-    private func filterQuran(with searchText: String) -> [Surah] {
-        guard !searchText.isEmpty else { return quranModel.quran }
-        
-        let cleanedSearchText = searchText.lowercasedLettersAndNumbers
-        
-        return quranModel.quran.filter { surah in
-            if String(surah.id) == cleanedSearchText {
-                return true
-            }
-            
-            if surah.name.lowercasedLettersAndNumbers == cleanedSearchText {
-                return true
-            }
-            
-            if surah.transliteration.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
-                return true
-            }
-            
-            if surah.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
-                return true
-            }
-            
-            if isSurahToVerse(surah: surah) {
-                return true
-            }
-            
-            for verse in surah.verses {
-                if verse.text.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
-                    return true
-                }
-                
-                for translation in verse.translations {
-                    if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
-                        return true
+            .contextMenu {
+                Button {
+                    favoriteSurah()
+                } label: {
+                    HStack {
+                        if favorites.contains(where: { favorite in
+                            favorite.surahId == surah.id
+                        }) {
+                            Image(systemName: "star.fill")
+                            
+                            Text("Unfavorite")
+                            
+                            Spacer()
+                        } else {
+                            Image(systemName: "star")
+                            
+                            Text("Favorite")
+                            
+                            Spacer()
+                        }
                     }
                 }
             }
-            
-            return false
         }
     }
     
-    private func setLoading(_ loading: Bool) {
-        DispatchQueue.main.async {
-            self.isLoading = loading
-        }
-    }
-    
-    func isSurahToVerse(surah: Surah) -> Bool {
-        let surahToVerseRegex = "\\d+\\s*:\\s*\\d+"
-        let surahToVersePredicate = NSPredicate(format: "SELF MATCHES %@", surahToVerseRegex)
-        
-        if surahToVersePredicate.evaluate(with: searchText) {
-            if let surahId = Int(searchText.split(separator: ":").first ?? ""), let verseId = Int(searchText.split(separator: ":").last ?? "") {
-                if surahId == surah.id && verseId <= surah.total_verses {
-                    return true
-                }
-            }
+    private func favoriteSurah() {
+        if let favorite = favorites.first(where: { favorite in
+            favorite.surahId == surah.id
+        }) {
+            context.delete(favorite)
+        } else {
+            let favorite = Favorite(context: context)
+            favorite.surahId = Int64(surah.id)
         }
         
-        return false
-    }
-}
-
-extension String {
-    var lowercasedLettersAndNumbers: String {
-        return String(unicodeScalars.filter(CharacterSet.alphanumerics.contains)).lowercased()
+        try? context.save()
     }
 }
 

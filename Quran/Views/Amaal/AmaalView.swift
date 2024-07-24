@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AmaalView: View {
+    @EnvironmentObject private var quranModel: QuranModel
+    
     let amaal: Amaal
     
     @State private var revealedBodies: [String] = []
@@ -27,9 +29,21 @@ struct AmaalView: View {
                                 AmaalSectionDetailHeading(revealedBodies: $revealedBodies, detail: detail)
                                 
                                 if detail.heading == nil || revealedBodies.contains(detail.id) {
-                                    ForEach(detail.body) { verse in
-                                        AmaalSectionDetailBodyVerse(verse: verse, lastId: detail.body.last?.id)
+                                    if let surahId = detail.surahId, let surah = quranModel.quran.first(where: { surah in
+                                        surah.id == surahId
+                                    }) {
+                                        ForEach(surah.verses) { verse in
+                                            SurahVerse(verse: verse, lastId: surah.total_verses)
+                                        }
+                                    } else {
+                                        ForEach(detail.body) { verse in
+                                            AmaalSectionDetailBodyVerse(verse: verse, lastId: detail.body.last?.id)
+                                        }
                                     }
+                                }
+                                
+                                if let urlString = detail.url, let url = URL(string: urlString) {
+                                    Link("Salaam e Akhir by Asad Jahan", destination: url)
                                 }
                             }
                         }
@@ -60,22 +74,60 @@ struct AmaalSectionDetailHeading: View {
     let detail: AmaalSectionDetail
     
     var body: some View {
-        if let heading = detail.heading {
-            HStack {
-                Text(heading)
-                    .font(.system(.headline, weight: .bold))
-                    .foregroundStyle(Color.secondary)
-                
-                Button {
-                    if revealedBodies.contains(detail.id) {
-                        revealedBodies.remove(detail.id)
-                    } else {
-                        revealedBodies.append(detail.id)
+        VStack {
+            if let heading = detail.heading {
+                HStack {
+                    Text(heading)
+                        .font(.system(.headline, weight: .bold))
+                        .foregroundStyle(Color.secondary)
+                    
+                    Button {
+                        if revealedBodies.contains(detail.id) {
+                            revealedBodies.remove(detail.id)
+                        } else {
+                            revealedBodies.append(detail.id)
+                        }
+                    } label: {
+                        Image(systemName: revealedBodies.contains(detail.id) ? "chevron.up" : "chevron.down")
+                            .bold()
                     }
-                } label: {
-                    Image(systemName: revealedBodies.contains(detail.id) ? "chevron.up" : "chevron.down")
-                        .bold()
                 }
+            }
+        }
+    }
+}
+
+struct SurahVerse: View {
+    @EnvironmentObject private var preferencesModel: PreferencesModel
+    
+    let verse: Verse
+    let lastId: Int?
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 15) {
+                if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
+                    let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
+                    let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
+                    
+                    let font = isDefaultFont ? defaultFont : uthmanicFont
+                    
+                    Text(verse.text)
+                        .font(font)
+                        .lineSpacing(20)
+                        .multilineTextAlignment(.center)
+                }
+                
+                if let translation = verse.translations.first(where: { translation in
+                    translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                }) {
+                    Text(translation.translation)
+                        .font(.system(size: 20))
+                }
+            }.padding(.vertical)
+            
+            if verse.id != lastId {
+                Divider()
             }
         }
     }
@@ -90,17 +142,30 @@ struct AmaalSectionDetailBodyVerse: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 15) {
-                Text(verse.text)
-                    .font(.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold))
-                    .lineSpacing(20)
+                if let text = verse.text {
+                    if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
+                        let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
+                        let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
+                        
+                        let font = isDefaultFont ? defaultFont : uthmanicFont
+                        
+                        Text(text)
+                            .font(font)
+                            .lineSpacing(20)
+                            .multilineTextAlignment(.center)
+                    }
+                }
                 
                 if let transliteration = verse.transliteration {
                     Text(transliteration)
                         .font(.system(size: 20))
+                        .foregroundStyle(Color.secondary)
                 }
                 
-                Text(verse.translation)
-                    .font(.system(size: 20))
+                if let translation = verse.translation {
+                    Text(translation)
+                        .font(.system(size: 20))
+                }
             }.padding(.vertical)
             
             if verse.id != lastId {

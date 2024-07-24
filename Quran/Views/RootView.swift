@@ -22,7 +22,7 @@ struct RootView: View {
     
     @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
-    @EnvironmentObject private var calendarModel: EventsModel
+    @EnvironmentObject private var calendarModel: CalendarModel
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: true)],
@@ -31,7 +31,9 @@ struct RootView: View {
     
     private var bookmarkedFolders: FetchedResults<BookmarkedFolder>
     
+    @State private var showFavoritesView: Bool = false
     @State private var showSettingsView: Bool = false
+    @State private var showSocialsView: Bool = false
     
     @Namespace private var namespace
     
@@ -68,25 +70,46 @@ struct RootView: View {
                         }
                     }
                     
-                    youtubeButton
+                    socialsButton
                 }.padding(.horizontal, 10)
                 
                 dateSection
                 
                 PrayerTimesView()
             }
+            .scrollIndicators(.hidden)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    favoritesToolbarButton
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
                     settingsToolbarButton
                 }
             }
         }
+        .sheet(isPresented: $showFavoritesView) {
+            FavoritesView(showFavoritesView: $showFavoritesView)
+        }
         .sheet(isPresented: $showSettingsView) {
             SettingsView(showSettingsView: $showSettingsView)
+        }
+        .sheet(isPresented: $showSocialsView) {
+            SocialsView(showSocialsView: $showSocialsView)
         }
         .onAppear {
             createQuestionsBookmarkFolder()
             getLocalTranslation()
+        }
+    }
+    
+    private var favoritesToolbarButton: some View {
+        Button {
+            self.showFavoritesView.toggle()
+        } label: {
+            Image(systemName: "star")
+                .foregroundStyle(Color.primary)
         }
     }
     
@@ -110,32 +133,29 @@ struct RootView: View {
                 Text(calendarModel.month)
                 Text(calendarModel.year)
             }.font(.system(.title2, weight: .bold))
-        }
-        .padding(.top)
+        }.padding(.top)
     }
     
-    private var youtubeButton: some View {
-        Group {
-            if let hyderiUrl = URL(string: "https://www.youtube.com/@hyderi/live") {
-                Link(destination: hyderiUrl) {
-                    VStack(spacing: 15) {
-                        Image("\("youtube")-\(colorScheme == .dark ? "dark" : "light")")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                        
-                        Text("Live")
-                    }
-                    .foregroundStyle(Color.primary)
-                    .bold()
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: 75)
-                    .padding()
-                    .background(Color(.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .padding(2.5)
-                }
+    private var socialsButton: some View {
+        Button {
+            self.showSocialsView.toggle()
+        } label: {
+            VStack(spacing: 15) {
+                Image("\("socials")-\(colorScheme == .dark ? "dark" : "light")")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 30, height: 30)
+                
+                Text("Socials")
             }
+            .foregroundStyle(Color.primary)
+            .bold()
+            .frame(maxWidth: .infinity)
+            .frame(maxHeight: 75)
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .padding(2.5)
         }
     }
     
@@ -156,18 +176,14 @@ struct RootView: View {
             bookmarkedFolder.title = "Questions"
             bookmarkedFolder.questionFolder = true
             
-            do {
-                try viewContext.save()
-            } catch {
-                print(error)
-            }
+            try? viewContext.save()
         }
     }
     
     private func getLocalTranslation() {
-        if let translationId = preferencesModel.preferences?.translationId, translationId != 131 {
-            quranModel.checkLocalTranslation(translationId: Int(translationId))
-        }
+        guard let translationId = preferencesModel.preferences?.translationId, translationId != 131 else { return }
+        
+        quranModel.checkLocalTranslation(translationId: Int(translationId))
     }
 }
 
@@ -184,6 +200,7 @@ struct NavigationButton: View {
         }
         .foregroundStyle(Color.primary)
         .bold()
+        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
         .frame(maxHeight: 75)
         .padding()

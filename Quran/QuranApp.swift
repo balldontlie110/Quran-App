@@ -24,8 +24,14 @@ struct QuranApp: App {
             RootView()
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(QuranModel())
-                .environmentObject(PreferencesModel())
+                .environmentObject(CalendarModel())
                 .environmentObject(EventsModel())
+                .environmentObject(DuaModel())
+                .environmentObject(ZiyaratModel())
+                .environmentObject(AmaalModel())
+                .environmentObject(AuthenticationModel())
+                .environmentObject(PreferencesModel())
+                .environmentObject(AudioPlayer())
                 .onAppear {
                     NotificationManager.shared.requestAuthorization()
                 }

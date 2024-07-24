@@ -1,8 +1,8 @@
 [
     {
         "id": 1,
-        "type": "Fajr Du'a",
-        "time": "Morning",
+        "title": "Fajr Du'a",
+        "subtitle": "Morning",
         "verses": [
             {
                 "id": 1,
@@ -20,7 +20,7 @@
             },
             {
                 "id": 3,
-                "text": "﴿وَأُفَوِّضُ أَمْرِي إِلَىٰ ٱللَّهِ",
+                "text": "وَأُفَوِّضُ أَمْرِي إِلَىٰ ٱللَّهِ",
                 "translation": "“I confide my cause unto Allah.",
                 "transliteration": "WA UFAWWIDU AMRI ILA ALLAHI",
                 "audio": 22
@@ -34,14 +34,14 @@
             },
             {
                 "id": 5,
-                "text": "فَوَقَاهُ ٱللَّهُ سَيِّئَاتِ مَا مَكَرُوا﴾",
+                "text": "فَوَقَاهُ ٱللَّهُ سَيِّئَاتِ مَا مَكَرُوا",
                 "translation": "So, Allah warded off from him the evils which they plotted.”",
                 "transliteration": "FAWAQAHU ALLAHU SAYYI'ATI MA MAKARU",
                 "audio": 37
             },
             {
                 "id": 6,
-                "text": "﴿لاَ إِلٰهَ إِلاَّ أَنْتَ سُبْحَانَكَ",
+                "text": "لاَ إِلٰهَ إِلاَّ أَنْتَ سُبْحَانَكَ",
                 "translation": "“There is no god save You. Be You Glorified!",
                 "transliteration": "LA ILAHA ILLA ANTA SUBHANAKA",
                 "audio": 46
@@ -62,14 +62,14 @@
             },
             {
                 "id": 9,
-                "text": "وَكَذٰلِكَ نُنْجِي ٱلْمُؤْمِنينَ﴾",
+                "text": "وَكَذٰلِكَ نُنْجِي ٱلْمُؤْمِنينَ",
                 "translation": "Thus do We save the believers.”",
                 "transliteration": "WA KADHALIKA NUNJI ALMU'MININA",
                 "audio": 69
             },
             {
                 "id": 10,
-                "text": "﴿حَسْبُنَا ٱللَّهُ وَنِعْمَ ٱلْوَكِيلُ",
+                "text": "حَسْبُنَا ٱللَّهُ وَنِعْمَ ٱلْوَكِيلُ",
                 "translation": "“Allah is Sufficient for us! Most Excellent is He in Whom we trust.",
                 "transliteration": "HASBUNA ALLAHU WA NI`MA ALWAKILU",
                 "audio": 75
@@ -83,7 +83,7 @@
             },
             {
                 "id": 12,
-                "text": "لَمْ يَمْسَسْهُمْ سُوءٌ﴾",
+                "text": "لَمْ يَمْسَسْهُمْ سُوءٌ",
                 "translation": "and no harm touched them.”",
                 "transliteration": "LAM YAMSAS-HUM SU'UN",
                 "audio": 88
@@ -167,7 +167,7 @@
             },
             {
                 "id": 24,
-                "text": "﴿حَسْبِيَ ٱللَّهُ لاَ إِلٰهَ إِلاَّ هُوَ",
+                "text": "حَسْبِيَ ٱللَّهُ لاَ إِلٰهَ إِلاَّ هُوَ",
                 "translation": "“Allah suffices me. There is no god save Him.",
                 "transliteration": "HASBIYA ALLAHU LA ILAHA ILLA HUWA",
                 "audio": 158
@@ -181,7 +181,7 @@
             },
             {
                 "id": 26,
-                "text": "وَهُوَ رَبُّ ٱلْعَرْشِ ٱلْعَظِيمِ﴾",
+                "text": "وَهُوَ رَبُّ ٱلْعَرْشِ ٱلْعَظِيمِ",
                 "translation": "and He is the Lord of the Tremendous Throne.”",
                 "transliteration": "WA HUWA RABBU AL`ARSHI AL`AZIMI",
                 "audio": 167
@@ -191,8 +191,8 @@
     },
     {
         "id": 2,
-        "type": "Zuhr Du'a",
-        "time": "Midday",
+        "title": "Zuhr Du'a",
+        "subtitle": "Midday",
         "verses": [
             {
                 "id": 1,
@@ -318,8 +318,8 @@
     },
     {
         "id": 3,
-        "type": "Asr Du'a",
-        "time": "Afternoon",
+        "title": "Asr Du'a",
+        "subtitle": "Afternoon",
         "verses": [
             {
                 "id": 1,
@@ -473,8 +473,8 @@
     },
     {
         "id": 4,
-        "type": "Maghrib Du'a",
-        "time": "Evening",
+        "title": "Maghrib Du'a",
+        "subtitle": "Evening",
         "verses": [
             {
                 "id": 1,
@@ -537,8 +537,8 @@
     },
     {
         "id": 5,
-        "type": "Isha Du'a",
-        "time": "Night",
+        "title": "Isha Du'a",
+        "subtitle": "Night",
         "verses": [
             {
                 "id": 1,
@@ -706,8 +706,72 @@
     },
     {
         "id": 6,
-        "type": "Du'a of Imam Zainul Abideen",
-        "time": "After Jummah Salaah",
+        "title": "Du'a Allahumma Kunle",
+        "subtitle": null,
+        "verses": [
+            {
+                "id": 1,
+                "text": "اللّهُمّ كُنْ لِوَلِيّكَ الحُجّةِ ابْنِ الحَسَنِ",
+                "translation": "O Allah, be, for Your representative, the Hujjat (proof), son of Al ­Hassan,",
+                "transliteration": "ALLAAHUMMA KUN LE-WALIYYEKAL HUJJATIBNIL HASANE",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "text": "صَلَوَاتُكَ عَلَيْهِ وَعَلَى آبَائِهِ",
+                "translation": "Your blessings be on him and his forefathers,",
+                "transliteration": "SALAWAATOKA A'LAYHE WA A'LAA AAABAA-EHI",
+                "audio": 26
+            },
+            {
+                "id": 3,
+                "text": "فِي هذِهِ السَّاعَةِ وَفي كُلّ سَاعَةٍ",
+                "translation": "in this hour and in every hour,",
+                "transliteration": "FEE HAAZEHIS SAA-A'TE WA FEE KULLE SAA-A'TIN",
+                "audio": 35
+            },
+            {
+                "id": 4,
+                "text": "وَلِيّاً وَحَافِظاً",
+                "translation": "a guardian, a protector,",
+                "transliteration": "WALIYYAWN WA HAAFEZAWN",
+                "audio": 46
+            },
+            {
+                "id": 5,
+                "text": "وَقَائِداً وَنَاصِراً",
+                "translation": "a leader, a helper,",
+                "transliteration": "WA QAA-EDAWN WA NAASERAWN",
+                "audio": 51
+            },
+            {
+                "id": 6,
+                "text": "وَدَلِيلاً وَعَيْناً",
+                "translation": "a proof, and an eye,",
+                "transliteration": "WA DALEELAWN WA A'YNAN",
+                "audio": 57
+            },
+            {
+                "id": 7,
+                "text": "حَتَّى تُسْكِنَهُ أَرْضَكَ طَوْعاً",
+                "translation": "Until You make him live on the earth, in obedience (to You),",
+                "transliteration": "HATTAA TUSKENAHU ARZAKA TAW-A'N",
+                "audio": 63
+            },
+            {
+                "id": 8,
+                "text": "وَتُمَتّعَهُ فِيهَا طَوِيلاً",
+                "translation": "and cause him to live in it for a long time",
+                "transliteration": "WA TOMATTE-A'HU FEEHAA TAWEELAA",
+                "audio": 69
+            }
+        ],
+        "audio": "Allahumma Kunle"
+    },
+    {
+        "id": 7,
+        "title": "Du'a of Imam Zainul Abideen",
+        "subtitle": "After Jummah Salaat",
         "verses": [
             {
                 "id": 1,
@@ -721,238 +785,238 @@
                 "text": "اَلْحَمْدُ لِلَّهِ ٱلْأَوَّلِ قَبْلَ ٱلْإِنْشَاءِ وَٱلْإِحْيَاءِ",
                 "translation": "All praise be to Allah, the First before the bringing forth and the giving of life,",
                 "transliteration": "ALHAMDU LILLAHI AL-AWWALI QABLA AL-INSHA'I WAL-IHYA'I",
-                "audio": 0
+                "audio": 12
             },
             {
                 "id": 3,
                 "text": "وَٱلْآخِرِ بَعْدَ فَنَاءِ ٱلْأَشْيَاءِ",
                 "translation": "and the Last after the annihilation of all things,",
                 "transliteration": "WAL-AKHIRI BA`DA FANA'I AL-ASHYA'I",
-                "audio": 0
+                "audio": 19
             },
             {
                 "id": 4,
                 "text": "ٱلْعَلِيمِ ٱلَّذِي لاَ يَنْسَىٰ مَنْ ذَكَرَهُ",
                 "translation": "the All-knowing Who forgets not him who remembers Him,",
                 "transliteration": "AL`ALIMI ALLADHI LA YANSA MAN DHAKARAHU",
-                "audio": 0
+                "audio": 26
             },
             {
                 "id": 5,
                 "text": "وَلاَ يَنْقُصُ مَنْ شَكَرَهُ",
                 "translation": "decreases not him who thanks Him,",
                 "transliteration": "WA LA YANQUSU MAN SHAKARAHU",
-                "audio": 0
+                "audio": 32
             },
             {
                 "id": 6,
                 "text": "وَلاَ يُخَيِّبُ مَنْ دَعَاهُ",
                 "translation": "disappoints not him who supplicates Him,",
                 "transliteration": "WA LA YUKHAYYIBU MAN DA`AHU",
-                "audio": 0
+                "audio": 38
             },
             {
                 "id": 7,
                 "text": "وَلاَ يَقْطَعُ رَجَاءَ مَنْ رَجَاهُ",
                 "translation": "and cuts not off the hope of him who hopes in Him!",
                 "transliteration": "WA LA YAQTA`U RAJA'A MAN RAJAHU",
-                "audio": 0
+                "audio": 43
             },
             {
                 "id": 8,
                 "text": "اَللَّهُمَّ إِنِّي أُشْهِدُكَ",
                 "translation": "O Allah, I call You to witness",
                 "transliteration": "ALLAHUMMA INNI USH-HIDUKA",
-                "audio": 0
+                "audio": 48
             },
             {
                 "id": 9,
                 "text": "وَكَفَىٰ بِكَ شَهيداً",
                 "translation": "and You are sufficient Witness",
                 "transliteration": "WA KAFA BIKA SHAHIDAN",
-                "audio": 0
+                "audio": 51
             },
             {
                 "id": 10,
                 "text": "وَأُشْهِدُ جَمِيعَ مَلائِكَتِكَ",
                 "translation": "and I call to witness all Your angels,",
                 "transliteration": "WA USH-HIDU JAMI`A MALA'IKATIKA",
-                "audio": 0
+                "audio": 55
             },
             {
                 "id": 11,
                 "text": "وَسُكَّانَ سَموَاتِكَ",
                 "translation": "the inhabitants of Your heavens,",
                 "transliteration": "WA SUKKANA SAMAWATIKA",
-                "audio": 0
+                "audio": 59
             },
             {
                 "id": 12,
                 "text": "وَحَمَلَةَ عَرْشِكَ",
                 "translation": "the bearers of Your Throne,",
                 "transliteration": "WA HAMALATA `ARSHIKA",
-                "audio": 0
+                "audio": 62
             },
             {
                 "id": 13,
                 "text": "وَمَنْ بَعَثْتَ مِنْ أَنْبيَائِكَ وَرُسُلِكَ",
                 "translation": "Your prophets and Your messengers whom You have sent out,",
                 "transliteration": "WA MAN BA`ATHTA MIN ANBIYA'IKA WA RUSULIKA",
-                "audio": 0
+                "audio": 64
             },
             {
                 "id": 14,
                 "text": "وَ أَنْشَاْتَ مِنْ أَصْنَافِ خَلْقِكَ",
                 "translation": "and the various kinds of creatures You have brought forth,",
                 "transliteration": "WA ANSHA'TA MIN ASNAFI KHALQIKA",
-                "audio": 0
+                "audio": 70
             },
             {
                 "id": 15,
                 "text": "أَنِّي أَشْهَدُ أَنَّكَ أَنْتَ ٱللَّهُ",
                 "translation": "that I bear witness that You are Allah;",
                 "transliteration": "ANNI ASH-HADU ANNAKA ANTA ALLAHU",
-                "audio": 0
+                "audio": 74
             },
             {
                 "id": 16,
                 "text": "لاَ إِلٰهَ إِلاَّ أَنْتَ وَحْدَكَ",
                 "translation": "there is no god but You, You alone,",
                 "transliteration": "LA ILAHA ILLA ANTA WAHDAKA",
-                "audio": 0
+                "audio": 79
             },
             {
                 "id": 17,
                 "text": "لاَ شَرِيكَ لَكَ وَلاَ عَدِيلَ",
                 "translation": "Who have no associate nor any equal,",
                 "transliteration": "LA SHARIKA LAKA WA LA `ADILA",
-                "audio": 0
+                "audio": 80
             },
             {
                 "id": 18,
                 "text": "وَلاَ خُلْفَ لِقَوْلِكَ وَلاَ تَبْدِيلَ",
                 "translation": "and Your word has no failing, nor any change;",
                 "transliteration": "WA LA KHULFA LIQAWLIKA WA LA TABDILA",
-                "audio": 0
+                "audio": 84
             },
             {
                 "id": 19,
                 "text": "وَ أَنَّ مُحَمَّداً صَلَّىٰ ٱللَّهُ عَلَيْهِ وَآلِهِ عَبْدُكَ وَرَسُولُكَ",
                 "translation": "and that Muhammad, Allah bless him and his Household, is Your servant and Your messenger;",
                 "transliteration": "WA ANNA MUHAMMADAN SALLA ALLAHU `ALAYHI WA ALIHI `ABDUKA WA RASULUKA",
-                "audio": 0
+                "audio": 89
             },
             {
                 "id": 20,
                 "text": "أَدَّىٰ مَا حَمَّلْتَهُ إِلَىٰ ٱلْعِبَادِ",
                 "translation": "he delivered to the servants that with which You charged him,",
                 "transliteration": "ADDA MA HAMMALTAHU ILA AL`IBADI",
-                "audio": 0
+                "audio": 97
             },
             {
                 "id": 21,
                 "text": "وَجَاهَدَ فِي ٱللَّهِ عَزَّ وَجَلَّ حَقَّ ٱلْجِهَادِ",
                 "translation": "struggled for Allah as is His due,",
                 "transliteration": "WA JAHADA FI ALLAHI `AZZA WA JALLA HAQQA ALJIHADI",
-                "audio": 0
+                "audio": 102
             },
             {
                 "id": 22,
                 "text": "وَ أَنَّهُ بَشَّرَ بِما هُوَ حَقُّ مِنَ ٱلثَّوابِ",
                 "translation": "gave the good news of the truth of reward,",
                 "transliteration": "WA ANNAHU BASHSHARA BIMA HUWA HAQQUN MIN ALTHTHAWABI",
-                "audio": 0
+                "audio": 107
             },
             {
                 "id": 23,
                 "text": "وَ أَنْذَرَ بِما هُوَ صِدْقٌ مِنَ ٱلعِقَابِ",
                 "translation": "and warned of the veracity of punishment.",
                 "transliteration": "WA ANDHARA BIMA HUWA SIDQUN MIN AL`IQABI",
-                "audio": 0
+                "audio": 112
             },
             {
                 "id": 24,
                 "text": "اَللَّهُمَّ ثَبِّتْنِي عَلَىٰ دِينِكَ مَا أَحْيَيْتَنِي",
                 "translation": "O Allah, make me firm in Your religion as long as You keep me alive,",
                 "transliteration": "ALLAHUMMA THABBITNI `ALA DINIKA MA AHYAYTANI",
-                "audio": 0
+                "audio": 116
             },
             {
                 "id": 25,
                 "text": "وَلاَ تُزِغْ قَلْبِي بَعْدَ إِذْ هَدَيْتَنِي",
                 "translation": "make not my heart swerve after You have guided me,",
                 "transliteration": "WA LA TUZIGH QALBI BA`DA IDH HADAYTANI",
-                "audio": 0
+                "audio": 123
             },
             {
                 "id": 26,
                 "text": "وَهَبْ لِي مِنْ لَدُنْكَ رَحْمَةً",
                 "translation": "and give me mercy from You,",
                 "transliteration": "WA HAB LI MIN LADUNKA RAHMATAN",
-                "audio": 0
+                "audio": 128
             },
             {
                 "id": 27,
                 "text": "إِنَّكَ أَنْتَ ٱلْوَهَّابُ",
                 "translation": "surely, You are the All-bestower.",
                 "transliteration": "INNAKA ANTA ALWAHHABU",
-                "audio": 0
+                "audio": 131
             },
             {
                 "id": 28,
                 "text": "صَلِّ عَلَىٰ مُحَمَّدٍ وآلِ مُحَمَّدٍ",
                 "translation": "Bless Muhammad and the Household of Muhammad,",
                 "transliteration": "SALLI `ALA MUHAMMADIN WA ALI MUHAMMADIN",
-                "audio": 0
+                "audio": 134
             },
             {
                 "id": 29,
                 "text": "وَٱجْعَلْنِي مِنْ أَتْبَاعِهِ وَشِيعَتِهِ",
                 "translation": "make me one of his followers and his partisans,",
                 "transliteration": "WAJ`ALNI MIN ATBA`IHI WA SHI`ATIHI",
-                "audio": 0
+                "audio": 140
             },
             {
                 "id": 30,
                 "text": "وَٱحْشُرْنِي فِي زُمْرَتِهِ",
                 "translation": "muster me in his band,",
                 "transliteration": "WAHSHURNI FI ZUMRATIHI",
-                "audio": 0
+                "audio": 144
             },
             {
                 "id": 31,
                 "text": "وَوَفِّقْنِي لأَدَاءِ فَرْضِ ٱلْجُمُعَاتِ",
                 "translation": "and give me the success of accomplishing the obligatory observance of Fridays,",
                 "transliteration": "WA WAFFIQNI LI-ADA'I FARDI ALJUMU`ATI",
-                "audio": 0
+                "audio": 148
             },
             {
                 "id": 32,
                 "text": "وَمَا أَوْجَبْتَ عَلَيَّ فِيهَا مِنَ ٱلطَّاعَاتِ",
                 "translation": "performing the acts of obedience which You have made incumbent upon me within it,",
                 "transliteration": "WA MA AWJABTA `ALAYYA FIHA MIN ATTA`ATI",
-                "audio": 0
+                "audio": 153
             },
             {
                 "id": 33,
                 "text": "وَقَسَمْتَ لأَهْلِهَا مِنَ ٱلعَطَاءِ",
                 "translation": "and receiving the bestowal which You have apportioned for its people",
                 "transliteration": "WA QASAMTA LI-AHLIHA MIN AL`ATA'I",
-                "audio": 0
+                "audio": 158
             },
             {
                 "id": 34,
                 "text": "فِي يَوْمِ ٱلْجزَاءِ",
                 "translation": "on the Day of Recompense!",
                 "transliteration": "FI YAWMI ALJAZA'I",
-                "audio": 0
+                "audio": 162
             },
             {
                 "id": 35,
                 "text": "إِنَّكَ أَنْتَ ٱلْعَزِيزُ ٱلْحَكِيمُ",
                 "translation": "Surely, You are the Almighty, the All-wise!",
                 "transliteration": "INNAKA ANTA AL`AZIZU ALHAKIMU",
-                "audio": 0
+                "audio": 165
             }
         ],
         "audio": "Jummah"

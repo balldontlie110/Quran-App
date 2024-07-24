@@ -28,13 +28,15 @@ struct AmaalSectionDetail: Identifiable, Decodable {
     let id: String
     
     let heading: String?
+    let surahId: Int?
+    let url: String?
     let body: [AmaalSectionDetailBody]
 }
 
 struct AmaalSectionDetailBody: Identifiable, Decodable {
     let id: String
     
-    let text: String
+    let text: String?
     let transliteration: String?
-    let translation: String
+    let translation: String?
 }

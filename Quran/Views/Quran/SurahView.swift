@@ -36,7 +36,7 @@ struct SurahView: View {
     
     @State private var showBookmarkAlert: Verse?
     
-    @StateObject private var audioPlayer = AudioPlayer()
+    @EnvironmentObject private var audioPlayer: AudioPlayer
     @State private var sliderValue: Double = 0.0
     
     var body: some View {
@@ -84,7 +84,7 @@ struct SurahView: View {
                 }
                 .scrollPosition(id: $scrollPosition, anchor: .top)
                 .onChange(of: surahFilterModel.filteredVerses) { _, _ in
-                    if let previousScrollPosition {
+                    if let previousScrollPosition = previousScrollPosition {
                         scrollPosition = dummyId
                         Task { @MainActor in
                             scrollPosition = previousScrollPosition
@@ -92,12 +92,12 @@ struct SurahView: View {
                     }
                 }
                 .onChange(of: scrollPosition) { oldVal, newVal in
-                    if let newVal, newVal != dummyId {
+                    if let newVal = newVal, newVal != dummyId {
                         previousScrollPosition = newVal
                     }
                 }
                 .onChange(of: proxy.size) {
-                    if let previousScrollPosition {
+                    if let previousScrollPosition = previousScrollPosition {
                         scrollPosition = dummyId
                         Task { @MainActor in
                             scrollPosition = previousScrollPosition
@@ -206,14 +206,12 @@ struct SurahView: View {
                 .fixedSize()
             
             Button {
-                if let scrollPosition = scrollPosition {
-                    if let previousVerse = surahFilterModel.filteredVerses.last(where: { verse in
-                        verse.id < scrollPosition
-                    }) ?? surahFilterModel.filteredVerses.last {
-                        self.scrollPosition = dummyId
-                        Task { @MainActor in
-                            self.scrollPosition = previousVerse.id
-                        }
+                if let scrollPosition = scrollPosition, let previousVerse = surahFilterModel.filteredVerses.last(where: { verse in
+                    verse.id < scrollPosition
+                }) ?? surahFilterModel.filteredVerses.last {
+                    self.scrollPosition = dummyId
+                    Task { @MainActor in
+                        self.scrollPosition = previousVerse.id
                     }
                 }
             } label: {
@@ -225,14 +223,12 @@ struct SurahView: View {
                 .fixedSize()
             
             Button {
-                if let scrollPosition = scrollPosition {
-                    if let nextVerse = surahFilterModel.filteredVerses.first(where: { verse in
-                        verse.id > scrollPosition
-                    }) ?? surahFilterModel.filteredVerses.first {
-                        self.scrollPosition = dummyId
-                        Task { @MainActor in
-                            self.scrollPosition = nextVerse.id
-                        }
+                if let scrollPosition = scrollPosition, let nextVerse = surahFilterModel.filteredVerses.first(where: { verse in
+                    verse.id > scrollPosition
+                }) ?? surahFilterModel.filteredVerses.first {
+                    self.scrollPosition = dummyId
+                    Task { @MainActor in
+                        self.scrollPosition = nextVerse.id
                     }
                 }
             } label: {
@@ -336,11 +332,7 @@ struct SurahView: View {
     private func removeBookmark(_ verse: BookmarkedVerse) {
         viewContext.delete(verse)
         
-        do {
-            try viewContext.save()
-        } catch {
-            print(error)
-        }
+        try? viewContext.save()
     }
     
     private func sliderEditingChanged(editingStarted: Bool) {
@@ -414,14 +406,15 @@ struct VerseRow: View {
         }
         .padding(.horizontal, 10)
         .onChange(of: audioPlayer.finished) { _, newVal in
-            if audioPlayer.finished, let verse = audioPlayer.verse {
-                if let nextVerse = nextVerse(verse), let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder {
-                    if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(nextVerse.audio).mp3") {
-                        audioPlayer.setupPlayer(with: audioUrl, verse: nextVerse)
-                        audioPlayer.playPause()
-                    }
-                }
-            }
+            guard audioPlayer.finished, 
+                    let verse = audioPlayer.verse,
+                    let nextVerse = nextVerse(verse),
+                    let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder,
+                    let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(nextVerse.audio).mp3")
+            else { return }
+            
+            audioPlayer.setupPlayer(with: audioUrl, verse: nextVerse)
+            audioPlayer.playPause()
         }
     }
     
@@ -433,10 +426,17 @@ struct VerseRow: View {
             
             let verseText = getVerse(verse)
             
-            Text(verseText.text)
-                .font(.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold))
-                .multilineTextAlignment(readingMode ? .center : .trailing)
-                .lineSpacing(20)
+            if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
+                let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
+                let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
+                
+                let font = isDefaultFont ? defaultFont : uthmanicFont
+                
+                Text(verseText.text)
+                    .font(font)
+                    .multilineTextAlignment(readingMode ? .center : .trailing)
+                    .lineSpacing(20)
+            }
         }
     }
     

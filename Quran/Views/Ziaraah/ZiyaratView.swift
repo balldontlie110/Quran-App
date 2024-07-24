@@ -18,14 +18,22 @@ struct ZiyaratView: View {
                 ForEach(ziyarat.verses) { verse in
                     VStack(spacing: 0) {
                         VStack(spacing: 15) {
-                            Text(verse.text)
-                                .font(.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold))
-                                .multilineTextAlignment(.center)
-                                .lineSpacing(20)
+                            if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
+                                let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
+                                let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
+                                
+                                let font = isDefaultFont ? defaultFont : uthmanicFont
+                                
+                                Text(verse.text)
+                                    .font(font)
+                                    .multilineTextAlignment(.center)
+                                    .lineSpacing(20)
+                            }
                             
                             Text(verse.transliteration.uppercased())
                                 .font(.system(size: 20))
                                 .multilineTextAlignment(.center)
+                                .foregroundStyle(Color.secondary)
                             
                             Text(verse.translation)
                                 .font(.system(size: 20))

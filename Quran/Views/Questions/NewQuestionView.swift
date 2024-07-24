@@ -25,8 +25,8 @@ struct NewQuestionView: View {
     @State private var verseId: Int = 1
     
     var body: some View {
-        VStack(spacing: 0) {
-            VStack {
+        LazyVStack(spacing: 0) {
+            LazyVStack {
                 TextField("Title", text: $questionTitle, axis: .vertical)
                     .fontWeight(.bold)
                     .padding(10)
@@ -55,6 +55,7 @@ struct NewQuestionView: View {
                     .frame(height: 25)
                 
                 Toggle("Specific Verse", isOn: $specificVerse)
+                    .foregroundStyle(Auth.auth().currentUser == nil ? Color.secondary : Color.primary)
                 
                 if specificVerse {
                     HStack {

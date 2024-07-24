@@ -7,5 +7,18 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.Ali.Quran.refresh</string>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>KFGQPC-Uthmanic-Script-HAFS-Regular.otf</string>
+	</array>
 </dict>
 </plist>

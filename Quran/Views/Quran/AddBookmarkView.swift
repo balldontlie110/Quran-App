@@ -19,6 +19,7 @@ struct AddBookmarkView: View {
     )
     
     var bookmarkedFolders: FetchedResults<BookmarkedFolder>
+    
     var bookmarkedVerses: FetchedResults<BookmarkedVerse>
     
     let surahId: Int
@@ -40,7 +41,7 @@ struct AddBookmarkView: View {
         Group {
             if showBookmarkAlert != nil {
                 ScrollView {
-                    VStack(spacing: 15) {
+                    LazyVStack(spacing: 15) {
                         readingBookmarkSelect
                         
                         Divider()
@@ -206,17 +207,13 @@ struct AddBookmarkView: View {
             folder.date = Date()
             folder.verses = nil
             
-            do {
-                try viewContext.save()
-                
-                self.folderTitle = ""
-                self.focusedField = .bookmarkTitle
-                self.showNewFolderTitleField = false
-                
-                self.bookmarkFolder = folder
-            } catch {
-                print(error)
-            }
+            try? viewContext.save()
+            
+            self.folderTitle = ""
+            self.focusedField = .bookmarkTitle
+            self.showNewFolderTitleField = false
+            
+            self.bookmarkFolder = folder
         }
     }
     
@@ -243,14 +240,6 @@ struct AddBookmarkView: View {
             newBookmarkedVerse.readingBookmark = true
         }
         
-        do {
-            try viewContext.save()
-        } catch {
-            print(error)
-        }
+        try? viewContext.save()
     }
 }
-
-//#Preview {
-//    AddBookmarkView(bookmarkedFolders: <#T##FetchedResults<BookmarkedFolder>#>)
-//}

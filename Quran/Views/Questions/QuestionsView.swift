@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseFirestore
+import FirebaseAuth
 
 struct QuestionsView: View {
     @StateObject private var questionsModel: QuestionsModel = QuestionsModel()
@@ -81,7 +82,7 @@ struct QuestionsView: View {
                             self.questionTitleFocused = true
                         } label: {
                             Image(systemName: "plus")
-                        }
+                        }.disabled(Auth.auth().currentUser == nil)
                     }
                 }
             }

@@ -21,10 +21,10 @@ struct Prayer: Identifiable {
 struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @StateObject private var authenticationModel: AuthenticationModel = AuthenticationModel()
+    @EnvironmentObject private var authenticationModel: AuthenticationModel
     @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
-    @StateObject private var audioPlayer: AudioPlayer = AudioPlayer()
+    @EnvironmentObject private var audioPlayer: AudioPlayer
     
     @Binding var showSettingsView: Bool
     
@@ -51,6 +51,7 @@ struct SettingsView: View {
     private var prayerNotifications: FetchedResults<PrayerNotification>
     
     @State private var fontSize: Double = 0.0
+    @State private var isDefaultFont: Bool = true
     
     @State private var translatorId: Int = 0
     @State private var showAllTranslators: Bool = false
@@ -68,7 +69,7 @@ struct SettingsView: View {
                     ProgressView()
                 } else {
                     ScrollView {
-                        VStack {
+                        LazyVStack {
                             if authenticationModel.user == nil {
                                 loginOptions
                             } else {
@@ -132,7 +133,7 @@ struct SettingsView: View {
             
             Divider()
             
-            tanzilLicense
+            attributions
         }
     }
 
@@ -268,7 +269,7 @@ struct SettingsView: View {
             
             Divider()
             
-            tanzilLicense
+            attributions
         }
     }
 
@@ -398,7 +399,7 @@ struct SettingsView: View {
     }
     
     private var prayerNotificationsToggles: some View {
-        VStack(spacing: 10) {
+        LazyVStack(spacing: 10) {
             ForEach($prayers) { $prayer in
                 Toggle(isOn: $prayer.active) {
                     Text(prayer.prayer)
@@ -412,8 +413,8 @@ struct SettingsView: View {
     }
     
     private var preferences: some View {
-        VStack(spacing: 20) {
-            fontSizeSlider
+        LazyVStack(spacing: 20) {
+            fontPreferences
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -430,9 +431,16 @@ struct SettingsView: View {
         }.padding(.bottom, 10)
     }
     
+    private var fontPreferences: some View {
+        VStack(spacing: 20) {
+            fontSizeSlider
+            fontPicker
+        }
+    }
+    
     private var fontSizeSlider: some View {
         VStack(spacing: 5) {
-            Text("Font Size: \(Int(fontSize))")
+            Text("Arabic Font Size: \(Int(fontSize))")
                 .font(.system(.headline, weight: .bold))
             
             Slider(value: $fontSize, in: 20...60, step: 1.0)
@@ -440,16 +448,70 @@ struct SettingsView: View {
                 .onChange(of: fontSize) { _, _ in
                     preferencesModel.updatePreferences(
                         fontSize: fontSize,
+                        isDefaultFont: isDefaultFont,
                         translatorId: translatorId,
                         reciterName: reciterName,
                         reciterSubfolder: reciterSubfolder
                     )
                 }
             
+            let defaultFont = Font.system(size: fontSize, weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: fontSize)
+            
+            let font = isDefaultFont ? defaultFont : uthmanicFont
+            
             Text("بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ")
-                .font(.system(size: fontSize, weight: .bold))
+                .font(font)
                 .multilineTextAlignment(.center)
                 .lineSpacing(20)
+        }
+    }
+    
+    private var fontPicker: some View {
+        HStack {
+            Text("Arabic Font:")
+                .font(.system(.headline, weight: .bold))
+            
+            Menu {
+                Button {
+                    self.isDefaultFont = true
+                } label: {
+                    HStack {
+                        Text("Default")
+                        
+                        Spacer()
+                        
+                        if isDefaultFont {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+                
+                Button {
+                    self.isDefaultFont = false
+                } label: {
+                    HStack {
+                        Text("Uthmanic Hafs")
+                        
+                        Spacer()
+                        
+                        if !isDefaultFont {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            } label: {
+                Text(isDefaultFont ? "Default" : "Uthmanic Hafs")
+            }
+            .onChange(of: isDefaultFont) { _, _ in
+                preferencesModel.updatePreferences(
+                    fontSize: fontSize,
+                    isDefaultFont: isDefaultFont,
+                    translatorId: translatorId,
+                    reciterName: reciterName,
+                    reciterSubfolder: reciterSubfolder
+                )
+            }
         }
     }
     
@@ -500,6 +562,7 @@ struct SettingsView: View {
                     
                     preferencesModel.updatePreferences(
                         fontSize: fontSize,
+                        isDefaultFont: isDefaultFont,
                         translatorId: translatorId,
                         reciterName: reciterName,
                         reciterSubfolder: reciterSubfolder
@@ -588,6 +651,7 @@ struct SettingsView: View {
                 
                 preferencesModel.updatePreferences(
                     fontSize: fontSize,
+                    isDefaultFont: isDefaultFont,
                     translatorId: translatorId,
                     reciterName: reciterName,
                     reciterSubfolder: reciterSubfolder
@@ -633,13 +697,25 @@ struct SettingsView: View {
         .padding(.vertical, 10)
     }
     
-    private var tanzilLicense: some View {
-        HStack {
-            if let tanzilURL = URL(string: "https://tanzil.net") {
-                Text("Arabic text sourced from:")
-                Link("Tanzil", destination: tanzilURL)
-            }
-        }.padding(.vertical, 10)
+    private var attributions: some View {
+        LazyVStack(alignment: .leading, spacing: 7.5) {
+            Text("Quran Arabic and recitations from: [Tanzil.net](https://tanzil.net)")
+            Text("Quran translations from: [Quran.com](https://quran.com)")
+            Text("Du'as and Ziaraah text and audio from: [Duas.org](https://duas.org)")
+            Text("Prayer times and Islamic calendar in accordance with: [Najaf.org](https://najaf.org)")
+            
+            Text("Quran icon by UNKNOWN from [Noun Project](https://thenounproject.com/browse/icons/term/quran/) (CC BY 3.0)")
+            Text("Calendar icon by Azzam from [Noun Project](https://thenounproject.com/browse/icons/term/calendar/) (CC BY 3.0)")
+            Text("Events icon by ARISO from [Noun Project](https://thenounproject.com/browse/icons/term/list/) (CC BY 3.0)")
+            Text("Du'as icon by Fahmi Ginanjar from [Noun Project](https://thenounproject.com/browse/icons/term/dua/) (CC BY 3.0)")
+            Text("Ziaraah icon by Gofficon from [Noun Project](https://thenounproject.com/browse/icons/term/mosque/) (CC BY 3.0)")
+            Text("Amaals icon by Trotoart from [Noun Project](https://thenounproject.com/browse/icons/term/pray/) (CC BY 3.0)")
+            Text("Questions icon by Seochan from [Noun Project](https://thenounproject.com/browse/icons/term/questions/) (CC BY 3.0)")
+            Text("Donations icon by David Khai from [Noun Project](https://thenounproject.com/browse/icons/term/donate/) (CC BY 3.0)")
+            Text("Socials icon by Zulikhah from [Noun Project](https://thenounproject.com/browse/icons/term/globe/) (CC BY 3.0)")
+        }
+        .multilineTextAlignment(.leading)
+        .padding(.vertical, 10)
     }
     
     private var filteredTranslators: [Translator] {
@@ -696,18 +772,15 @@ struct SettingsView: View {
             prayerNotification.active = prayer.active
         }
         
-        do {
-            try viewContext.save()
-            
-            NotificationManager.shared.updateNotifications()
-        } catch {
-            print(error)
-        }
+        try? viewContext.save()
+        
+        NotificationManager.shared.updatePrayerNotifications()
     }
     
     private func initialisePreferences() {
         if let preferences = preferencesModel.preferences {
             self.fontSize = preferences.fontSize
+            self.isDefaultFont = preferences.isDefaultFont
             self.translatorId = Int(preferences.translationId)
             self.reciterName = preferences.reciterName ?? "Ghamadi"
             self.reciterSubfolder = preferences.reciterSubfolder ?? "Ghamadi_40kbps"

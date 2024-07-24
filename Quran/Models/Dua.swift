@@ -9,8 +9,8 @@ import Foundation
 
 struct Dua: Identifiable, Decodable {
     let id: Int
-    let type: String
-    let time: String
+    let title: String
+    let subtitle: String?
     let verses: [DuaVerse]
     let audio: String
 }

@@ -17,7 +17,7 @@ struct BookmarkedVerseCard: View {
 
     var body: some View {
         NavigationLink {
-            if let surah = quranModel.getSurah(Int(verse.surahId)) {
+            if let surah = quranModel.quran.first(where: { $0.id == Int(verse.surahId) }) {
                 SurahView(surah: surah, initialScroll: Int(verse.verseId))
             }
         } label: {
@@ -86,11 +86,7 @@ struct BookmarkedVerseCard: View {
     private func removeVerse(_ verse: BookmarkedVerse) {
         viewContext.delete(verse)
         
-        do {
-            try viewContext.save()
-        } catch {
-            print(error)
-        }
+        try? viewContext.save()
     }
 }
 

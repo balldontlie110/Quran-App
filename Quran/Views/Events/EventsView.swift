@@ -9,50 +9,62 @@ import SwiftUI
 import iCalendarParser
 
 struct EventsView: View {
-    @EnvironmentObject private var calendarModel: EventsModel
+    @EnvironmentObject private var eventsModel: EventsModel
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-                ForEach(calendarModel.events) { event in
+                ForEach(eventsModel.events) { event in
                     NavigationLink {
                         EventView(event: event)
                     } label: {
-                        Event(event: event)
+                        EventCard(event: event)
                     }
                 }
             }.padding(.horizontal)
         }
-        .navigationTitle("Calendar")
+        .navigationTitle("Events")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-struct Event: View {
+struct EventCard: View {
     let event: ICEvent
+    
+    @State private var isNotifying: Bool = false
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             VStack {
                 if let date = event.dtStart?.date {
                     Text(date.day())
+                        .lineLimit(1)
+                        .minimumScaleFactor(.leastNonzeroMagnitude)
                     
                     Text(date.dayOfMonth())
                         .font(.system(.title, weight: .bold))
+                    
+                    Text(date.month())
+                        .font(.system(.caption, weight: .semibold))
+                        .foregroundStyle(Color.secondary)
                 }
             }
             .multilineTextAlignment(.center)
-            .frame(minWidth: 80)
+            .frame(width: 80)
             
             VStack(alignment: .leading, spacing: 10) {
                 if let startDate = event.dtStart?.date, let endDate = event.dtEnd?.date {
                     Text(startToEnd(start: startDate, end: endDate))
                         .font(.caption)
+                        .lineLimit(1)
+                        .minimumScaleFactor(.leastNonzeroMagnitude)
                         .foregroundStyle(Color.secondary)
                 }
                 
                 if let summary = event.summary {
                     Text(summary)
+                        .lineLimit(3)
+                        .minimumScaleFactor(.leastNonzeroMagnitude)
                 }
                 
                 if let location = fixedLocation(text: event.location) {
@@ -63,12 +75,25 @@ struct Event: View {
             }
             
             Spacer()
+            
+            if isNotifying {
+                Image(systemName: "bell.fill")
+            }
         }
         .foregroundStyle(Color.primary)
         .multilineTextAlignment(.leading)
         .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 5))
+        .onAppear {
+            checkIfNotifying()
+        }
+    }
+    
+    private func checkIfNotifying() {
+        NotificationManager.shared.isNotifyingEvent(event: event) { isNotifying, _ in
+            self.isNotifying = isNotifying
+        }
     }
     
     private func fixedLocation(text: String?) -> String? {
@@ -86,8 +111,11 @@ struct Event: View {
     }
     
     private func startToEnd(start: Date, end: Date) -> String {
-        let month = start.month()
-        let dayOfMonth = start.dayOfMonth()
+        let startMonth = start.month()
+        let startDayOfMonth = start.dayOfMonth()
+        
+        let endMonth = end.month()
+        let endDayOfMonth = end.dayOfMonth()
         
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .short
@@ -95,8 +123,11 @@ struct Event: View {
         let startTime = dateFormatter.string(from: start)
         let endTime = dateFormatter.string(from: end)
         
-        let time = "\(month) \(dayOfMonth) @ \(startTime) - \(endTime)"
-        return time
+        if startMonth == endMonth && startDayOfMonth == endDayOfMonth {
+            return "\(startMonth) \(startDayOfMonth) \(startTime) - \(endTime)"
+        } else {
+            return "\(startMonth) \(startDayOfMonth) \(startTime) - \(endMonth) \(endDayOfMonth) \(endTime)"
+        }
     }
 }
 
@@ -123,6 +154,16 @@ extension Date {
         dateFormatter.dateFormat = "LLLL"
         
         return dateFormatter.string(from: self).capitalized
+    }
+    
+    func year() -> Int {
+        let components = Calendar.current.dateComponents([.year], from: self)
+        
+        if let year = components.year {
+            return year
+        }
+        
+        return 0
     }
     
     func time() -> String {

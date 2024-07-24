@@ -17,12 +17,10 @@ struct Provider: TimelineProvider {
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         fetchPrayerTimes { prayerTimes in
-            if let prayerTimes = prayerTimes {
-                fetchDate { islamicDate in
-                    if let islamicDate = islamicDate {
-                        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
-                        completion(entry)
-                    }
+            fetchDate { islamicDate in
+                if let prayerTimes = prayerTimes, let islamicDate = islamicDate {
+                    let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
+                    completion(entry)
                 }
             }
         }
@@ -32,17 +30,15 @@ struct Provider: TimelineProvider {
         var entries: [SimpleEntry] = []
         
         fetchPrayerTimes { prayerTimes in
-            if let prayerTimes = prayerTimes {
-                fetchDate { islamicDate in
-                    if let islamicDate = islamicDate {
-                        let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
-                        entries.append(entry)
-                    }
-                    
-                    if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
-                        let timeline = Timeline(entries: entries, policy: .after(updateDate))
-                        completion(timeline)
-                    }
+            fetchDate { islamicDate in
+                if let prayerTimes = prayerTimes, let islamicDate = islamicDate {
+                    let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
+                    entries.append(entry)
+                }
+                
+                if let updateDate = Calendar.current.date(byAdding: .hour, value: 12, to: Calendar.current.startOfDay(for: .now)) {
+                    let timeline = Timeline(entries: entries, policy: .after(updateDate))
+                    completion(timeline)
                 }
             }
         }
@@ -54,27 +50,22 @@ struct Provider: TimelineProvider {
         AF.request(url).responseString { response in
             switch response.result {
             case .success(let html):
-                do {
-                    let document = try SwiftSoup.parse(html)
-                    
-                    let prayerTimeDiv = try document.select("#prayer_time").first()
-                    let prayerItems = try prayerTimeDiv?.select("ul > li")
+                if let document = try? SwiftSoup.parse(html),
+                   let prayerTimeDiv = try? document.select("#prayer_time").first(),
+                   let prayerItems = try? prayerTimeDiv.select("ul > li") {
                     
                     var prayerTimes: [String : String] = [:]
                     
-                    for item in prayerItems ?? Elements() {
-                        let prayerName = try item.text().letters
-                        let prayerTime = try item.select("span").text()
-                        prayerTimes[prayerName] = prayerTime
+                    for item in prayerItems {
+                        if let prayerName = try? item.text().letters,
+                           let prayerTime = try? item.select("span").text() {
+                            prayerTimes[prayerName] = prayerTime
+                        }
                     }
                     
                     completion(prayerTimes)
-                } catch {
-                    print("Error parsing HTML: \(error)")
-                    completion(nil)
                 }
             case .failure(let error):
-                print("Request failed with error: \(error)")
                 completion(nil)
             }
         }
@@ -82,33 +73,26 @@ struct Provider: TimelineProvider {
     
     private func fetchDate(completion: @escaping (String?) -> Void) {
         let url = "https://najaf.org/english/"
-
+        
         AF.request(url).responseString { response in
             switch response.result {
             case .success(let html):
-                do {
-                    let document = try SwiftSoup.parse(html)
-                    let elements = try document.select("div.my-time-top strong.my-blue")
+                if let document = try? SwiftSoup.parse(html),
+                   let elements = try? document.select("div.my-time-top strong.my-blue"),
+                   let date = try? elements.last()?.text() {
+                    let splitDate = date.split(separator: " / ")
                     
-                    if let date = try elements.last()?.text() {
-                        let splitDate = date.split(separator: " / ")
+                    if splitDate.count == 3 {
+                        let day = String(splitDate[0])
+                        let month = String(splitDate[1])
+                        let year = String(splitDate[2])
                         
-                        if splitDate.count == 3 {
-                            let day = String(splitDate[0])
-                            let month = String(splitDate[1])
-                            let year = String(splitDate[2])
-                            
-                            let islamicDate = "\(day) \(month) \(year)"
-                            
-                            completion(islamicDate)
-                        }
+                        let islamicDate = "\(day) \(month) \(year)"
+                        
+                        completion(islamicDate)
                     }
-                } catch {
-                    print("Error parsing HTML: \(error)")
-                    completion(nil)
                 }
             case .failure(let error):
-                print("Request failed with error: \(error)")
                 completion(nil)
             }
         }
@@ -135,7 +119,7 @@ struct QuranWidgetEntryView : View {
     var body: some View {
         switch widgetFamily {
         case .systemSmall:
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ForEach(prayerTimes, id: \.key) { prayer in
                     LazyVGrid(columns: columns) {
                         Text(prayersRenamed[prayer.key] ?? prayer.key)
@@ -178,6 +162,12 @@ struct QuranWidgetEntryView : View {
                 }.font(.system(size: 18))
                 
                 Spacer()
+            }
+        case .accessoryInline:
+            Label {
+                Text(entry.islamicDate)
+            } icon: {
+                Image("crescent")
             }
         default:
             EmptyView()
@@ -237,7 +227,7 @@ struct QuranWidget: Widget {
         }
         .configurationDisplayName("Prayer Times")
         .description("See prayer times at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .accessoryInline])
     }
 }
 
@@ -246,7 +236,7 @@ struct QuranWidget: Widget {
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"], islamicDate: "")
+    SimpleEntry(date: .now, prayerTimes: prayerTimesModel.prayerTimes, islamicDate: "")
 }
 
 #Preview(as: .systemMedium) {
@@ -254,5 +244,5 @@ struct QuranWidget: Widget {
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    SimpleEntry(date: .now, prayerTimes: ["Imsaak" : "02:11", "Dawn" : "02:21", "Sunrise" : "04:43", "Noon" : "01:01", "Sunset" : "09:20", "Maghrib" : "9:35", "Midnight" : "11:50"], islamicDate: "")
+    SimpleEntry(date: .now, prayerTimes: prayerTimesModel.prayerTimes, islamicDate: "")
 }
