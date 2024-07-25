@@ -30,16 +30,19 @@ class CalendarModel: ObservableObject {
     @Published var month: String = ""
     @Published var year: String = ""
     
+    @Published var selectedDate: Date = Date()
+    @Published var currentMonth: Date = Date()
+    @Published var importantDates: [ImportantDate] = []
+    
     @Published var prayerTimes: [MonthPrayerTimes] = []
-    @Published var isLoading: Bool = true
     
     init() {
         fetchDate()
+        fetchImportantDates()
         
         fetchPrayerTimes { prayerTimes in
             if let prayerTimes = prayerTimes {
                 self.prayerTimes = prayerTimes
-                self.isLoading = false
             }
         }
     }
@@ -63,8 +66,25 @@ class CalendarModel: ObservableObject {
                         }
                     }
                 }
-            case .failure(let error):
+            case .failure(_):
                 return
+            }
+        }
+    }
+    
+    private func fetchImportantDates() {
+        if let path = Bundle.main.path(forResource: "ImportantDates", ofType: "json") {
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe),
+               let jsonData = try? JSONDecoder().decode([ImportantMonth].self, from: data) {
+                var importantDates: [ImportantDate] = []
+                
+                for month in jsonData {
+                    importantDates += month.importantDates
+                }
+                
+                DispatchQueue.main.async {
+                    self.importantDates = importantDates
+                }
             }
         }
     }
@@ -108,7 +128,7 @@ class CalendarModel: ObservableObject {
                     
                     completion(monthPrayerTimesArray)
                 }
-            case .failure(let _):
+            case .failure(_):
                 completion(nil)
             }
         }

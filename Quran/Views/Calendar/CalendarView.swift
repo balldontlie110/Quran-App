@@ -12,9 +12,6 @@ struct CalendarView: View {
     @EnvironmentObject private var calendarModel: CalendarModel
     @EnvironmentObject private var eventsModel: EventsModel
     
-    @State private var selectedDate: Date = Date()
-    @State private var currentMonth: Date = Date()
-    
     private let columns: [GridItem] = [GridItem](repeating: GridItem(.flexible()), count: 7)
     
     private let prayerTimesColumns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
@@ -25,26 +22,21 @@ struct CalendarView: View {
     
     var body: some View {
         VStack {
-            if calendarModel.isLoading {
-                ProgressView()
-            } else {
-                ScrollView {
-                    LazyVStack {
-                        datePicker
-                        calendar
-                        
-                        Spacer()
-                        
-                        todaysEvents
-                        
-                        todayButton
-                        
-                        dateSection
-                        prayerTimes
-                        
-                        Spacer()
-                    }.padding(.horizontal, 5)
-                }
+            ScrollView {
+                LazyVStack {
+                    datePicker
+                    calendar
+                    
+                    todayButton
+                    
+                    importantDates
+                    todaysEvents
+                    
+                    dateSection
+                    prayerTimes
+                    
+                    Spacer()
+                }.padding(.horizontal, 5)
             }
         }
         .navigationTitle("Calendar")
@@ -54,9 +46,9 @@ struct CalendarView: View {
     private var datePicker: some View {
         HStack {
             Button {
-                if let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth) {
+                if let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarModel.currentMonth) {
                     Task { @MainActor in
-                        currentMonth = newMonth
+                        calendarModel.currentMonth = newMonth
                     }
                 }
             } label: {
@@ -70,9 +62,9 @@ struct CalendarView: View {
             Spacer()
             
             Button {
-                if let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth) {
+                if let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarModel.currentMonth) {
                     Task { @MainActor in
-                        currentMonth = newMonth
+                        calendarModel.currentMonth = newMonth
                     }
                 }
             } label: {
@@ -87,9 +79,9 @@ struct CalendarView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         
-        return formatter.string(from: currentMonth)
+        return formatter.string(from: calendarModel.currentMonth)
     }
-
+    
     private var calendar: some View {
         LazyVGrid(columns: columns) {
             ForEach(Calendar.current.shortWeekdaySymbols) { weekday in
@@ -102,12 +94,13 @@ struct CalendarView: View {
                 Spacer()
             }
             
-            ForEach(datesInMonth) { date in
+            ForEach(datesInMonth.sorted { $0.key < $1.key }, id: \.key) { date in
                 CalendarDay(
-                    date: date,
-                    isSelected: Calendar.current.isDate(date, inSameDayAs: selectedDate),
-                    islamicDate: String(islamicDate(date: date)?.0 ?? 0)) {
-                    selectedDate = date
+                    date: date.key,
+                    isSelected: Calendar.current.isDate(date.key, inSameDayAs: calendarModel.selectedDate),
+                    islamicDate: String(date.value.day)
+                ) {
+                    calendarModel.selectedDate = date.key
                 }
             }
         }
@@ -116,17 +109,17 @@ struct CalendarView: View {
             DragGesture(minimumDistance: 25)
                 .onEnded { value in
                     if value.translation.width > 0 {
-                        if let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth) {
+                        if let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarModel.currentMonth) {
                             Task { @MainActor in
-                                currentMonth = newMonth
+                                calendarModel.currentMonth = newMonth
                             }
                         }
                     }
                     
                     if value.translation.width < 0 {
-                        if let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth) {
+                        if let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarModel.currentMonth) {
                             Task { @MainActor in
-                                currentMonth = newMonth
+                                calendarModel.currentMonth = newMonth
                             }
                         }
                     }
@@ -135,19 +128,19 @@ struct CalendarView: View {
     }
     
     private var firstOfMonth: Int {
-        if let interval = Calendar.current.dateInterval(of: .month, for: currentMonth) {
+        if let interval = Calendar.current.dateInterval(of: .month, for: calendarModel.currentMonth) {
             return Calendar.current.component(.weekday, from: interval.start) - 1
         }
         
         return 0
     }
     
-    private var datesInMonth: [Date] {
-        var dates: [Date] = []
+    private var datesInMonth: [Date : (day: Int, month: Int)] {
+        var dates: [Date : (Int, Int)] = [:]
         let calendar = Calendar.current
         
-        let year = calendar.component(.year, from: currentMonth)
-        let month = calendar.component(.month, from: currentMonth)
+        let year = calendar.component(.year, from: calendarModel.currentMonth)
+        let month = calendar.component(.month, from: calendarModel.currentMonth)
         
         var components = DateComponents(year: year, month: month, day: 1)
         
@@ -158,18 +151,108 @@ struct CalendarView: View {
         for day in range {
             components.day = day
             
-            if let date = calendar.date(from: components) {
-                dates.append(date)
+            if let date = calendar.date(from: components), let islamicDate = islamicDate(date: date) {
+                dates[date] = (islamicDate.day, islamicDate.month)
             }
         }
         
         return dates
     }
     
+    private var importantDates: some View {
+        LazyVStack(spacing: 10) {
+            if importantDatesInMonth.count > 0 {
+                let months = Set(currentIslamicMonths).joined(separator: "/")
+                
+                Text("Important Dates This Month (\(months))")
+                    .font(.system(.title3, weight: .bold))
+                    .multilineTextAlignment(.center)
+            }
+            
+            ForEach(importantDatesInMonth.sorted { $0.value < $1.value }, id: \.key.id) { (importantDate, date) in
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(importantDate.title)
+                            .font(.system(.subheadline, weight: .bold))
+                        
+                        Spacer()
+                        
+                        if let subtitle = importantDate.subtitle {
+                            Text(subtitle)
+                                .font(.caption)
+                        }
+                    }.multilineTextAlignment(.leading)
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .trailing) {
+                        HStack(spacing: 5) {
+                            Text(String(importantDate.date))
+                            
+                            if importantDate.month <= 12 {
+                                Text(islamicMonths[importantDate.month - 1])
+                            }
+                            
+                            if let year = importantDate.year, let yearType = importantDate.yearType {
+                                Text("\(year) \(yearType)")
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        Text(gregorianDateMedium(date: date))
+                    }
+                    .font(.system(.caption, weight: .bold))
+                    .foregroundStyle(Color.secondary)
+                    .multilineTextAlignment(.trailing)
+                }
+                .padding(7.5)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 5))
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.bottom, importantDatesInMonth.count > 0 ? 20 : 0)
+    }
+    
+    private var importantDatesInMonth: [ImportantDate : Date] {
+        let dates = calendarModel.importantDates.compactMap { importantDate in
+            for date in datesInMonth {
+                if importantDate.month == date.value.month && importantDate.date == date.value.day {
+                    return date.key
+                }
+            }
+            
+            return nil
+        }
+        
+        let importantDates = calendarModel.importantDates.filter { importantDate in
+            for date in datesInMonth {
+                if importantDate.month == date.value.month && importantDate.date == date.value.day {
+                    return true
+                }
+            }
+            
+            return false
+        }
+        
+        return Dictionary(uniqueKeysWithValues: zip(importantDates, dates))
+    }
+    
+    private var currentIslamicMonths: [String] {
+        return importantDatesInMonth.compactMap { (importantDate, _) in
+            if importantDate.month <= 12 {
+                return islamicMonths[importantDate.month - 1]
+            }
+            
+            return nil
+        }
+    }
+    
     private var todayButton: some View {
         Button {
-            self.selectedDate = Date()
-            self.currentMonth = Date()
+            calendarModel.selectedDate = Date()
+            calendarModel.currentMonth = Date()
         } label: {
             Text("Today")
         }
@@ -179,7 +262,7 @@ struct CalendarView: View {
     
     private var dateSection: some View {
         VStack(spacing: 10) {
-            Text(gregorianDateText)
+            Text(gregorianDateFull(date: calendarModel.selectedDate))
                 .foregroundStyle(Color.secondary)
                 .font(.system(.subheadline, weight: .bold))
             
@@ -189,19 +272,42 @@ struct CalendarView: View {
         }
     }
     
+    private func gregorianDateFull(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        
+        return formatter.string(from: date)
+    }
+    
+    private func gregorianDateMedium(date: Date) -> String {
+        let day = date.day()
+        let dayOfMonth = date.dayOfMonth()
+        let month = date.month()
+        
+        return "\(day) \(dayOfMonth) \(month)"
+    }
+    
     private var todaysEvents: some View {
-        LazyVStack(spacing: 20) {
-            ForEach(events) { event in
-                NavigationLink {
-                    EventView(event: event)
-                } label: {
-                    EventCard(event: event)
+        VStack(spacing: 10) {
+            if events.count > 0 {
+                Text("Events On \(gregorianDateMedium(date: calendarModel.selectedDate))")
+                    .font(.system(.title3, weight: .bold))
+                    .multilineTextAlignment(.center)
+            }
+            
+            LazyVStack(spacing: 20) {
+                ForEach(events) { event in
+                    NavigationLink {
+                        EventView(event: event)
+                    } label: {
+                        EventCard(event: event)
+                    }
                 }
             }
         }
         .padding(.horizontal, -5)
         .padding(.horizontal)
-        .padding(.top)
+        .padding(.bottom, events.count > 0 ? 20 : 0)
     }
     
     private var events: [ICEvent] {
@@ -209,22 +315,15 @@ struct CalendarView: View {
             if let start = event.dtStart?.date, let end = event.dtEnd?.date {
                 let dateInterval = DateInterval(start: Calendar.current.startOfDay(for: start), end: Calendar.current.startOfDay(for: end))
                 
-                return dateInterval.contains(Calendar.current.startOfDay(for: selectedDate))
+                return dateInterval.contains(Calendar.current.startOfDay(for: calendarModel.selectedDate))
             }
             
             return false
         }
     }
     
-    private var gregorianDateText: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        
-        return formatter.string(from: selectedDate)
-    }
-    
     private var islamicDateText: String {
-        if let (day, month, year) = islamicDate(date: selectedDate) {
+        if let (day, month, year) = islamicDate(date: calendarModel.selectedDate) {
             if month <= 12 {
                 return "\(day) \(islamicMonths[month - 1]) \(String(year))"
             }
@@ -265,7 +364,7 @@ struct CalendarView: View {
     
     private var prayerTimes: some View {
         Group {
-            if let prayerTimes = calendarModel.getPrayerTimes(for: selectedDate) {
+            if let prayerTimes = calendarModel.getPrayerTimes(for: calendarModel.selectedDate) {
                 LazyVGrid(columns: prayerTimesColumns) {
                     Group {
                         PrayerTimeRow(prayer: "Imsaak", time: prayerTimes.imsaak)
@@ -283,10 +382,6 @@ struct CalendarView: View {
             }
         }
     }
-}
-
-extension Date: @retroactive Identifiable {
-    public var id: Date { self }
 }
 
 struct CalendarDay: View {

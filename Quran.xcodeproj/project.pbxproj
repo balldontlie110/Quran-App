@@ -30,6 +30,7 @@
 		A23C6B8B2C35A88800F67DDA /* QuestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */; };
 		A23C6B8D2C35ABEB00F67DDA /* UserProfileSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23C6B8C2C35ABEB00F67DDA /* UserProfileSection.swift */; };
 		A23E2AE62C5126AC008C84E7 /* KFGQPC-Uthmanic-Script-HAFS-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A23E2AE52C5126AC008C84E7 /* KFGQPC-Uthmanic-Script-HAFS-Regular.otf */; };
+		A23E2AE82C51AFDD008C84E7 /* ImportantDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23E2AE72C51AFDD008C84E7 /* ImportantDate.swift */; };
 		A25515042C4BFB1000554784 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A25515032C4BFB1000554784 /* CalendarView.swift */; };
 		A25515072C4C28C500554784 /* Jummah.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A25515062C4C28C500554784 /* Jummah.mp3 */; };
 		A266AC592C3357C20058156B /* NewQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A266AC582C3357C20058156B /* NewQuestionView.swift */; };
@@ -143,6 +144,7 @@
 		A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCard.swift; sourceTree = "<group>"; };
 		A23C6B8C2C35ABEB00F67DDA /* UserProfileSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSection.swift; sourceTree = "<group>"; };
 		A23E2AE52C5126AC008C84E7 /* KFGQPC-Uthmanic-Script-HAFS-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "KFGQPC-Uthmanic-Script-HAFS-Regular.otf"; sourceTree = "<group>"; };
+		A23E2AE72C51AFDD008C84E7 /* ImportantDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportantDate.swift; sourceTree = "<group>"; };
 		A25515032C4BFB1000554784 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		A25515062C4C28C500554784 /* Jummah.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Jummah.mp3; sourceTree = "<group>"; };
 		A266AC582C3357C20058156B /* NewQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionView.swift; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 				A2D43E622C190A8F00C3F21F /* Quran.swift */,
 				A2A9C8752C492CF200F114FD /* Translator.swift */,
 				A2A9C8742C492CF200F114FD /* Reciter.swift */,
+				A23E2AE72C51AFDD008C84E7 /* ImportantDate.swift */,
 				A2975CEF2C1CC414005FA616 /* Dua.swift */,
 				A220AC992C49D7100052F245 /* Ziyarat.swift */,
 				A2C74A492C4B692100D353FC /* Amaal.swift */,
@@ -723,6 +726,7 @@
 				A2975CF02C1CC414005FA616 /* Dua.swift in Sources */,
 				A2A9C86F2C49290000F114FD /* DuaModel.swift in Sources */,
 				A220ACA02C49D9110052F245 /* ZiyaratView.swift in Sources */,
+				A23E2AE82C51AFDD008C84E7 /* ImportantDate.swift in Sources */,
 				A2C706B22C4F13C8008FF0C3 /* FavoritesView.swift in Sources */,
 				A214A7122C34BB03000D12A5 /* QuestionDetailView.swift in Sources */,
 				A220AC982C49D6FF0052F245 /* ZiyaratModel.swift in Sources */,
