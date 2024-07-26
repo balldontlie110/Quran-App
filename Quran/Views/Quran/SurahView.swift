@@ -519,6 +519,7 @@ struct VerseRow: View {
             let separatorPart = String(translation[startIndex..<endIndex])
             var attributedSeparator = AttributedString(separatorPart)
             attributedSeparator.backgroundColor = .yellow
+            attributedSeparator.foregroundColor = .black
             attributedStrings.append(attributedSeparator)
             
             lastEndIndex = endIndex
