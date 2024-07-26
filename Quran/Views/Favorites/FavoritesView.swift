@@ -17,6 +17,7 @@ struct FavoritesView: View {
     @EnvironmentObject private var amaalModel: AmaalModel
     
     @Binding var showFavoritesView: Bool
+    @Binding var navigateTo: AnyView?
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Favorite.date, ascending: true)],
@@ -28,7 +29,7 @@ struct FavoritesView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack {
+                LazyVStack(spacing: 20){
                     surahsSection
                     duasSection
                     ziaraahSection
@@ -54,71 +55,91 @@ struct FavoritesView: View {
     }
     
     private var surahsSection: some View {
-        LazyVStack(alignment: .leading) {
+        LazyVStack(alignment: .leading, spacing: 10) {
             if surahs.count > 0 {
                 Text("Surahs")
                     .font(.title)
                     .bold()
                 
                 ForEach(surahs) { surah in
-                    SurahCard(context: viewContext, favorites: favorites, surah: surah, initalScroll: nil)
-                }
-                
-                if surahs.count != 0 {
-                    Divider()
-                        .padding(.bottom)
+                    Button {
+                        self.showFavoritesView = false
+                        self.navigateTo = AnyView(SurahView(surah: surah))
+                    } label: {
+                        SurahCard(surah: surah, isFavorite: true) {
+                            favoriteSurah(surah: surah)
+                        }
+                    }
                 }
             }
         }
     }
     
+    private func favoriteSurah(surah: Surah) {
+        if let favorite = favorites.first(where: { favorite in
+            favorite.surahId == surah.id
+        }) {
+            viewContext.delete(favorite)
+        } else {
+            let favorite = Favorite(context: viewContext)
+            favorite.surahId = Int64(surah.id)
+        }
+        
+        try? viewContext.save()
+    }
+    
     private var duasSection: some View {
-        LazyVStack(alignment: .leading) {
+        LazyVStack(alignment: .leading, spacing: 10) {
             if duas.count > 0 {
                 Text("Duas")
                     .font(.title)
                     .bold()
                 
                 ForEach(duas) { dua in
-                    DuaCard(context: viewContext, favorites: favorites, dua: dua)
-                }
-                
-                if ziaraah.count != 0 {
-                    Divider()
-                        .padding(.bottom)
+                    Button {
+                        self.showFavoritesView = false
+                        self.navigateTo = AnyView(DuaView(dua: dua))
+                    } label: {
+                        DuaCard(context: viewContext, favorites: favorites, dua: dua)
+                    }
                 }
             }
         }
     }
     
     private var ziaraahSection: some View {
-        LazyVStack(alignment: .leading) {
+        LazyVStack(alignment: .leading, spacing: 10) {
             if ziaraah.count > 0 {
                 Text("Ziaraah")
                     .font(.title)
                     .bold()
                 
                 ForEach(ziaraah) { ziyarat in
-                    ZiyaratCard(context: viewContext, favorites: favorites, ziyarat: ziyarat)
-                }
-                
-                if amaals.count != 0 {
-                    Divider()
-                        .padding(.bottom)
+                    Button {
+                        self.showFavoritesView = false
+                        self.navigateTo = AnyView(ZiyaratView(ziyarat: ziyarat))
+                    } label: {
+                        ZiyaratCard(context: viewContext, favorites: favorites, ziyarat: ziyarat)
+                    }
                 }
             }
         }
     }
     
     private var amaalsSection: some View {
-        LazyVStack(alignment: .leading) {
+        LazyVStack(alignment: .leading, spacing: 10) {
             if amaals.count > 0 {
                 Text("Amaals")
                     .font(.title)
                     .bold()
                 
                 ForEach(amaals) { amaal in
-                    AmaalCard(context: viewContext, favorites: favorites, amaal: amaal)
+                    Button {
+                        self.showFavoritesView = false
+                        self.navigateTo = AnyView(AmaalView(amaal: amaal))
+                    } label: {
+                        AmaalCard(context: viewContext, favorites: favorites, amaal: amaal)
+                    }
                 }
             }
         }
@@ -166,5 +187,5 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    FavoritesView(showFavoritesView: .constant(true))
+    FavoritesView(showFavoritesView: .constant(true), navigateTo: .constant(nil))
 }

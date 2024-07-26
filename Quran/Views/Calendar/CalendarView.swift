@@ -9,7 +9,7 @@ import SwiftUI
 import iCalendarParser
 
 struct CalendarView: View {
-    @EnvironmentObject private var calendarModel: CalendarModel
+    @ObservedObject private var calendarModel: CalendarModel = CalendarModel()
     @EnvironmentObject private var eventsModel: EventsModel
     
     private let columns: [GridItem] = [GridItem](repeating: GridItem(.flexible()), count: 7)
@@ -21,23 +21,21 @@ struct CalendarView: View {
     private let islamicMonths = ["Muharram", "Safar", "Rabi Al Awwal", "Rabi Al Thaani", "Jamaada Al Ula", "Jamaada Al Thani", "Rajab", "Shabaan", "Ramadan", "Shawwal", "Dhu Al Qadah", "Dhu Al Hijjah"]
     
     var body: some View {
-        VStack {
-            ScrollView {
-                LazyVStack {
-                    datePicker
-                    calendar
-                    
-                    todayButton
-                    
-                    importantDates
-                    todaysEvents
-                    
-                    dateSection
-                    prayerTimes
-                    
-                    Spacer()
-                }.padding(.horizontal, 5)
-            }
+        ScrollView {
+            LazyVStack {
+                datePicker
+                calendar
+                
+                todayButton
+                
+                importantDates
+                selectedDateEvents
+                
+                dateSection
+                prayerTimes
+                
+                Spacer()
+            }.padding(.horizontal, 5)
         }
         .navigationTitle("Calendar")
         .navigationBarTitleDisplayMode(.inline)
@@ -57,7 +55,7 @@ struct CalendarView: View {
             
             Spacer()
             
-            Text(monthYearText)
+            monthYearText
             
             Spacer()
             
@@ -75,56 +73,66 @@ struct CalendarView: View {
         .padding()
     }
     
-    private var monthYearText: String {
+    private var monthYearText: Text {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         
-        return formatter.string(from: calendarModel.currentMonth)
+        return Text(formatter.string(from: calendarModel.currentMonth))
     }
     
     private var calendar: some View {
         LazyVGrid(columns: columns) {
-            ForEach(Calendar.current.shortWeekdaySymbols) { weekday in
-                Text(weekday.uppercased())
-                    .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(Color.secondary)
-            }
+            weekdayHeaders
             
             ForEach(0..<firstOfMonth, id: \.self) { _ in
                 Spacer()
             }
             
-            ForEach(datesInMonth.sorted { $0.key < $1.key }, id: \.key) { date in
-                CalendarDay(
-                    date: date.key,
-                    isSelected: Calendar.current.isDate(date.key, inSameDayAs: calendarModel.selectedDate),
-                    islamicDate: String(date.value.day)
-                ) {
-                    calendarModel.selectedDate = date.key
-                }
-            }
+            calendarDays
         }
         .contentShape(Rectangle())
-        .gesture(
-            DragGesture(minimumDistance: 25)
-                .onEnded { value in
-                    if value.translation.width > 0 {
-                        if let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarModel.currentMonth) {
-                            Task { @MainActor in
-                                calendarModel.currentMonth = newMonth
-                            }
-                        }
-                    }
-                    
-                    if value.translation.width < 0 {
-                        if let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarModel.currentMonth) {
-                            Task { @MainActor in
-                                calendarModel.currentMonth = newMonth
-                            }
+        .gesture(swipeMonthGesture)
+    }
+    
+    private var weekdayHeaders: some View {
+        ForEach(Calendar.current.shortWeekdaySymbols) { weekday in
+            Text(weekday.uppercased())
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Color.secondary)
+        }
+    }
+    
+    private var calendarDays: some View {
+        ForEach(datesInMonth.sorted { $0.key < $1.key }, id: \.key) { date in
+            CalendarDay(
+                date: date.key,
+                isSelected: Calendar.current.isDate(date.key, inSameDayAs: calendarModel.selectedDate),
+                islamicDate: String(date.value.day)
+            ) {
+                calendarModel.selectedDate = date.key
+            }
+        }
+    }
+    
+    private var swipeMonthGesture: some Gesture {
+        DragGesture(minimumDistance: 25)
+            .onEnded { value in
+                if value.translation.width > 0 {
+                    if let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: calendarModel.currentMonth) {
+                        Task { @MainActor in
+                            calendarModel.currentMonth = newMonth
                         }
                     }
                 }
-        )
+                
+                if value.translation.width < 0 {
+                    if let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: calendarModel.currentMonth) {
+                        Task { @MainActor in
+                            calendarModel.currentMonth = newMonth
+                        }
+                    }
+                }
+            }
     }
     
     private var firstOfMonth: Int {
@@ -159,60 +167,48 @@ struct CalendarView: View {
         return dates
     }
     
+    private var todayButton: some View {
+        Button {
+            calendarModel.selectedDate = Date()
+            calendarModel.currentMonth = Date()
+        } label: {
+            Text("Today")
+        }
+        .buttonStyle(BorderedButtonStyle())
+        .padding(.vertical)
+    }
+    
     private var importantDates: some View {
         LazyVStack(spacing: 10) {
-            if importantDatesInMonth.count > 0 {
-                let months = Set(currentIslamicMonths).joined(separator: "/")
-                
-                Text("Important Dates This Month (\(months))")
-                    .font(.system(.title3, weight: .bold))
-                    .multilineTextAlignment(.center)
-            }
+            importantDatesHeader
             
             ForEach(importantDatesInMonth.sorted { $0.value < $1.value }, id: \.key.id) { (importantDate, date) in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(importantDate.title)
-                            .font(.system(.subheadline, weight: .bold))
-                        
-                        Spacer()
-                        
-                        if let subtitle = importantDate.subtitle {
-                            Text(subtitle)
-                                .font(.caption)
-                        }
-                    }.multilineTextAlignment(.leading)
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing) {
-                        HStack(spacing: 5) {
-                            Text(String(importantDate.date))
-                            
-                            if importantDate.month <= 12 {
-                                Text(islamicMonths[importantDate.month - 1])
-                            }
-                            
-                            if let year = importantDate.year, let yearType = importantDate.yearType {
-                                Text("\(year) \(yearType)")
-                            }
-                        }
-                        
-                        Spacer()
-                        
-                        Text(gregorianDateMedium(date: date))
-                    }
-                    .font(.system(.caption, weight: .bold))
-                    .foregroundStyle(Color.secondary)
-                    .multilineTextAlignment(.trailing)
-                }
-                .padding(7.5)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 5))
+                ImportantDateCard(importantDate: importantDate, date: date)
             }
         }
         .padding(.horizontal, 10)
         .padding(.bottom, importantDatesInMonth.count > 0 ? 20 : 0)
+    }
+    
+    @ViewBuilder
+    private var importantDatesHeader: some View {
+        if importantDatesInMonth.count > 0 {
+            Text("Important Dates This Month (\(currentIslamicMonths))")
+                .font(.system(.title3, weight: .bold))
+                .multilineTextAlignment(.center)
+        }
+    }
+    
+    private var currentIslamicMonths: String {
+        let currentIslamicMonths = importantDatesInMonth.compactMap { (importantDate, _) in
+            if importantDate.month <= 12 {
+                return islamicMonths[importantDate.month - 1]
+            }
+            
+            return nil
+        }
+        
+        return Set(currentIslamicMonths).joined(separator: "/")
     }
     
     private var importantDatesInMonth: [ImportantDate : Date] {
@@ -239,61 +235,9 @@ struct CalendarView: View {
         return Dictionary(uniqueKeysWithValues: zip(importantDates, dates))
     }
     
-    private var currentIslamicMonths: [String] {
-        return importantDatesInMonth.compactMap { (importantDate, _) in
-            if importantDate.month <= 12 {
-                return islamicMonths[importantDate.month - 1]
-            }
-            
-            return nil
-        }
-    }
-    
-    private var todayButton: some View {
-        Button {
-            calendarModel.selectedDate = Date()
-            calendarModel.currentMonth = Date()
-        } label: {
-            Text("Today")
-        }
-        .buttonStyle(BorderedButtonStyle())
-        .padding(.vertical)
-    }
-    
-    private var dateSection: some View {
+    private var selectedDateEvents: some View {
         VStack(spacing: 10) {
-            Text(gregorianDateFull(date: calendarModel.selectedDate))
-                .foregroundStyle(Color.secondary)
-                .font(.system(.subheadline, weight: .bold))
-            
-            HStack {
-                Text(islamicDateText)
-            }.font(.system(.title2, weight: .bold))
-        }
-    }
-    
-    private func gregorianDateFull(date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        
-        return formatter.string(from: date)
-    }
-    
-    private func gregorianDateMedium(date: Date) -> String {
-        let day = date.day()
-        let dayOfMonth = date.dayOfMonth()
-        let month = date.month()
-        
-        return "\(day) \(dayOfMonth) \(month)"
-    }
-    
-    private var todaysEvents: some View {
-        VStack(spacing: 10) {
-            if events.count > 0 {
-                Text("Events On \(gregorianDateMedium(date: calendarModel.selectedDate))")
-                    .font(.system(.title3, weight: .bold))
-                    .multilineTextAlignment(.center)
-            }
+            selectedDateEventsHeader
             
             LazyVStack(spacing: 20) {
                 ForEach(events) { event in
@@ -310,6 +254,23 @@ struct CalendarView: View {
         .padding(.bottom, events.count > 0 ? 20 : 0)
     }
     
+    @ViewBuilder
+    private var selectedDateEventsHeader: some View {
+        if events.count > 0 {
+            selectedDateGregorianText
+                .multilineTextAlignment(.center)
+        }
+    }
+    
+    private var selectedDateGregorianText: Text {
+        let day = calendarModel.selectedDate.day()
+        let dayOfMonth = calendarModel.selectedDate.dayOfMonth()
+        let month = calendarModel.selectedDate.month()
+        
+        return Text("Events on \(day) \(dayOfMonth) \(month)")
+            .font(.system(.title3, weight: .bold))
+    }
+    
     private var events: [ICEvent] {
         return eventsModel.events.filter { event in
             if let start = event.dtStart?.date, let end = event.dtEnd?.date {
@@ -322,14 +283,30 @@ struct CalendarView: View {
         }
     }
     
-    private var islamicDateText: String {
-        if let (day, month, year) = islamicDate(date: calendarModel.selectedDate) {
-            if month <= 12 {
-                return "\(day) \(islamicMonths[month - 1]) \(String(year))"
-            }
+    private var dateSection: some View {
+        VStack(spacing: 10) {
+            gregorianDateText
+            
+            islamicDateText
+        }
+    }
+    
+    private var gregorianDateText: Text {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        
+        return Text(formatter.string(from: calendarModel.selectedDate))
+            .foregroundStyle(Color.secondary)
+            .font(.system(.subheadline, weight: .bold))
+    }
+    
+    private var islamicDateText: Text {
+        if let (day, month, year) = islamicDate(date: calendarModel.selectedDate), month <= 12 {
+            return Text("\(day) \(islamicMonths[month - 1]) \(String(year))")
+                .font(.system(.title2, weight: .bold))
         }
         
-        return ""
+        return Text("")
     }
     
     private func islamicDate(date: Date) -> (day: Int, month: Int, year: Int)? {
@@ -362,25 +339,93 @@ struct CalendarView: View {
         return Int(floor(Double(value)))
     }
     
+    @ViewBuilder
     private var prayerTimes: some View {
-        Group {
-            if let prayerTimes = calendarModel.getPrayerTimes(for: calendarModel.selectedDate) {
-                LazyVGrid(columns: prayerTimesColumns) {
-                    Group {
-                        PrayerTimeRow(prayer: "Imsaak", time: prayerTimes.imsaak)
-                        PrayerTimeRow(prayer: "Fajr", time: prayerTimes.dawn)
-                        PrayerTimeRow(prayer: "Sunrise", time: prayerTimes.sunrise)
-                        PrayerTimeRow(prayer: "Zuhr", time: prayerTimes.noon)
-                        PrayerTimeRow(prayer: "Sunset", time: prayerTimes.sunset)
-                        PrayerTimeRow(prayer: "Maghrib", time: prayerTimes.maghrib)
-                        PrayerTimeRow(prayer: "Midnight", time: prayerTimes.midnight)
-                    }.padding(.vertical, 7.5)
-                }
-                .multilineTextAlignment(.center)
-                .font(.system(.title2))
-                .padding(.horizontal, 50)
+        if let prayerTimes = calendarModel.getPrayerTimes(for: calendarModel.selectedDate) {
+            LazyVGrid(columns: prayerTimesColumns) {
+                Group {
+                    PrayerTimeRow(prayer: "Imsaak", time: prayerTimes.imsaak)
+                    PrayerTimeRow(prayer: "Fajr", time: prayerTimes.dawn)
+                    PrayerTimeRow(prayer: "Sunrise", time: prayerTimes.sunrise)
+                    PrayerTimeRow(prayer: "Zuhr", time: prayerTimes.noon)
+                    PrayerTimeRow(prayer: "Sunset", time: prayerTimes.sunset)
+                    PrayerTimeRow(prayer: "Maghrib", time: prayerTimes.maghrib)
+                    PrayerTimeRow(prayer: "Midnight", time: prayerTimes.midnight)
+                }.padding(.vertical, 7.5)
+            }
+            .multilineTextAlignment(.center)
+            .font(.system(.title2))
+            .padding(.horizontal, 50)
+        }
+    }
+}
+
+struct ImportantDateCard: View {
+    let importantDate: ImportantDate
+    let date: Date
+    
+    private let islamicMonths = ["Muharram", "Safar", "Rabi Al Awwal", "Rabi Al Thaani", "Jamaada Al Ula", "Jamaada Al Thani", "Rajab", "Shabaan", "Ramadan", "Shawwal", "Dhu Al Qadah", "Dhu Al Hijjah"]
+    
+    var body: some View {
+        HStack {
+            importantDateInfo
+            
+            Spacer()
+            
+            importantDateDateInfo
+        }
+        .padding(7.5)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 5))
+    }
+    
+    private var importantDateInfo: some View {
+        VStack(alignment: .leading) {
+            Text(importantDate.title)
+                .font(.system(.subheadline, weight: .bold))
+            
+            Spacer()
+            
+            if let subtitle = importantDate.subtitle {
+                Text(subtitle)
+                    .font(.caption)
+            }
+        }.multilineTextAlignment(.leading)
+    }
+    
+    private var importantDateDateInfo: some View {
+        VStack(alignment: .trailing) {
+            islamicDateText
+            
+            Spacer()
+            
+            gregorianDateText
+        }
+        .font(.system(.caption, weight: .bold))
+        .foregroundStyle(Color.secondary)
+        .multilineTextAlignment(.trailing)
+    }
+    
+    private var islamicDateText: some View {
+        HStack(spacing: 5) {
+            Text(String(importantDate.date))
+            
+            if importantDate.month <= 12 {
+                Text(islamicMonths[importantDate.month - 1])
+            }
+            
+            if let year = importantDate.year, let yearType = importantDate.yearType {
+                Text("\(year) \(yearType)")
             }
         }
+    }
+    
+    private var gregorianDateText: Text {
+        let day = date.day()
+        let dayOfMonth = date.dayOfMonth()
+        let month = date.month()
+        
+        return Text("\(day) \(dayOfMonth) \(month)")
     }
 }
 
@@ -394,12 +439,9 @@ struct CalendarDay: View {
     
     var body: some View {
         VStack(spacing: 5) {
-            Text(islamicDate)
-                .font(.caption2)
-                .foregroundStyle(colorScheme == .dark ? Color.secondary : Color.gray)
+            islamicDateText
             
-            Text("\(Calendar.current.component(.day, from: date))")
-                .foregroundStyle(isSelected ? Color.white : Color.primary)
+            gregorianDateText
         }
         .padding(.vertical, 5)
         .frame(maxWidth: .infinity)
@@ -408,6 +450,17 @@ struct CalendarDay: View {
         .onTapGesture {
             action()
         }
+    }
+    
+    private var islamicDateText: Text {
+        Text(islamicDate)
+            .font(.caption2)
+            .foregroundStyle(colorScheme == .dark ? Color.secondary : Color.gray)
+    }
+    
+    private var gregorianDateText: Text {
+        Text("\(Calendar.current.component(.day, from: date))")
+            .foregroundStyle(isSelected ? Color.white : Color.primary)
     }
     
     private func isToday() -> Bool {

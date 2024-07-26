@@ -10,6 +10,7 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import FirebaseStorage
 import FirebaseAuth
+import Combine
 
 class QuestionsModel: ObservableObject {
     @Published var questions: [Question] = []
@@ -18,6 +19,7 @@ class QuestionsModel: ObservableObject {
     @Published var question: Question?
     @Published var answers: [Answer] = []
     @Published var answersUserProfiles: [UserProfile] = []
+    @Published var responsesUserProfiles: [UserProfile] = []
     
     init() {
         fetchQuestions()
@@ -25,7 +27,7 @@ class QuestionsModel: ObservableObject {
     
     private func fetchQuestions() {
         Firestore.firestore().collection("questions").addSnapshotListener { snapshot, error in
-            if let error = error {
+            if error != nil {
                 return
             }
             
@@ -53,22 +55,21 @@ class QuestionsModel: ObservableObject {
         }
     }
     
+    @MainActor
     func fetchAnswers(_ question: Question) {
         self.answers = []
         
         if let documentID = question.id {
             Firestore.firestore().collection("questions").document(documentID).collection("answers").addSnapshotListener { snapshot, error in
-                if let error = error {
+                if error != nil {
                     return
                 }
                 
                 snapshot?.documentChanges.forEach { documentSnapshot in
-                    if let answer = try? documentSnapshot.document.data(as: Answer.self) {
+                    if var answer = try? documentSnapshot.document.data(as: Answer.self) {
                         self.answers.removeAll { check in
                             check.id == answer.id
                         }
-                        
-                        self.answers.append(answer)
                         
                         Task {
                             if let userProfile = try? await self.fetchUserProfile(answer.answeruid) {
@@ -77,7 +78,43 @@ class QuestionsModel: ObservableObject {
                                 }
                             }
                         }
+                        
+                        self.fetchResponses(question: question, answer: answer) { responses in
+                            answer.responses = responses
+                            
+                            self.answers.append(answer)
+                        }
                     }
+                }
+            }
+        }
+    }
+    
+    func fetchResponses(question: Question, answer: Answer, completion: @escaping ([Response]) -> Void) {
+        var responses: [Response] = []
+        
+        if let questionId = question.id, let answerId = answer.id {
+            Firestore.firestore().collection("questions").document(questionId).collection("answers").document(answerId).collection("responses").getDocuments { snapshot, error in
+                if error != nil {
+                    return
+                }
+                
+                snapshot?.documents.forEach { document in
+                    if let response = try? document.data(as: Response.self) {
+                        responses.append(response)
+                        
+                        Task {
+                            if let userProfile = try? await self.fetchUserProfile(response.responseuid) {
+                                DispatchQueue.main.async {
+                                    self.responsesUserProfiles.append(userProfile)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    completion(responses)
                 }
             }
         }
@@ -107,7 +144,7 @@ class QuestionsModel: ObservableObject {
     
     func newAnswer(answer: String, questionId: String) {
         if let uid = Auth.auth().currentUser?.uid {
-            let answer = Answer(answer: answer, accepted: false, answeruid: uid, timestamp: Timestamp())
+            let answer = Answer(answer: answer, accepted: false, answeruid: uid, timestamp: Timestamp(), responsesCount: 0)
             
             addNewAnswer(answer, questionId: questionId)
         }
@@ -120,6 +157,24 @@ class QuestionsModel: ObservableObject {
         
         questionDocument.updateData([
             "answersCount" : FieldValue.increment(1.0)
+        ])
+    }
+    
+    func newResponse(response: String, questionId: String, answerId: String) {
+        if let uid = Auth.auth().currentUser?.uid {
+            let response = Response(response: response, responseuid: uid, timestamp: Timestamp())
+            
+            addNewResponse(response, questionId: questionId, answerId: answerId)
+        }
+    }
+    
+    private func addNewResponse(_ response: Response, questionId: String, answerId: String) {
+        let answerDocument = Firestore.firestore().collection("questions").document(questionId).collection("answers").document(answerId)
+        
+        _ = try? answerDocument.collection("responses").addDocument(from: response)
+        
+        answerDocument.updateData([
+            "responsesCount" : FieldValue.increment(1.0)
         ])
     }
     
@@ -141,4 +196,81 @@ struct UserProfile: Identifiable {
     
     let username: String
     let photoURL: URL
+}
+
+class QuestionsFilterModel: ObservableObject {
+    @Published var searchText: String = ""
+    @Published var answerState: Int = 0
+    
+    @Published var questionsModel: QuestionsModel
+    @Published var filteredQuestions: [Question] = []
+    @Published var isLoading: Bool = false
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(questionsModel: QuestionsModel) {
+        self.questionsModel = questionsModel
+        
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
+            .map { [weak self] text in
+                self?.setLoading(true)
+                let result = self?.filterQuestions(with: text) ?? []
+                self?.setLoading(false)
+                return result
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.filteredQuestions, on: self)
+            .store(in: &cancellables)
+    }
+
+    private func filterQuestions(with searchText: String) -> [Question] {
+        let cleanedSearchText = searchText.lowercasedLettersAndNumbers
+        
+        guard !cleanedSearchText.isEmpty else { return questionsModel.questions }
+        
+        let sortedByTimestamp = questionsModel.questions.sorted { question1, question2 in
+            question1.timestamp.dateValue() > question2.timestamp.dateValue()
+        }
+        
+        if answerState == 1 {
+            let filteredByAnswerState = sortedByTimestamp.filter { question in
+                question.answered == true
+            }
+            
+            return filteredByAnswerState.filter { question in
+                question.containsSearchText(cleanedSearchText)
+            }
+        } else if answerState == 2 {
+            let filteredByAnswerState = sortedByTimestamp.filter { question in
+                question.answered == false
+            }
+            
+            return filteredByAnswerState.filter { question in
+                question.containsSearchText(cleanedSearchText)
+            }
+        } else {
+            return sortedByTimestamp.filter { question in
+                question.containsSearchText(cleanedSearchText)
+            }
+        }
+    }
+    
+    private func setLoading(_ loading: Bool) {
+        DispatchQueue.main.async {
+            self.isLoading = loading
+        }
+    }
+}
+
+extension Question {
+    func containsSearchText(_ searchText: String) -> Bool {
+        if searchText == "" {
+            return true
+        } else {
+            return self.questionTitle.lowercasedLettersAndNumbers.contains(searchText) || self.question.lowercasedLettersAndNumbers.contains(searchText)
+        }
+    }
 }

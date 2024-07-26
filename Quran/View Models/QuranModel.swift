@@ -225,9 +225,9 @@ class QuranFilterModel: ObservableObject {
     }
 
     private func filterQuran(with searchText: String) -> [Surah] {
-        guard !searchText.isEmpty else { return quranModel.quran }
-        
         let cleanedSearchText = searchText.lowercasedLettersAndNumbers
+        
+        guard !cleanedSearchText.isEmpty else { return quranModel.quran }
         
         return quranModel.quran.filter { surah in
             if String(surah.id) == cleanedSearchText {

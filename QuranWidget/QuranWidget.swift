@@ -36,7 +36,7 @@ struct Provider: TimelineProvider {
                     entries.append(entry)
                 }
                 
-                if let updateDate = Calendar.current.date(byAdding: .hour, value: 12, to: Calendar.current.startOfDay(for: .now)) {
+                if let updateDate = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: .now)) {
                     let timeline = Timeline(entries: entries, policy: .after(updateDate))
                     completion(timeline)
                 }
@@ -45,7 +45,7 @@ struct Provider: TimelineProvider {
     }
     
     private func fetchPrayerTimes(completion: @escaping ([String: String]?) -> Void) {
-        let url = "https://najaf.org/english/"
+        let url = "https://najaf.org/english/?cachebust=\(UUID().uuidString)"
 
         AF.request(url).responseString { response in
             switch response.result {
@@ -65,7 +65,7 @@ struct Provider: TimelineProvider {
                     
                     completion(prayerTimes)
                 }
-            case .failure(let error):
+            case .failure(_):
                 completion(nil)
             }
         }
@@ -92,7 +92,7 @@ struct Provider: TimelineProvider {
                         completion(islamicDate)
                     }
                 }
-            case .failure(let error):
+            case .failure(_):
                 completion(nil)
             }
         }

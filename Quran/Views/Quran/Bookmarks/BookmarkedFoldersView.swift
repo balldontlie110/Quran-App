@@ -35,15 +35,31 @@ struct BookmarkedFoldersView: View {
         ScrollView {
             LazyVStack {
                 if let readingBookmark = readingBookmark.first {
-                    BookmarkedVerseCard(viewContext: viewContext, quranModel: quranModel, verse: readingBookmark)
-                        .foregroundStyle(Color.primary)
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                    BookmarkedVerseCard(quranModel: quranModel, verse: readingBookmark) { verse in
+                        viewContext.delete(verse)
+                        
+                        try? viewContext.save()
+                    }
+                    .foregroundStyle(Color.primary)
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
                 }
                 
                 ForEach(bookmarkedFolders) { folder in
-                    BookmarkedFolderCard(viewContext: viewContext, quranModel: quranModel, folder: folder)
+                    BookmarkedFolderCard(quranModel: quranModel, folder: folder) {
+                        viewContext.delete(folder)
+                        
+                        try? viewContext.save()
+                    } removeVerse: { verse in
+                        viewContext.delete(verse)
+                        
+                        try? viewContext.save()
+                    } addAnswerToQuestion: { verse, answer in
+                        verse.answer = answer
+                        
+                        try? viewContext.save()
+                    }
                 }
             }.padding(.horizontal)
         }.navigationTitle("Bookmarks")
@@ -51,16 +67,23 @@ struct BookmarkedFoldersView: View {
 }
 
 struct BookmarkedFolderCard: View {
-    let viewContext: NSManagedObjectContext
-    
     let quranModel: QuranModel
     
     let folder: BookmarkedFolder
     
+    let deleteFolder: () -> Void
+    
+    let removeVerse: (BookmarkedVerse) -> Void
+    let addAnswerToQuestion: (BookmarkedVerse, String) -> Void
+    
     var body: some View {
         NavigationLink {
             if let bookmarkedVerses = folder.verses?.allObjects as? [BookmarkedVerse] {
-                BookmarkedVersesView(quranModel: quranModel, title: folder.title, bookmarkedVerses: bookmarkedVerses)
+                BookmarkedVersesView(quranModel: quranModel, title: folder.title, bookmarkedVerses: bookmarkedVerses) { verse in
+                    removeVerse(verse)
+                } addAnswerToQuestion: { verse, answer in
+                    addAnswerToQuestion(verse, answer)
+                }
             }
         } label: {
             HStack(spacing: 15) {
@@ -106,7 +129,7 @@ struct BookmarkedFolderCard: View {
         Group {
             if !folder.questionFolder {
                 Button {
-                    deleteFolder(folder)
+                    deleteFolder()
                 } label: {
                     Image(systemName: "trash")
                         .foregroundStyle(Color.red)
@@ -119,12 +142,6 @@ struct BookmarkedFolderCard: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: date ?? Date())
-    }
-    
-    private func deleteFolder(_ folder: BookmarkedFolder) {
-        viewContext.delete(folder)
-        
-        try? viewContext.save()
     }
 }
 

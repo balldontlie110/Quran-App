@@ -9,27 +9,32 @@ import SwiftUI
 import CoreData
 
 struct BookmarkedVersesView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    
     let quranModel: QuranModel
     
     let title: String?
-    let bookmarkedVerses: [BookmarkedVerse]
+    var bookmarkedVerses: [BookmarkedVerse]
     
     @State private var readMores: [UUID] = []
     @State private var addAnswer: UUID?
     
     @State private var answer: String = ""
     
+    let removeVerse: (BookmarkedVerse) -> Void
+    let addAnswerToQuestion: (BookmarkedVerse, String) -> Void
+    
     var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach(bookmarkedVerses) { verse in
                     LazyVStack(spacing: 10) {
-                        BookmarkedVerseCard(viewContext: viewContext, quranModel: quranModel, verse: verse)
+                        BookmarkedVerseCard(quranModel: quranModel, verse: verse) { verse in
+                            removeVerse(verse)
+                        }
                         
                         if verse.question {
-                            QuestionVerse(viewContext: viewContext, verse: verse, readMores: $readMores, addAnswer: $addAnswer, answer: $answer)
+                            QuestionVerse(verse: verse, readMores: $readMores, addAnswer: $addAnswer, answer: $answer) { answer in
+                                addAnswerToQuestion(verse, answer)
+                            }
                         }
                     }
                     .foregroundStyle(Color.primary)
@@ -43,13 +48,13 @@ struct BookmarkedVersesView: View {
 }
 
 struct QuestionVerse: View {
-    let viewContext: NSManagedObjectContext
-    
     let verse: BookmarkedVerse
     
     @Binding var readMores: [UUID]
     @Binding var addAnswer: UUID?
     @Binding var answer: String
+    
+    let addAnswerToQuestion: (String) -> Void
     
     var body: some View {
         HStack(alignment: .top, spacing: 15) {
@@ -132,7 +137,10 @@ struct QuestionVerse: View {
             if addAnswer == verse.id {
                 Button {
                     if answer != "" {
-                        addAnswerToQuestion()
+                        addAnswerToQuestion(answer)
+                        
+                        self.addAnswer = nil
+                        self.answer = ""
                     }
                 } label: {
                     Text("Add")
@@ -173,15 +181,6 @@ struct QuestionVerse: View {
             }
         }
     }
-    
-    private func addAnswerToQuestion() {
-        verse.answer = answer
-        
-        self.addAnswer = nil
-        self.answer = ""
-        
-        try? viewContext.save()
-    }
 }
 
 @available(iOS 18.0, *)
@@ -193,6 +192,9 @@ struct QuestionVerse: View {
     
     var bookmarkedVerses: FetchedResults<BookmarkedVerse>
     
-    BookmarkedVersesView(quranModel: QuranModel(), title: "", bookmarkedVerses: Array(bookmarkedVerses))
-        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+    BookmarkedVersesView(quranModel: QuranModel(), title: nil, bookmarkedVerses: Array(bookmarkedVerses)) { _ in
+        
+    } addAnswerToQuestion: { _, _ in
+        
+    }.environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

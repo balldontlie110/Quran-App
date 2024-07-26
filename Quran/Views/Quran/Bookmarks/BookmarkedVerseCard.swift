@@ -9,11 +9,11 @@ import SwiftUI
 import CoreData
 
 struct BookmarkedVerseCard: View {
-    let viewContext: NSManagedObjectContext
-    
     @StateObject var quranModel: QuranModel
 
     let verse: BookmarkedVerse
+    
+    let removeVerse: (BookmarkedVerse) -> Void
 
     var body: some View {
         NavigationLink {
@@ -82,17 +82,13 @@ struct BookmarkedVerseCard: View {
         formatter.dateStyle = .medium
         return formatter.string(from: date ?? Date())
     }
-    
-    private func removeVerse(_ verse: BookmarkedVerse) {
-        viewContext.delete(verse)
-        
-        try? viewContext.save()
-    }
 }
 
 @available(iOS 18.0, *)
 #Preview {
     @Previewable @Environment(\.managedObjectContext) var viewContext
     
-    BookmarkedVerseCard(viewContext: viewContext, quranModel: QuranModel(), verse: BookmarkedVerse(context: viewContext))
+    BookmarkedVerseCard(quranModel: QuranModel(), verse: BookmarkedVerse(context: viewContext)) { _ in
+        
+    }
 }

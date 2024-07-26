@@ -79,7 +79,7 @@ struct QuestionCard: View {
     }
     
     private func getVerse(_ verse: Verse) -> Verse {
-        return Verse(id: verse.id, text: verse.text + " " + getArabicNumber(verse.id), translations: [], audio: "")
+        return Verse(id: verse.id, text: verse.text + " " + getArabicNumber(verse.id), translations: [], words: [], audio: "")
     }
     
     private func getArabicNumber(_ number: Int) -> String {

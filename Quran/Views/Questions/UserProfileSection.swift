@@ -14,6 +14,9 @@ struct UserProfileSection: View {
     let uid: String
     let timestamp: Timestamp
     
+    var size: CGFloat = 40
+    var font: Font.TextStyle = .caption
+    
     var body: some View {
         let userProfile = userProfiles.first(where: { $0.id == uid })
         
@@ -22,7 +25,7 @@ struct UserProfileSection: View {
             Text(timestamp.string())
         }
         .foregroundStyle(Color.secondary)
-        .font(.system(.caption, weight: .semibold))
+        .font(.system(font, weight: .semibold))
         .multilineTextAlignment(.trailing)
         
         WebImage(url: userProfile?.photoURL) { image in
@@ -32,7 +35,7 @@ struct UserProfileSection: View {
                 .clipShape(Circle())
         } placeholder: {
             EmptyView()
-        }.frame(width: 40, height: 40)
+        }.frame(width: size, height: size)
     }
 }
 

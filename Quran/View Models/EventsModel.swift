@@ -20,7 +20,7 @@ class EventsModel: ObservableObject {
     private func fetchEvents() {
         if let calendarUrl = URL(string: "https://hyderi.org.uk/all-events/list/?hide_subsequent_recurrences=1&ical=1") {
             URLSession.shared.dataTask(with: calendarUrl) { data, response, error in
-                if let error = error {
+                if error != nil {
                     return
                 }
                 

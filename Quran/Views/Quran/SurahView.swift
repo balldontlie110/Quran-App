@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import Combine
+import WStack
 
 struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -17,7 +18,7 @@ struct SurahView: View {
     @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel()
     
     let surah: Surah
-
+    
     @State private var readingMode: Bool = false
     
     @State private var showVerseSelector: Bool = false
@@ -25,7 +26,8 @@ struct SurahView: View {
     @State private var previousScrollPosition: Int?
     private let dummyId = 0
     
-    @State var initialScroll: Int?
+    var initialScroll: Int?
+    var initialSearchText: String?
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedVerse.date, ascending: true)],
@@ -57,24 +59,27 @@ struct SurahView: View {
                         ProgressView()
                     } else {
                         LazyVStack(spacing: 20) {
-                            ForEach(Array(zip(surahFilterModel.filteredVerses.indices, surahFilterModel.filteredVerses)), id: \.0) { index, verse in
-                                VerseRow(
-                                    preferencesModel: preferencesModel,
-                                    verse: verse,
-                                    versesCount: surahFilterModel.filteredVerses.count,
-                                    verseIndex: index,
-                                    surahId: surah.id,
-                                    readingMode: readingMode,
-                                    bookmarkedVerses: bookmarkedVerses,
-                                    addBookmark: {
-                                        withAnimation { self.showBookmarkAlert = verse }
-                                    },
-                                    removeBookmark: { verse in
-                                        removeBookmark(verse)
-                                    },
-                                    audioPlayer: audioPlayer,
-                                    nextVerse: nextVerse
-                                ).id(verse.id)
+                            ForEach(surahFilterModel.filteredVerses) { verse in
+                                if let index = surahFilterModel.filteredVerses.firstIndex(where: { $0.id == verse.id }) {
+                                    VerseRow(
+                                        preferencesModel: preferencesModel,
+                                        verse: verse,
+                                        versesCount: surahFilterModel.filteredVerses.count,
+                                        verseIndex: index,
+                                        surahId: surah.id,
+                                        searchText: surahFilterModel.searchText,
+                                        readingMode: readingMode,
+                                        bookmarkedVerses: bookmarkedVerses,
+                                        addBookmark: {
+                                            withAnimation { self.showBookmarkAlert = verse }
+                                        },
+                                        removeBookmark: { verse in
+                                            removeBookmark(verse)
+                                        },
+                                        audioPlayer: audioPlayer,
+                                        nextVerse: nextVerse
+                                    ).id(verse.id)
+                                }
                             }
                         }.scrollTargetLayout()
                     }
@@ -109,6 +114,11 @@ struct SurahView: View {
         .disabled(showVerseSelector || showBookmarkAlert != nil)
         .onAppear {
             surahFilterModel.surah = surah
+            
+            if let initialSearchText = initialSearchText {
+                surahFilterModel.searchText = initialSearchText
+            }
+            
             initialiseScrollPosition()
         }
         .onDisappear {
@@ -206,10 +216,9 @@ struct SurahView: View {
                 .fixedSize()
             
             Button {
-                if let scrollPosition = scrollPosition, let previousVerse = surahFilterModel.filteredVerses.last(where: { verse in
-                    verse.id < scrollPosition
+                if let previousVerse = surahFilterModel.filteredVerses.last(where: { verse in
+                    verse.id < (scrollPosition ?? 1)
                 }) ?? surahFilterModel.filteredVerses.last {
-                    self.scrollPosition = dummyId
                     Task { @MainActor in
                         self.scrollPosition = previousVerse.id
                     }
@@ -217,16 +226,16 @@ struct SurahView: View {
             } label: {
                 Image(systemName: "chevron.up")
                     .foregroundStyle(Color.primary)
+                    .bold()
             }.padding(5)
             
             Divider()
                 .fixedSize()
             
             Button {
-                if let scrollPosition = scrollPosition, let nextVerse = surahFilterModel.filteredVerses.first(where: { verse in
-                    verse.id > scrollPosition
+                if let nextVerse = surahFilterModel.filteredVerses.first(where: { verse in
+                    verse.id > (scrollPosition ?? 1)
                 }) ?? surahFilterModel.filteredVerses.first {
-                    self.scrollPosition = dummyId
                     Task { @MainActor in
                         self.scrollPosition = nextVerse.id
                     }
@@ -234,6 +243,7 @@ struct SurahView: View {
             } label: {
                 Image(systemName: "chevron.down")
                     .foregroundStyle(Color.primary)
+                    .bold()
             }.padding(5)
         }.padding(.trailing, 5)
     }
@@ -252,7 +262,9 @@ struct SurahView: View {
         Button {
             withAnimation { self.showVerseSelector.toggle() }
         } label: {
-            Text("Verse: \(String(scrollPosition == 0 ? previousScrollPosition ?? 1 : scrollPosition ?? 1))")
+            let verseNumber = (scrollPosition == 0 ? previousScrollPosition : scrollPosition) ?? 1
+            
+            Text("Verse: \(String(verseNumber))")
                 .bold()
                 .padding(.vertical, 5)
                 .padding(.horizontal, 10)
@@ -366,6 +378,8 @@ struct SurahView: View {
 }
 
 struct VerseRow: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let preferencesModel: PreferencesModel
     
     let verse: Verse
@@ -373,7 +387,12 @@ struct VerseRow: View {
     let verseIndex: Int
     let surahId: Int
     
+    let searchText: String
+    
     let readingMode: Bool
+    
+    @State private var tappedText: String = ""
+    @State private var showTranslation: Bool = false
     
     let bookmarkedVerses: FetchedResults<BookmarkedVerse>
     let addBookmark: () -> ()
@@ -406,11 +425,11 @@ struct VerseRow: View {
         }
         .padding(.horizontal, 10)
         .onChange(of: audioPlayer.finished) { _, newVal in
-            guard audioPlayer.finished, 
+            guard audioPlayer.finished,
                     let verse = audioPlayer.verse,
-                    let nextVerse = nextVerse(verse),
-                    let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder,
-                    let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(nextVerse.audio).mp3")
+                  let nextVerse = nextVerse(verse),
+                  let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder,
+                  let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(nextVerse.audio).mp3")
             else { return }
             
             audioPlayer.setupPlayer(with: audioUrl, verse: nextVerse)
@@ -424,20 +443,99 @@ struct VerseRow: View {
                 Spacer()
             }
             
-            let verseText = getVerse(verse)
-            
             if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
                 let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
                 let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
                 
                 let font = isDefaultFont ? defaultFont : uthmanicFont
                 
-                Text(verseText.text)
-                    .font(font)
-                    .multilineTextAlignment(readingMode ? .center : .trailing)
-                    .lineSpacing(20)
+                if readingMode {
+                    let verseText = getVerse(verse)
+                    
+                    Text(verseText.text)
+                        .font(font)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(20)
+                } else {
+                    WStack(verse.words, spacing: 20, lineSpacing: 20) { word in
+                        VStack(alignment: .center, spacing: 10) {
+                            Text(word.text)
+                                .font(font)
+                                .lineSpacing(20)
+                            
+                            Text(word.translation)
+                                .foregroundStyle(Color.secondary)
+                        }.multilineTextAlignment(.center)
+                    }.environment(\.layoutDirection, .rightToLeft)
+                }
             }
         }
+    }
+    
+    private var highlightedTranslation: AttributedString {
+        func clean(_ str: String) -> (cleaned: String, originalIndices: [Int]) {
+            var cleaned = ""
+            var indices: [Int] = []
+            
+            for (index, char) in str.enumerated() {
+                if char.isLetter || char.isNumber {
+                    cleaned.append(char.lowercased())
+                    indices.append(index)
+                }
+            }
+            
+            return (cleaned, indices)
+        }
+        
+        guard let translation = verse.translations.first(where: { translation in
+            translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+        })?.translation else { return AttributedString() }
+        
+        let (cleanedTranslation, originalIndices) = clean(translation)
+        let cleanedSearchText = clean(searchText).cleaned
+        
+        var positions: [Range<String.Index>] = []
+        var startIndex = cleanedTranslation.startIndex
+        
+        while let range = cleanedTranslation.range(of: cleanedSearchText, range: startIndex..<cleanedTranslation.endIndex) {
+            positions.append(range)
+            startIndex = range.upperBound
+        }
+        
+        var attributedStrings: [AttributedString] = []
+        var lastEndIndex = translation.startIndex
+        
+        for position in positions {
+            let startCleanedIndex = cleanedTranslation.distance(from: cleanedTranslation.startIndex, to: position.lowerBound)
+            let endCleanedIndex = cleanedTranslation.distance(from: cleanedTranslation.startIndex, to: position.upperBound)
+            
+            let startIndex = translation.index(translation.startIndex, offsetBy: originalIndices[startCleanedIndex])
+            let endIndex = translation.index(translation.startIndex, offsetBy: originalIndices[endCleanedIndex - 1] + 1)
+            
+            let part = String(translation[lastEndIndex..<startIndex])
+            let attributedPart = AttributedString(part)
+            attributedStrings.append(attributedPart)
+            
+            let separatorPart = String(translation[startIndex..<endIndex])
+            var attributedSeparator = AttributedString(separatorPart)
+            attributedSeparator.backgroundColor = .yellow
+            attributedStrings.append(attributedSeparator)
+            
+            lastEndIndex = endIndex
+        }
+        
+        if lastEndIndex < translation.endIndex {
+            let part = String(translation[lastEndIndex..<translation.endIndex])
+            let attributedPart = AttributedString(part)
+            attributedStrings.append(attributedPart)
+        }
+        
+        var combinedAttributedString = AttributedString("")
+        for attributedString in attributedStrings {
+            combinedAttributedString.append(attributedString)
+        }
+        
+        return combinedAttributedString
     }
     
     private var translation: some View {
@@ -447,11 +545,7 @@ struct VerseRow: View {
                     Group {
                         Text("\(verse.id).")
                         
-                        if let translation = verse.translations.first(where: { translation in
-                            translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
-                        }) {
-                            Text(translation.translation)
-                        }
+                        Text(highlightedTranslation)
                     }
                     .font(.system(size: 20))
                     .multilineTextAlignment(.leading)
@@ -568,7 +662,7 @@ struct VerseRow: View {
     }
     
     private func getVerse(_ verse: Verse) -> Verse {
-        return Verse(id: verse.id, text: verse.text + " " + getArabicNumber(verse.id), translations: [], audio: "")
+        return Verse(id: verse.id, text: verse.text + " " + getArabicNumber(verse.id), translations: [], words: [], audio: "")
     }
     
     private func getArabicNumber(_ number: Int) -> String {
@@ -630,7 +724,7 @@ class SurahFilterModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     @Published var surah: Surah?
-
+    
     init() {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -646,13 +740,13 @@ class SurahFilterModel: ObservableObject {
             .assign(to: \.filteredVerses, on: self)
             .store(in: &cancellables)
     }
-
+    
     private func filterVerses(with searchText: String) -> [Verse] {
         guard let surah = surah else { return [] }
         
-        guard !searchText.isEmpty else { return surah.verses }
-        
         let cleanedSearchText = searchText.lowercasedLettersAndNumbers
+        
+        guard !cleanedSearchText.isEmpty else { return surah.verses }
         
         return surah.verses.filter { verse in
             if String(verse.id) == cleanedSearchText {

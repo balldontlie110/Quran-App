@@ -41,7 +41,7 @@ class AuthenticationModel: ObservableObject {
         
         if emailIsValid() && passwordIsValid() && usernameIsValid() && photoIsValid() {
             Auth.auth().createUser(withEmail: email, password: password) { authDataResult, error in
-                if let error = error {
+                if error != nil {
                     self.error = "The email or password is incorrect."
                     self.loading = false
                     
@@ -112,7 +112,7 @@ class AuthenticationModel: ObservableObject {
         
         if emailIsValid() && passwordIsValid() {
             Auth.auth().signIn(withEmail: email, password: password) { authDataResult, error in
-                if let error = error {
+                if error != nil {
                     self.error = "The email or password is incorrect."
                     self.loading = false
                     

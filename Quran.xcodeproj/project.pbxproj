@@ -24,6 +24,7 @@
 		A220ACA02C49D9110052F245 /* ZiyaratView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A220AC9F2C49D9110052F245 /* ZiyaratView.swift */; };
 		A222F86A2C1DF0D300405860 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = A222F8692C1DF0D300405860 /* Alamofire */; };
 		A222F86F2C1DF0DF00405860 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = A222F86E2C1DF0DF00405860 /* SwiftSoup */; };
+		A2274B462C52A76B003537EA /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2274B452C52A76B003537EA /* SearchBar.swift */; };
 		A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A230CE5E2C1C8F32002DC576 /* QuranView.swift */; };
 		A231ACE92C4322ED00DA54F2 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		A2358C512C5019C0008D6BFA /* SocialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2358C502C5019C0008D6BFA /* SocialsView.swift */; };
@@ -51,6 +52,7 @@
 		A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF32C1CC4AF005FA616 /* DuaView.swift */; };
 		A2975CF62C1CC685005FA616 /* DuasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF52C1CC685005FA616 /* DuasView.swift */; };
 		A2975CF82C1CC898005FA616 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2975CF72C1CC898005FA616 /* RootView.swift */; };
+		A2985F642C54112A00F066F7 /* WStack in Frameworks */ = {isa = PBXBuildFile; productRef = A2985F632C54112A00F066F7 /* WStack */; };
 		A2A9C86F2C49290000F114FD /* DuaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C86E2C49290000F114FD /* DuaModel.swift */; };
 		A2A9C8712C49291A00F114FD /* EventsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8702C49291A00F114FD /* EventsModel.swift */; };
 		A2A9C8762C492CF200F114FD /* Reciter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2A9C8742C492CF200F114FD /* Reciter.swift */; };
@@ -139,6 +141,7 @@
 		A220AC992C49D7100052F245 /* Ziyarat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ziyarat.swift; sourceTree = "<group>"; };
 		A220AC9D2C49D8A90052F245 /* ZiaraahView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZiaraahView.swift; sourceTree = "<group>"; };
 		A220AC9F2C49D9110052F245 /* ZiyaratView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZiyaratView.swift; sourceTree = "<group>"; };
+		A2274B452C52A76B003537EA /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		A230CE5E2C1C8F32002DC576 /* QuranView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranView.swift; sourceTree = "<group>"; };
 		A2358C502C5019C0008D6BFA /* SocialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsView.swift; sourceTree = "<group>"; };
 		A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCard.swift; sourceTree = "<group>"; };
@@ -225,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2985F642C54112A00F066F7 /* WStack in Frameworks */,
 				A2A9C88F2C49372100F114FD /* iCalendarParser in Frameworks */,
 				A2C781672C31A0B7007DAFD3 /* SDWebImageSwiftUI in Frameworks */,
 				A2C7815D2C316931007DAFD3 /* FirebaseFirestoreSwift in Frameworks */,
@@ -287,8 +291,17 @@
 				A26A35192C1DF94900C60561 /* Prayer Times */,
 				A2C706B02C4F13A0008FF0C3 /* Favorites */,
 				A2C781622C316F17007DAFD3 /* Settings */,
+				A2274B442C52A75A003537EA /* Helpers */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		A2274B442C52A75A003537EA /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A2274B452C52A76B003537EA /* SearchBar.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		A2358C4F2C5019B1008D6BFA /* Socials */ = {
@@ -382,8 +395,8 @@
 			isa = PBXGroup;
 			children = (
 				A2C706A92C4F036A008FF0C3 /* BookmarkedFoldersView.swift */,
-				A2C706AA2C4F036A008FF0C3 /* BookmarkedVerseCard.swift */,
 				A2C706AB2C4F036A008FF0C3 /* BookmarkedVersesView.swift */,
+				A2C706AA2C4F036A008FF0C3 /* BookmarkedVerseCard.swift */,
 			);
 			path = Bookmarks;
 			sourceTree = "<group>";
@@ -596,6 +609,7 @@
 				A2A9C88E2C49372100F114FD /* iCalendarParser */,
 				A289AA5B2C4AB3E00051C8CC /* Stripe */,
 				A2744C202C4AE27400411882 /* StripePaymentSheet */,
+				A2985F632C54112A00F066F7 /* WStack */,
 			);
 			productName = Quran;
 			productReference = A2D43E4F2C190A0900C3F21F /* Quran.app */;
@@ -636,6 +650,7 @@
 				A2A9C8782C492E6F00F114FD /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
 				A2A9C88D2C49372100F114FD /* XCRemoteSwiftPackageReference "iCalendarParser" */,
 				A289AA5A2C4AB3E00051C8CC /* XCRemoteSwiftPackageReference "stripe-ios" */,
+				A2985F622C54112A00F066F7 /* XCRemoteSwiftPackageReference "WStack" */,
 			);
 			productRefGroup = A2D43E502C190A0900C3F21F /* Products */;
 			projectDirPath = "";
@@ -714,6 +729,7 @@
 				A2744C1F2C4ACA0500411882 /* EventView.swift in Sources */,
 				A2FD25BE2C1EEBF9003785CF /* QuranApp.xcdatamodeld in Sources */,
 				A220AC9A2C49D7100052F245 /* Ziyarat.swift in Sources */,
+				A2274B462C52A76B003537EA /* SearchBar.swift in Sources */,
 				A23C6B8B2C35A88800F67DDA /* QuestionCard.swift in Sources */,
 				A2C706AD2C4F036A008FF0C3 /* BookmarkedVerseCard.swift in Sources */,
 				A2C706AE2C4F036A008FF0C3 /* BookmarkedFoldersView.swift in Sources */,
@@ -1066,6 +1082,14 @@
 				minimumVersion = 23.28.1;
 			};
 		};
+		A2985F622C54112A00F066F7 /* XCRemoteSwiftPackageReference "WStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/winkitee/WStack.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		A2A9C8782C492E6F00F114FD /* XCRemoteSwiftPackageReference "SwiftyCrop" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/benedom/SwiftyCrop.git";
@@ -1130,6 +1154,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A289AA5A2C4AB3E00051C8CC /* XCRemoteSwiftPackageReference "stripe-ios" */;
 			productName = Stripe;
+		};
+		A2985F632C54112A00F066F7 /* WStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A2985F622C54112A00F066F7 /* XCRemoteSwiftPackageReference "WStack" */;
+			productName = WStack;
 		};
 		A2A9C8792C492E6F00F114FD /* SwiftyCrop */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -31,7 +31,11 @@ struct RootView: View {
     
     private var bookmarkedFolders: FetchedResults<BookmarkedFolder>
     
+    @State private var mainNavigation: RootViewButton?
+    
     @State private var showFavoritesView: Bool = false
+    @State private var navigateTo: AnyView?
+    
     @State private var showSettingsView: Bool = false
     @State private var showSocialsView: Bool = false
     
@@ -53,31 +57,26 @@ struct RootView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(rootViewButtons) { button in
-                        if #available(iOS 18.0, *) {
-                            NavigationLink {
-                                button.view
-                                    .navigationTransition(.zoom(sourceID: button.id, in: namespace))
-                            } label: {
-                                NavigationButton(button: button)
-                            }.matchedTransitionSource(id: button.id, in: namespace)
-                        } else {
-                            NavigationLink {
-                                button.view
-                            } label: {
-                                NavigationButton(button: button)
-                            }
-                        }
-                    }
+                    navigationButtons
                     
                     socialsButton
                 }.padding(.horizontal, 10)
                 
                 dateSection
-                
                 PrayerTimesView()
             }
             .scrollIndicators(.hidden)
+            .navigationDestination(item: $mainNavigation) { button in
+                if #available(iOS 18.0, *) {
+                    button.view
+                        .navigationTransition(.zoom(sourceID: button.id, in: namespace))
+                } else {
+                    button.view
+                }
+            }
+            .navigationDestination(item: $navigateTo) { view in
+                view
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     favoritesToolbarButton
@@ -90,7 +89,7 @@ struct RootView: View {
             }
         }
         .sheet(isPresented: $showFavoritesView) {
-            FavoritesView(showFavoritesView: $showFavoritesView)
+            FavoritesView(showFavoritesView: $showFavoritesView, navigateTo: $navigateTo)
         }
         .sheet(isPresented: $showSettingsView) {
             SettingsView(showSettingsView: $showSettingsView)
@@ -104,36 +103,22 @@ struct RootView: View {
         }
     }
     
-    private var favoritesToolbarButton: some View {
-        Button {
-            self.showFavoritesView.toggle()
-        } label: {
-            Image(systemName: "star")
-                .foregroundStyle(Color.primary)
+    private var navigationButtons: some View {
+        ForEach(rootViewButtons) { button in
+            if #available(iOS 18.0, *) {
+                Button {
+                    self.mainNavigation = button
+                } label: {
+                    NavigationButton(button: button)
+                }.matchedTransitionSource(id: button.id, in: namespace)
+            } else {
+                Button {
+                    self.mainNavigation = button
+                } label: {
+                    NavigationButton(button: button)
+                }
+            }
         }
-    }
-    
-    private var settingsToolbarButton: some View {
-        Button {
-            self.showSettingsView.toggle()
-        } label: {
-            Image(systemName: "gear")
-                .foregroundStyle(Color.primary)
-        }
-    }
-    
-    private var dateSection: some View {
-        VStack {
-            Text(todaysDate())
-                .foregroundStyle(Color.secondary)
-                .font(.system(.caption, weight: .bold))
-            
-            HStack {
-                Text(calendarModel.day)
-                Text(calendarModel.month)
-                Text(calendarModel.year)
-            }.font(.system(.title2, weight: .bold))
-        }.padding(.top)
     }
     
     private var socialsButton: some View {
@@ -159,11 +144,47 @@ struct RootView: View {
         }
     }
     
-    private func todaysDate() -> String {
+    private var dateSection: some View {
+        VStack {
+            gregorianDate
+            
+            islamicDate
+        }.padding(.top)
+    }
+    
+    private var gregorianDate: Text {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         
-        return formatter.string(from: Date())
+        return Text(formatter.string(from: Date()))
+            .foregroundStyle(Color.secondary)
+            .font(.system(.caption, weight: .bold))
+    }
+    
+    private var islamicDate: some View {
+        HStack {
+            Text(calendarModel.day)
+            Text(calendarModel.month)
+            Text(calendarModel.year)
+        }.font(.system(.title2, weight: .bold))
+    }
+    
+    private var favoritesToolbarButton: some View {
+        Button {
+            self.showFavoritesView.toggle()
+        } label: {
+            Image(systemName: "heart")
+                .foregroundStyle(Color.primary)
+        }
+    }
+    
+    private var settingsToolbarButton: some View {
+        Button {
+            self.showSettingsView.toggle()
+        } label: {
+            Image(systemName: "gear")
+                .foregroundStyle(Color.primary)
+        }
     }
     
     private func createQuestionsBookmarkFolder() {
@@ -184,6 +205,26 @@ struct RootView: View {
         guard let translationId = preferencesModel.preferences?.translationId, translationId != 131 else { return }
         
         quranModel.checkLocalTranslation(translationId: Int(translationId))
+    }
+}
+
+extension AnyView: @retroactive Hashable, Equatable {
+    var id: UUID {
+        UUID()
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static public func ==(lhs: AnyView, rhs: AnyView) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+extension RootViewButton: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

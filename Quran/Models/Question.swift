@@ -37,4 +37,16 @@ struct Answer: Identifiable, Codable {
     let answeruid: String
     
     let timestamp: Timestamp
+    
+    var responses: [Response]?
+    let responsesCount: Int
+}
+
+struct Response: Identifiable, Codable {
+    @DocumentID var id: String?
+    
+    let response: String
+    let responseuid: String
+    
+    let timestamp: Timestamp
 }

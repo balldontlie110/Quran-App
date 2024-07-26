@@ -56,46 +56,17 @@ struct QuestionDetailView: View {
                 
                 LazyVStack(spacing: 0) {
                     ForEach(answers) { answer in
-                        VStack(alignment: .leading) {
-                            Text(answer.answer)
-                                .multilineTextAlignment(.leading)
-                            
-                            HStack(alignment: .bottom) {
-                                if Auth.auth().currentUser?.uid == question.questionuid && question.answered == false, let questionId = question.id, let answerId = answer.id {
-                                    Button {
-                                        questionsModel.acceptAnswer(questionId: questionId, answerId: answerId)
-                                    } label: {
-                                        HStack {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 20)
-                                            
-                                            Text("Accept")
-                                                .fontWeight(.semibold)
-                                        }
-                                    }
-                                }
-                                
-                                if answer.accepted == true {
-                                    Text("Accepted")
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(Color.accentColor)
-                                }
-                                
-                                Spacer()
-                                
-                                UserProfileSection(userProfiles: questionsModel.answersUserProfiles, uid: answer.answeruid, timestamp: answer.timestamp)
+                        AnswerCard(question: question, answer: answer, answersUserProfiles: questionsModel.answersUserProfiles, responsesUserProfiles: questionsModel.responsesUserProfiles) {
+                            acceptAnswer(answer: answer)
+                        } newResponse: { response, completion in
+                            newResponse(response: response, answer: answer) {
+                                completion()
                             }
                         }
-                        .padding(10)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                        .padding(.vertical, 5)
                     }
                 }.padding(.horizontal)
             }
-            .scrollDismissesKeyboard(.immediately)
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle(question.questionTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.visible, for: .navigationBar)
@@ -116,6 +87,12 @@ struct QuestionDetailView: View {
         return sortedByTimestamp
     }
     
+    private func acceptAnswer(answer: Answer) {
+        if let questionId = questionsModel.question?.id, let answerId = answer.id {
+            questionsModel.acceptAnswer(questionId: questionId, answerId: answerId)
+        }
+    }
+    
     private func newAnswer() {
         if answer != "" {
             if let questionId = questionsModel.question?.id {
@@ -126,11 +103,121 @@ struct QuestionDetailView: View {
             }
         }
     }
+    
+    private func newResponse(response: String, answer: Answer, completion: () -> Void) {
+        if response != "" {
+            if let questionId = questionsModel.question?.id, let answerId = answer.id {
+                questionsModel.newResponse(response: response, questionId: questionId, answerId: answerId)
+                
+                hideKeyboard()
+                completion()
+            }
+        }
+    }
 }
 
 extension View {
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
+struct AnswerCard: View {
+    let question: Question
+    let answer: Answer
+    
+    let answersUserProfiles: [UserProfile]
+    let responsesUserProfiles: [UserProfile]
+    
+    let acceptAnswer: () -> Void
+    let newResponse: (_ response: String, _ completion: () -> Void) -> Void
+    
+    @State var response: String = ""
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(answer.answer)
+                .multilineTextAlignment(.leading)
+            
+            HStack(alignment: .bottom) {
+                if Auth.auth().currentUser?.uid == question.questionuid && question.answered == false {
+                    Button {
+                        acceptAnswer()
+                    } label: {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20)
+                            
+                            Text("Accept")
+                                .fontWeight(.semibold)
+                        }
+                    }
+                }
+                
+                if answer.accepted == true {
+                    Text("Accepted")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.accentColor)
+                }
+                
+                Spacer()
+                
+                UserProfileSection(userProfiles: answersUserProfiles, uid: answer.answeruid, timestamp: answer.timestamp, size: 30, font: .caption2)
+            }
+            
+            if Auth.auth().currentUser != nil {
+                Divider()
+                
+                TextField("Response", text: $response, axis: .vertical)
+                    .padding(.trailing, 30)
+                    .overlay(alignment: .bottomTrailing) {
+                        Button {
+                            newResponse(response) {
+                                self.response = ""
+                            }
+                        } label: {
+                            Image(systemName: "paperplane.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 25)
+                                .foregroundStyle(Color.accentColor)
+                        }
+                    }
+                    .padding(10)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
+            }
+            
+            if let responses = answer.responses {
+                ForEach(responses) { response in
+                    Divider()
+                    
+                    Group {
+                        if let user = responsesUserProfiles.first(where: { userProfile in
+                            userProfile.id == response.responseuid
+                        }) {
+                            Text(response.response)
+                            +
+                            Text(" - ")
+                            +
+                            Text(user.username)
+                                .foregroundStyle(Color.accentColor)
+                            +
+                            Text(" ")
+                            +
+                            Text(response.timestamp.string())
+                                .foregroundStyle(Color.secondary)
+                        }
+                    }.font(.callout)
+                }
+            }
+        }
+        .padding(10)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 5))
+        .padding(.vertical, 5)
     }
 }
 

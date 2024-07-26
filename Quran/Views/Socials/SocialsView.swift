@@ -22,7 +22,7 @@ struct SocialsView: View {
     @State private var sheetHeight: CGFloat = .zero
     
     private let socials: [Social] = [
-        Social(name: "Website", handle: "", url: "https://hyderi.org.uk", image: "hyderi"),
+        Social(name: "Website", handle: "hyderi.org.uk", url: "https://hyderi.org.uk", image: "hyderi"),
         Social(name: "YouTube", handle: "@hyderi", url: "https://www.youtube.com/@hyderi/live", image: "youtube"),
         Social(name: "Instagram", handle: "@hydericentre", url: "https://www.instagram.com/hydericentre/", image: "instagram"),
         Social(name: "X", handle: "@HyderiCentre", url: "https://x.com/hydericentre", image: "x"),
@@ -67,7 +67,9 @@ struct SocialsView: View {
             }
         }
         .onPreferenceChange(SizePreferenceKey.self) { newHeight in
-            sheetHeight = newHeight
+            DispatchQueue.main.async {
+                sheetHeight = newHeight
+            }
         }
         .presentationDetents([.height(sheetHeight)])
     }

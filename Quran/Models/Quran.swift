@@ -21,6 +21,7 @@ struct Verse: Identifiable, Decodable, Equatable {
     let id: Int
     let text: String
     var translations: [Translation]
+    var words: [Word]
     let audio: String
     
     static func ==(lhs: Verse, rhs: Verse) -> Bool {
@@ -30,6 +31,12 @@ struct Verse: Identifiable, Decodable, Equatable {
 
 struct Translation: Identifiable, Decodable {
     let id: Int
+    let translation: String
+}
+
+struct Word: Identifiable, Decodable {
+    let id: String
+    let text: String
     let translation: String
 }
 

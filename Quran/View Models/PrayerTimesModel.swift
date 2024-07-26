@@ -40,7 +40,7 @@ class PrayerTimesModel: ObservableObject {
                     
                     completion(prayerTimes)
                 }
-            case .failure(let error):
+            case .failure(_):
                 completion(nil)
             }
         }

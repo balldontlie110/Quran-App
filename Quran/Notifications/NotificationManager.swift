@@ -82,7 +82,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         
         for (prayer, time) in prayerTimes {
             let content = UNMutableNotificationContent()
-            content.title = "\(prayer) \(prayer != "Sunset" && prayer != "Sunrise" ? "Salah" : "")"
+            content.title = "\(prayer) \(prayer != "Sunset" && prayer != "Sunrise" ? "Salaat" : "")"
             
             let formatter = DateFormatter()
             formatter.timeStyle = .short

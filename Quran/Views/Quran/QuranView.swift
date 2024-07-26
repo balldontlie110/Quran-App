@@ -24,27 +24,12 @@ struct QuranView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            VStack {
-                searchBar
-                    .padding(.horizontal)
-                
-                Divider()
-            }
+            searchBar
             
             if quranFilterModel.isLoading {
-                Spacer()
-                
-                ProgressView()
-                
-                Spacer()
+                progressView
             } else {
-                ScrollView {
-                    LazyVStack {
-                        ForEach(quranFilterModel.filteredQuran) { surah in
-                            SurahCard(context: viewContext, favorites: favorites, surah: surah, initalScroll: getVerse(surah: surah))
-                        }
-                    }.padding()
-                }
+                surahsScrollView
             }
         }
         .navigationTitle("Quran")
@@ -57,6 +42,39 @@ struct QuranView: View {
             quranFilterModel.quranModel = quranModel
         }
     }
+    
+    private var searchBar: some View {
+        VStack {
+            SearchBar(placeholder: "Search", searchText: $quranFilterModel.searchText)
+            
+            Divider()
+        }
+    }
+    
+    @ViewBuilder
+    private var progressView: some View {
+        Spacer()
+        
+        ProgressView()
+        
+        Spacer()
+    }
+    
+    private var surahsScrollView: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(quranFilterModel.filteredQuran) { surah in
+                    let getVerse = getVerse(surah: surah)
+                    let initialScroll = getVerse.initialScroll
+                    let initialSearchText = getVerse.initialSearchText
+                    
+                    SurahCard(surah: surah, initialScroll: initialScroll, initialSearchText: initialSearchText, isFavorite: isFavorite(surah: surah)) {
+                        favoriteSurah(surah: surah)
+                    }
+                }
+            }.padding()
+        }
+    }
 
     private var bookmarksButton: some View {
         NavigationLink {
@@ -66,131 +84,128 @@ struct QuranView: View {
                 .foregroundStyle(Color.primary)
         }
     }
-
-    private var searchBar: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(Color.secondary)
-            
-            TextField("Search", text: $quranFilterModel.searchText)
-            
-            if quranFilterModel.searchText != "" {
-                Button {
-                    quranFilterModel.searchText = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Color.secondary)
-                }
-            }
+    
+    private func isFavorite(surah: Surah) -> Bool {
+        return favorites.contains { favorite in
+            favorite.surahId == surah.id
         }
-        .padding(5)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
     
-    private func getVerse(surah: Surah) -> Int? {
+    private func favoriteSurah(surah: Surah) {
+        if let favorite = favorites.first(where: { favorite in
+            favorite.surahId == surah.id
+        }) {
+            viewContext.delete(favorite)
+        } else {
+            let favorite = Favorite(context: viewContext)
+            favorite.surahId = Int64(surah.id)
+        }
+        
+        try? viewContext.save()
+    }
+    
+    private func getVerse(surah: Surah) -> (initialScroll: Int?, initialSearchText: String?) {
         if quranFilterModel.isSurahToVerse(surah: surah) {
             if let verseId = Int(quranFilterModel.searchText.split(separator: ":").last ?? "") {
-                return verseId
+                return (verseId, nil)
             }
         }
         
+        let cleanedSearchText = quranFilterModel.searchText.lowercasedLettersAndNumbers
+        
         for verse in surah.verses {
-            if verse.text.lowercased().contains(quranFilterModel.searchText.lowercased()) {
-                return verse.id
+            if verse.text.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
+                return (verse.id, quranFilterModel.searchText)
             }
             
             for translation in verse.translations {
-                if translation.translation.lowercased().contains(quranFilterModel.searchText.lowercased()) {
-                    return verse.id
+                if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
+                    return (verse.id, quranFilterModel.searchText)
                 }
             }
         }
         
-        return nil
+        return (nil, nil)
     }
 }
 
 struct SurahCard: View {
-    let context: NSManagedObjectContext
-    let favorites: FetchedResults<Favorite>
-    
     let surah: Surah
-    let initalScroll: Int?
+    var initialScroll: Int?
+    var initialSearchText: String?
+    
+    let isFavorite: Bool
+    let favoriteSurah: () -> Void
     
     var body: some View {
         NavigationLink {
-            SurahView(surah: surah, initialScroll: initalScroll)
+            SurahView(surah: surah, initialScroll: initialScroll, initialSearchText: initialSearchText)
         } label: {
             HStack(spacing: 15) {
-                Text(String(surah.id))
-                    .bold()
-                    .overlay {
-                        Image(systemName: "diamond")
-                            .font(.system(size: 40))
-                            .fontWeight(.ultraLight)
-                    }
-                    .frame(width: 40)
+                surahNumber
                 
-                VStack(alignment: .leading) {
-                    Text(surah.transliteration)
-                        .fontWeight(.heavy)
-                    Text(surah.translation)
-                        .font(.system(.subheadline, weight: .semibold))
-                        .foregroundStyle(Color.secondary)
-                }.multilineTextAlignment(.leading)
+                surahName
                 
                 Spacer()
                 
-                VStack {
-                    Text(surah.name)
-                        .fontWeight(.heavy)
-                    Text("\(surah.total_verses) Ayahs")
-                        .font(.system(.subheadline, weight: .semibold))
-                        .foregroundStyle(Color.secondary)
-                }
+                surahInfo
             }
             .foregroundStyle(Color.primary)
             .padding()
             .background(Color(.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 5))
             .contextMenu {
-                Button {
-                    favoriteSurah()
-                } label: {
-                    HStack {
-                        if favorites.contains(where: { favorite in
-                            favorite.surahId == surah.id
-                        }) {
-                            Image(systemName: "star.fill")
-                            
-                            Text("Unfavorite")
-                            
-                            Spacer()
-                        } else {
-                            Image(systemName: "star")
-                            
-                            Text("Favorite")
-                            
-                            Spacer()
-                        }
-                    }
-                }
+                favoriteButton
             }
         }
     }
     
-    private func favoriteSurah() {
-        if let favorite = favorites.first(where: { favorite in
-            favorite.surahId == surah.id
-        }) {
-            context.delete(favorite)
-        } else {
-            let favorite = Favorite(context: context)
-            favorite.surahId = Int64(surah.id)
+    private var surahNumber: some View {
+        Text(String(surah.id))
+            .bold()
+            .overlay {
+                Image(systemName: "diamond")
+                    .font(.system(size: 40))
+                    .fontWeight(.ultraLight)
+            }
+            .frame(width: 40)
+    }
+    
+    private var surahName: some View {
+        VStack(alignment: .leading) {
+            Text(surah.transliteration)
+                .fontWeight(.heavy)
+            
+            Text(surah.translation)
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Color.secondary)
+        }.multilineTextAlignment(.leading)
+    }
+    
+    private var surahInfo: some View {
+        VStack {
+            Text(surah.name)
+                .fontWeight(.heavy)
+            
+            Text("\(surah.total_verses) Ayahs")
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Color.secondary)
         }
-        
-        try? context.save()
+    }
+    
+    private var favoriteButton: some View {
+        Button {
+            favoriteSurah()
+        } label: {
+            HStack {
+                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    .foregroundStyle(Color.red)
+                
+                Text(isFavorite ? "Unfavorite" : "Favorite")
+                
+                Spacer()
+            }
+        }
     }
 }
 

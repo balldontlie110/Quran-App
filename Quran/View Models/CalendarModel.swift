@@ -48,7 +48,7 @@ class CalendarModel: ObservableObject {
     }
     
     private func fetchDate() {
-        let url = "https://najaf.org/english/"
+        let url = "https://najaf.org/english/?cachebust=\(UUID().uuidString)"
 
         AF.request(url).responseString { response in
             switch response.result {

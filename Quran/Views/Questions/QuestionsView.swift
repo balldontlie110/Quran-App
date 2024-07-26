@@ -10,14 +10,11 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct QuestionsView: View {
-    @StateObject private var questionsModel: QuestionsModel = QuestionsModel()
     @EnvironmentObject private var quranModel: QuranModel
+    @StateObject private var questionsModel: QuestionsModel = QuestionsModel()
+    @StateObject private var questionsFilterModel: QuestionsFilterModel = QuestionsFilterModel(questionsModel: QuestionsModel())
     
     @State private var question: Question?
-    
-    @State private var searchText: String = ""
-    
-    @State private var answerState: Int = 0
     
     @FocusState private var questionTitleFocused: Bool
     
@@ -30,7 +27,7 @@ struct QuestionsView: View {
                     
                     Divider()
                     
-                    Picker("", selection: $answerState) {
+                    Picker("", selection: $questionsFilterModel.answerState) {
                         Text("All")
                             .tag(0)
                         
@@ -47,11 +44,11 @@ struct QuestionsView: View {
                         Image(systemName: "magnifyingglass")
                             .foregroundStyle(Color.secondary)
                         
-                        TextField("Search", text: $searchText)
+                        TextField("Search", text: $questionsFilterModel.searchText)
                         
-                        if searchText != "" {
+                        if questionsFilterModel.searchText != "" {
                             Button {
-                                self.searchText = ""
+                                questionsFilterModel.searchText = ""
                             } label: {
                                 Image(systemName: "xmark.circle.fill")
                                     .foregroundStyle(Color.secondary)
@@ -63,12 +60,16 @@ struct QuestionsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .padding(.horizontal)
                     
-                    ForEach(questions) { question in
-                        Button {
-                            questionsModel.fetchAnswers(question)
-                            questionsModel.question = question
-                        } label: {
-                            QuestionCard(quran: quranModel.quran, question: question, userProfiles: questionsModel.questionsUserProfiles, detailView: false)
+                    if questionsFilterModel.isLoading {
+                        ProgressView()
+                    } else {
+                        ForEach(questionsFilterModel.filteredQuestions) { question in
+                            Button {
+                                questionsModel.fetchAnswers(question)
+                                questionsModel.question = question
+                            } label: {
+                                QuestionCard(quran: quranModel.quran, question: question, userProfiles: questionsModel.questionsUserProfiles, detailView: false)
+                            }
                         }
                     }
                 }
@@ -94,44 +95,8 @@ struct QuestionsView: View {
         .navigationTitle("Questions")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
-    }
-    
-    private var questions: [Question] {
-        let sortedByTimestamp = questionsModel.questions.sorted { question1, question2 in
-            question1.timestamp.dateValue() > question2.timestamp.dateValue()
-        }
-        
-        if answerState == 1 {
-            let filteredByAnswerState = sortedByTimestamp.filter { question in
-                question.answered == true
-            }
-            
-            return filteredByAnswerState.filter { question in
-                question.containsSearchText(searchText)
-            }
-        } else if answerState == 2 {
-            let filteredByAnswerState = sortedByTimestamp.filter { question in
-                question.answered == false
-            }
-            
-            return filteredByAnswerState.filter { question in
-                question.containsSearchText(searchText)
-            }
-        } else {
-            return sortedByTimestamp.filter { question in
-                question.containsSearchText(searchText)
-            }
-        }
-    }
-}
-
-extension Question {
-    func containsSearchText(_ searchText: String) -> Bool {
-        if searchText == "" {
-            return true
-        } else {
-            return
-                self.questionTitle.lowercased().contains(searchText.lowercased()) || self.question.lowercased().contains(searchText.lowercased())
+        .onAppear {
+            questionsFilterModel.questionsModel = questionsModel
         }
     }
 }

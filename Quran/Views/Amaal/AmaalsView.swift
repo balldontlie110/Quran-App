@@ -74,9 +74,10 @@ struct AmaalCard: View {
                 if favorites.contains(where: { favorite in
                     favorite.amaalId == amaal.id
                 }) {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(Color.red)
                 } else {
-                    Image(systemName: "star")
+                    Image(systemName: "heart")
                 }
             }
         }
