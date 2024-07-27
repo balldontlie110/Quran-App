@@ -23,6 +23,7 @@ struct SettingsView: View {
     
     @EnvironmentObject private var authenticationModel: AuthenticationModel
     @EnvironmentObject private var preferencesModel: PreferencesModel
+    @EnvironmentObject private var prayerTimesModel: PrayerTimesModel
     @EnvironmentObject private var quranModel: QuranModel
     @EnvironmentObject private var audioPlayer: AudioPlayer
     
@@ -49,6 +50,7 @@ struct SettingsView: View {
     )
     
     private var prayerNotifications: FetchedResults<PrayerNotification>
+    private let renamedPrayers: [String : String] = ["Fajr" : "Dawn", "Sunrise" : "Sunrise", "Zuhr" : "Noon", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
     
     @State private var fontSize: Double = 0.0
     @State private var isDefaultFont: Bool = true
@@ -760,6 +762,7 @@ struct SettingsView: View {
         }
     }
     
+    @MainActor
     private func updatePrayerNotification(_ prayer: Prayer) {
         if let prayerNotification = prayerNotifications.first(where: { prayerNotification in
             prayerNotification.prayer == prayer.prayer
@@ -774,7 +777,11 @@ struct SettingsView: View {
         
         try? viewContext.save()
         
-        NotificationManager.shared.updatePrayerNotifications()
+        if let prayerTime = prayerTimesModel.prayerTimes.first(where: { prayerTime in
+            prayerTime.key == renamedPrayers[prayer.prayer]
+        }) {
+            NotificationManager.shared.updatePrayerNotifications(prayer.prayer, time: prayerTime.value)
+        }
     }
     
     private func initialisePreferences() {

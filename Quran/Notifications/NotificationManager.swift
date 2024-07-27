@@ -35,15 +35,16 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
-                self.updatePrayerNotifications()
+                self.updateAllPrayerNotifications()
             }
         }
     }
     
-    func updatePrayerNotifications() {
+    func updateAllPrayerNotifications() {
         PrayerTimesModel().fetchPrayerTimes { prayerTimes in
             if let prayerTimes = prayerTimes {
                 let request = PrayerNotification.fetchRequest()
+                
                 if let prayerNotifications = try? self.moc.fetch(request) {
                     
                     let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
@@ -72,6 +73,24 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
                     self.schedulePrayerNotifications(prayerTimes: prayerTimesDates)
                 }
             }
+        }
+    }
+    
+    func updatePrayerNotifications(_ prayer: String, time: String) {
+        var dateComponents = DateComponents()
+        
+        if let hour = Int(time.dropLast(3)) {
+            if (prayer == "Noon" && hour != 11) || prayer == "Sunset" || prayer == "Maghrib" {
+                dateComponents.hour = hour + 12
+            } else {
+                dateComponents.hour = hour
+            }
+        }
+        
+        dateComponents.minute = Int(time.dropFirst(3))
+        
+        if let time = Calendar.current.date(from: dateComponents) {
+            self.schedulePrayerNotifications(prayerTimes: [prayer : time])
         }
     }
     

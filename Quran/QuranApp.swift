@@ -29,6 +29,7 @@ struct QuranApp: App {
                 .environmentObject(DuaModel())
                 .environmentObject(ZiyaratModel())
                 .environmentObject(AmaalModel())
+                .environmentObject(PrayerTimesModel())
                 .environmentObject(AuthenticationModel())
                 .environmentObject(PreferencesModel())
                 .environmentObject(AudioPlayer())

@@ -34,7 +34,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     private func handleAppRefresh(task: BGAppRefreshTask) {
         scheduleAppRefresh()
         
-        NotificationManager.shared.updatePrayerNotifications()
+        NotificationManager.shared.updateAllPrayerNotifications()
         
         task.expirationHandler = {
         }
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        NotificationManager.shared.updatePrayerNotifications()
+        NotificationManager.shared.updateAllPrayerNotifications()
         completionHandler(.newData)
     }
 }

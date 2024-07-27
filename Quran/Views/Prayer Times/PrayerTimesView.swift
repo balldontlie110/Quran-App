@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PrayerTimesView: View {
-    @StateObject private var prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
+    @EnvironmentObject private var prayerTimesModel: PrayerTimesModel
     
     private let prayers = ["Imsaak", "Dawn", "Sunrise", "Noon", "Sunset", "Maghrib", "Midnight"]
     private let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib", "Midnight" : "Midnight"]
