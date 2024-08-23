@@ -36,5 +36,6 @@
         <attribute name="reciterName" optional="YES" attributeType="String"/>
         <attribute name="reciterSubfolder" optional="YES" attributeType="String"/>
         <attribute name="translationId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="translationLanguage" optional="YES" attributeType="String"/>
     </entity>
 </model>

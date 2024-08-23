@@ -37,6 +37,11 @@ struct Translation: Identifiable, Decodable {
 struct Word: Identifiable, Decodable {
     let id: String
     let text: String
+    var translations: [WordTranslation]
+}
+
+struct WordTranslation: Identifiable, Decodable {
+    let id: String
     let translation: String
 }
 

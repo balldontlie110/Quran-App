@@ -57,8 +57,10 @@ struct DuaView: View {
                 .padding(.horizontal, 10)
                 .scrollTargetLayout()
                 
-                Spacer()
-                    .frame(height: 50)
+                if dua.audio != nil {
+                    Spacer()
+                        .frame(height: 50)
+                }
             }
             .scrollPosition(id: $scrollPosition, anchor: .top)
             .onChange(of: scrollPosition) { oldVal, newVal in
@@ -84,7 +86,7 @@ struct DuaView: View {
             audioPlayerSlider
         }
         .onAppear {
-            if let audioURL = Bundle.main.url(forResource: dua.audio, withExtension: "mp3") {
+            if let audio = dua.audio, let audioURL = Bundle.main.url(forResource: audio, withExtension: "mp3") {
                 audioPlayer.setupPlayer(with: audioURL)
             }
         }
@@ -99,30 +101,36 @@ struct DuaView: View {
         }
     }
     
+    @ViewBuilder
     private var audioButton: some View {
-        Button {
-            audioPlayer.playPause()
-        } label: {
-            Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
-                .font(.system(size: 20))
-                .foregroundStyle(Color.primary)
+        if dua.audio != nil {
+            Button {
+                audioPlayer.playPause()
+            } label: {
+                Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.system(size: 20))
+                    .foregroundStyle(Color.primary)
+            }
         }
     }
     
+    @ViewBuilder
     private var audioPlayerSlider: some View {
-        HStack {
-            Text(formatTime(audioPlayer.currentTime))
-            
-            Slider(value: $sliderValue, in: 0...audioPlayer.duration, onEditingChanged: sliderEditingChanged)
-            
-            Text(formatTime(audioPlayer.duration))
+        if dua.audio != nil {
+            HStack {
+                Text(formatTime(audioPlayer.currentTime))
+                
+                Slider(value: $sliderValue, in: 0...audioPlayer.duration, onEditingChanged: sliderEditingChanged)
+                
+                Text(formatTime(audioPlayer.duration))
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .shadow(radius: 5)
+            .padding(.horizontal)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .shadow(radius: 5)
-        .padding(.horizontal)
     }
     
     private func sliderEditingChanged(editingStarted: Bool) {
@@ -138,9 +146,13 @@ struct DuaView: View {
     }
     
     private func updateScrollPosition(oldVal: Double, newVal: Double) {
-        if Int(newVal) != Int(oldVal) {
+        if dua.audio != nil, Int(newVal) != Int(oldVal) {
             if let nextVerse = dua.verses.last(where: { verse in
-                verse.audio <= Int(audioPlayer.currentTime)
+                if let audio = verse.audio {
+                    return audio <= Int(audioPlayer.currentTime)
+                } else {
+                    return false
+                }
             }) {
                 if self.scrollPosition != nextVerse.id {
                     scrollPosition = dummyId

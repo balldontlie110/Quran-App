@@ -180,20 +180,34 @@
             },
             {
                 "id": 26,
-                "text": "ٱلسَّلَامُ عَلَيْكَ يَا حُجَّةَ ٱللَّهِ فِي أَرْضِهِ",
-                "translation": "Peace be upon you, O proof of Allah on His earth.",
-                "transliteration": "As-salamu alayka ya Hujjat Allah fi ardihee",
+                "text": "ٱلسَّلَامُ عَلَيْكَ يَا إِمَامَ ٱلْإِنْسِ وَٱلْجَانِ",
+                "translation": "Peace be upon you, O Imam of men and jinn.",
+                "transliteration": "As-salamu alayka ya Imam al insi waljaan",
                 "gap": false
             },
             {
                 "id": 27,
+                "text": "ٱلسَّلَامُ عَلَيْكَ يَا شَرِيكَ ٱلْقُرْآنِ",
+                "translation": "Peace be upon you, O companion of the Qur'an.",
+                "transliteration": "As-salamu alayka ya sharik al Qur'an",
+                "gap": false
+            },
+            {
+                "id": 28,
+                "text": "ٱلسَّلَامُ عَلَيْكَ يَا حُجَّةَ ٱللَّهِ فِي أَرْضِهِ",
+                "translation": "Peace be upon you, O proof of Allah on His earth.",
+                "transliteration": "As-salamu alayka ya Hujjat Allah fi ardihee",
+                "gap": true
+            },
+            {
+                "id": 29,
                 "text": "عَجَّلَ ٱللَّهُ فَرَجَكَ وَسَهَّلَ ٱللَّهُ مَخْرَجَكَ وَظُهُورَكَ",
                 "translation": "May Allah hasten your reappearance and make easy your emergence and your appearance.",
                 "transliteration": "Ajjal Allahu farajak wa sahhal Allahu makhrajaka wa dhuhurak",
                 "gap": false
             },
             {
-                "id": 28,
+                "id": 30,
                 "text": "وَرَحْمَةُ ٱللَّهِ وَبَرَكَاتُهُ",
                 "translation": "And the mercy of Allah and His blessings.",
                 "transliteration": "Wa rahmatullahi wa barakatuh",

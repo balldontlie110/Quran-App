@@ -12,7 +12,7 @@ struct Dua: Identifiable, Decodable {
     let title: String
     let subtitle: String?
     let verses: [DuaVerse]
-    let audio: String
+    let audio: String?
 }
 
 struct DuaVerse: Identifiable, Decodable {
@@ -21,5 +21,5 @@ struct DuaVerse: Identifiable, Decodable {
     let text: String
     let translation: String
     let transliteration: String
-    let audio: Int
+    let audio: Int?
 }

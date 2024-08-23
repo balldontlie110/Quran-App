@@ -168,8 +168,6 @@ struct AnswerCard: View {
             }
             
             if Auth.auth().currentUser != nil {
-                Divider()
-                
                 TextField("Response", text: $response, axis: .vertical)
                     .padding(.trailing, 30)
                     .overlay(alignment: .bottomTrailing) {
@@ -209,6 +207,7 @@ struct AnswerCard: View {
                             +
                             Text(response.timestamp.string())
                                 .foregroundStyle(Color.secondary)
+                                .font(.caption)
                         }
                     }.font(.callout)
                 }

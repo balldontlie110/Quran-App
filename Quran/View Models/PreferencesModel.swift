@@ -36,6 +36,7 @@ class PreferencesModel: ObservableObject {
         preferences.fontSize = 40.0
         preferences.isDefaultFont = true
         preferences.translationId = 131
+        preferences.translationLanguage = "en"
         preferences.reciterName = "Ghamadi"
         preferences.reciterSubfolder = "Ghamadi_40kbps"
         
@@ -44,7 +45,7 @@ class PreferencesModel: ObservableObject {
         self.preferences = preferences
     }
     
-    func updatePreferences(fontSize: Double, isDefaultFont: Bool, translatorId: Int, reciterName: String, reciterSubfolder: String) {
+    func updatePreferences(fontSize: Double, isDefaultFont: Bool, translatorId: Int, translationLanguage: String, reciterName: String, reciterSubfolder: String) {
         if let preferences = self.preferences {
             moc.delete(preferences)
             
@@ -52,6 +53,7 @@ class PreferencesModel: ObservableObject {
             preferences.fontSize = fontSize
             preferences.isDefaultFont = isDefaultFont
             preferences.translationId = Int64(translatorId)
+            preferences.translationLanguage = translationLanguage
             preferences.reciterName = reciterName
             preferences.reciterSubfolder = reciterSubfolder
             

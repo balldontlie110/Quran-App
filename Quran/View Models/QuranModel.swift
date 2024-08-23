@@ -18,6 +18,7 @@ class QuranModel: ObservableObject {
     private let translatorsFileName = "Translators.json"
     private let recitersFileName = "Reciters.json"
     private let translationBaseURL = "https://api.quran.com/api/v4/quran/translations/"
+    private let wbwTranslationBaseURL = "https://github.com/hablullah/data-quran/raw/master/word-translation/"
     
     init() {
         loadQuran()
@@ -63,7 +64,7 @@ class QuranModel: ObservableObject {
         let fileURL = getTranslationFileURL(for: translationId)
         
         if FileManager.default.fileExists(atPath: fileURL.path) {
-            loadLocalTranslation(translationId: translationId, completion: completion)
+            getLocalTranslation(translationId: translationId, completion: completion)
         } else {
             downloadTranslation(translationId: translationId, completion: completion)
         }
@@ -71,18 +72,18 @@ class QuranModel: ObservableObject {
     
     private func downloadTranslation(translationId: Int, completion: @escaping () -> Void) {
         guard let translationUrl = URL(string: "\(translationBaseURL)\(translationId)") else {
-            errorMessage = "Invalid translation URL."
+            errorMessage = "Unable to download translation"
             return
         }
         
         URLSession.shared.dataTask(with: translationUrl) { [weak self] data, _, error in
-            if let error = error {
-                self?.errorMessage = "Unable to download translation: \(error.localizedDescription)"
+            if error != nil {
+                self?.errorMessage = "Unable to download translation."
                 return
             }
             
             guard let data = data else {
-                self?.errorMessage = "No data received for translation."
+                self?.errorMessage = "Unable to download translation"
                 return
             }
             
@@ -94,9 +95,10 @@ class QuranModel: ObservableObject {
         do {
             let fileURL = getTranslationFileURL(for: translationId)
             try data.write(to: fileURL, options: [.atomicWrite, .completeFileProtection])
-            loadLocalTranslation(translationId: translationId, completion: completion)
+            
+            getLocalTranslation(translationId: translationId, completion: completion)
         } catch {
-            errorMessage = "Unable to save translation: \(error.localizedDescription)"
+            errorMessage = "Unable to save translation."
         }
     }
     
@@ -141,48 +143,98 @@ class QuranModel: ObservableObject {
         }
     }
     
-    private func loadLocalTranslation(translationId: Int, completion: @escaping () -> Void) {
-        let fileURL = getTranslationFileURL(for: translationId)
+    private func getTranslationFileURL(for translationId: Int) -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("translation\(translationId).json")
+    }
+    
+    func checkLocalWBWTranslation(wbwTranslationId: String, completion: @escaping () -> Void = {}) {
+        errorMessage = nil
+        let fileURL = getWBWTranslationFileURL(for: wbwTranslationId)
+        
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            getLocalWBWTranslation(wbwTranslationId: wbwTranslationId, completion: completion)
+        } else {
+            downloadWBWTranslation(wbwTranslationId: wbwTranslationId, completion: completion)
+        }
+    }
+    
+    private func downloadWBWTranslation(wbwTranslationId: String, completion: @escaping () -> Void) {
+        guard let wbwTranslationUrl = URL(string: "\(wbwTranslationBaseURL)\(wbwTranslationId)-qurancom.json") else {
+            errorMessage = "Unable to download word by word translation."
+            return
+        }
+        
+        URLSession.shared.dataTask(with: wbwTranslationUrl) { [weak self] data, _, error in
+            if error != nil {
+                self?.errorMessage = "Unable to download word by word translation."
+                return
+            }
+            
+            guard let data = data else {
+                self?.errorMessage = "Unable to download word by word translation."
+                return
+            }
+            
+            self?.saveWBWTranslation(data: data, wbwTranslationId: wbwTranslationId, completion: completion)
+        }.resume()
+    }
+    
+    private func saveWBWTranslation(data: Data, wbwTranslationId: String, completion: @escaping () -> Void) {
+        do {
+            let fileURL = getWBWTranslationFileURL(for: wbwTranslationId)
+            try data.write(to: fileURL, options: [.atomicWrite, .completeFileProtection])
+            
+            getLocalWBWTranslation(wbwTranslationId: wbwTranslationId, completion: completion)
+        } catch {
+            errorMessage = "Unable to save word by word translation."
+        }
+    }
+    
+    private func getLocalWBWTranslation(wbwTranslationId: String, completion: @escaping () -> ()) {
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("wbwTranslation\(wbwTranslationId).json")
         
         do {
             let data = try Data(contentsOf: fileURL)
-            let jsonData = try JSONDecoder().decode(RemoteTranslation.self, from: data)
-            updateQuran(with: jsonData.translations)
+            let jsonData = try JSONDecoder().decode([String : String].self, from: data)
+            let translations = Array(jsonData).sorted { $0.key < $1.key }
+            
+            var quran = self.quran
+            var index = 0
+            
+            for (surahIndex, surah) in quran.enumerated() {
+                for (verseIndex, verse) in surah.verses.enumerated() {
+                    for (wordIndex, _) in verse.words.enumerated() {
+                        let text = translations[index].value
+                        
+                        let newTranslation = WordTranslation(id: wbwTranslationId, translation: text)
+                        
+                        if let oldTranslationIndex = quran[surahIndex].verses[verseIndex].words[wordIndex].translations.firstIndex(where: { translation in
+                            translation.id == newTranslation.id
+                        }) {
+                            quran[surahIndex].verses[verseIndex].words[wordIndex].translations.remove(at: oldTranslationIndex)
+                        }
+                        
+                        quran[surahIndex].verses[verseIndex].words[wordIndex].translations.append(newTranslation)
+                        
+                        index += 1
+                    }
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.quran = quran
+            }
+            
             DispatchQueue.main.async {
                 completion()
             }
         } catch {
-            errorMessage = "Unable to load translation: \(error.localizedDescription)"
+            self.errorMessage = "Unable to load word by word translation."
         }
     }
     
-    private func updateQuran(with translations: [TranslationVerse]) {
-        var translationIndex = 0
-        
-        for surahIndex in quran.indices {
-            for verseIndex in quran[surahIndex].verses.indices {
-                let translationId = translations[translationIndex].resource_id
-                let text = translations[translationIndex].text
-                
-                let translation = Translation(id: translationId, translation: text)
-                
-                if let existingTranslationIndex = quran[surahIndex].verses[verseIndex].translations.firstIndex(where: { $0.id == translation.id }) {
-                    DispatchQueue.main.async {
-                        self.quran[surahIndex].verses[verseIndex].translations.remove(at: existingTranslationIndex)
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.quran[surahIndex].verses[verseIndex].translations.append(translation)
-                }
-                
-                translationIndex += 1
-            }
-        }
-    }
-    
-    private func getTranslationFileURL(for translationId: Int) -> URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("translation\(translationId).json")
+    private func getWBWTranslationFileURL(for wbwTranslationId: String) -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("wbwTranslation\(wbwTranslationId).json")
     }
     
     private func loadLocalData<T: Decodable>(fileName: String, type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {

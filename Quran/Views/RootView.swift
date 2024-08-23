@@ -206,6 +206,12 @@ struct RootView: View {
         
         quranModel.checkLocalTranslation(translationId: Int(translationId))
     }
+    
+    private func getLocalWBWTranslation() {
+        guard let wbwTranslationId = preferencesModel.preferences?.translationLanguage, wbwTranslationId != "en" else { return }
+        
+        quranModel.checkLocalWBWTranslation(wbwTranslationId: wbwTranslationId)
+    }
 }
 
 extension AnyView: @retroactive Hashable, Equatable {

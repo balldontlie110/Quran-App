@@ -59,6 +59,8 @@ struct SettingsView: View {
     @State private var showAllTranslators: Bool = false
     @State private var translatorsSearchText: String = ""
     
+    private let wbwLanguageCodes: [String : String] = ["bengali" : "bn", "german" : "de", "english" : "en", "persian" : "fa", "hindi" : "hi", "indonesian" : "id", "russian" : "ru", "tamil" : "ta", "turkish" : "tr", "urdu" : "ur"]
+    
     @State private var reciterName: String = ""
     @State private var reciterSubfolder: String = ""
     @State private var showAllReciters: Bool = false
@@ -414,6 +416,18 @@ struct SettingsView: View {
         }.padding()
     }
     
+    private var translationLanguage: String {
+        if let translator = quranModel.translators.first(where: { translator in
+            translator.id == translatorId
+        }) {
+            if let languageCode = wbwLanguageCodes[translator.language_name] {
+                return languageCode
+            }
+        }
+        
+        return "en"
+    }
+    
     private var preferences: some View {
         LazyVStack(spacing: 20) {
             fontPreferences
@@ -452,6 +466,7 @@ struct SettingsView: View {
                         fontSize: fontSize,
                         isDefaultFont: isDefaultFont,
                         translatorId: translatorId,
+                        translationLanguage: translationLanguage,
                         reciterName: reciterName,
                         reciterSubfolder: reciterSubfolder
                     )
@@ -510,6 +525,7 @@ struct SettingsView: View {
                     fontSize: fontSize,
                     isDefaultFont: isDefaultFont,
                     translatorId: translatorId,
+                    translationLanguage: translationLanguage,
                     reciterName: reciterName,
                     reciterSubfolder: reciterSubfolder
                 )
@@ -566,9 +582,12 @@ struct SettingsView: View {
                         fontSize: fontSize,
                         isDefaultFont: isDefaultFont,
                         translatorId: translatorId,
+                        translationLanguage: translationLanguage,
                         reciterName: reciterName,
                         reciterSubfolder: reciterSubfolder
                     )
+                    
+                    quranModel.checkLocalWBWTranslation(wbwTranslationId: translationLanguage)
                 }
             } label: {
                 TranslatorRow(translator: translator)
@@ -655,6 +674,7 @@ struct SettingsView: View {
                     fontSize: fontSize,
                     isDefaultFont: isDefaultFont,
                     translatorId: translatorId,
+                    translationLanguage: translationLanguage,
                     reciterName: reciterName,
                     reciterSubfolder: reciterSubfolder
                 )

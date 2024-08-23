@@ -463,8 +463,12 @@ struct VerseRow: View {
                                 .font(font)
                                 .lineSpacing(20)
                             
-                            Text(word.translation)
-                                .foregroundStyle(Color.secondary)
+                            if let translationLanguage = preferencesModel.preferences?.translationLanguage, let translation = word.translations.first(where: { translation in
+                                translation.id == translationLanguage
+                            }) {
+                                Text(translation.translation)
+                                    .foregroundStyle(Color.secondary)
+                            }
                         }.multilineTextAlignment(.center)
                     }.environment(\.layoutDirection, .rightToLeft)
                 }
