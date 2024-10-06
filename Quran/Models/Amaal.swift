@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Amaal: Identifiable, Decodable {
+struct Amaal: Identifiable, Decodable, Hashable, Equatable {
     let id: Int
     
     let title: String
@@ -15,6 +15,14 @@ struct Amaal: Identifiable, Decodable {
     let description: String
     
     let sections: [AmaalSection]
+    
+    static func ==(lhs: Amaal, rhs: Amaal) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct AmaalSection: Identifiable, Decodable {

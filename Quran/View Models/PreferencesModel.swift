@@ -39,23 +39,25 @@ class PreferencesModel: ObservableObject {
         preferences.translationLanguage = "en"
         preferences.reciterName = "Ghamadi"
         preferences.reciterSubfolder = "Ghamadi_40kbps"
+        preferences.wordByWord = false
         
         try? moc.save()
         
         self.preferences = preferences
     }
     
-    func updatePreferences(fontSize: Double, isDefaultFont: Bool, translatorId: Int, translationLanguage: String, reciterName: String, reciterSubfolder: String) {
-        if let preferences = self.preferences {
-            moc.delete(preferences)
-            
+    func updatePreferences(fontSize: Double? = nil, isDefaultFont: Bool? = nil, translatorId: Int? = nil, translationLanguage: String? = nil, reciterName: String? = nil, reciterSubfolder: String? = nil, wordByWord: Bool? = nil) {
+        if let previousPreferences = self.preferences {
             let preferences = Preferences(context: moc)
-            preferences.fontSize = fontSize
-            preferences.isDefaultFont = isDefaultFont
-            preferences.translationId = Int64(translatorId)
-            preferences.translationLanguage = translationLanguage
-            preferences.reciterName = reciterName
-            preferences.reciterSubfolder = reciterSubfolder
+            preferences.fontSize = fontSize ?? previousPreferences.fontSize
+            preferences.isDefaultFont = isDefaultFont ?? previousPreferences.isDefaultFont
+            preferences.translationId = Int64(translatorId ?? Int(previousPreferences.translationId))
+            preferences.translationLanguage = translationLanguage ?? previousPreferences.translationLanguage
+            preferences.reciterName = reciterName ?? previousPreferences.reciterName
+            preferences.reciterSubfolder = reciterSubfolder ?? previousPreferences.reciterSubfolder
+            preferences.wordByWord = wordByWord ?? previousPreferences.wordByWord
+            
+            moc.delete(previousPreferences)
             
             try? moc.save()
             

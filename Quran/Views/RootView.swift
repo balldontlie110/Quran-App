@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import SDWebImageSwiftUI
 
 struct RootViewButton: Identifiable {
     let id: UUID = UUID()
@@ -20,9 +21,14 @@ struct RootView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
     
+    @EnvironmentObject private var authenticationModel: AuthenticationModel
     @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
+    @EnvironmentObject private var quranFilterModel: QuranFilterModel
     @EnvironmentObject private var calendarModel: CalendarModel
+    @EnvironmentObject private var duaModel: DuaModel
+    @EnvironmentObject private var ziyaratModel: ZiyaratModel
+    @EnvironmentObject private var amaalModel: AmaalModel
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: true)],
@@ -42,27 +48,19 @@ struct RootView: View {
     @Namespace private var namespace
     
     private let columns = [GridItem](repeating: GridItem(.flexible()), count: 3)
-    private let rootViewButtons: [RootViewButton] = [
-        RootViewButton(view: AnyView(QuranView()), image: "quran", text: "Quran"),
-        RootViewButton(view: AnyView(CalendarView()), image: "calendar", text: "Calendar"),
-        RootViewButton(view: AnyView(EventsView()), image: "events", text: "Events"),
-        RootViewButton(view: AnyView(DuasView()), image: "duas", text: "Du'as"),
-        RootViewButton(view: AnyView(ZiaraahView()), image: "ziaraah", text: "Ziaraah"),
-        RootViewButton(view: AnyView(AmaalsView()), image: "amaal", text: "Amaal"),
-        RootViewButton(view: AnyView(QuestionsView()), image: "questions", text: "Questions"),
-        RootViewButton(view: AnyView(DonationsView()), image: "donations", text: "Donations")
-    ]
     
     var body: some View {
         NavigationStack {
             ScrollView {
+                dateSection
+                
                 LazyVGrid(columns: columns) {
                     navigationButtons
                     
                     socialsButton
                 }.padding(.horizontal, 10)
                 
-                dateSection
+                NextPrayerView()
                 PrayerTimesView()
             }
             .scrollIndicators(.hidden)
@@ -78,21 +76,25 @@ struct RootView: View {
                 view
             }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    favoritesToolbarButton
+                ToolbarItem(placement: .topBarLeading) {
+                    HStack {
+                        settingsToolbarButton
+                        
+                        favoritesToolbarButton
+                    }
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    settingsToolbarButton
+                ToolbarItem(placement: .topBarTrailing) {
+                    userInformation
                 }
             }
         }
-        .sheet(isPresented: $showFavoritesView) {
-            FavoritesView(showFavoritesView: $showFavoritesView, navigateTo: $navigateTo)
-        }
         .sheet(isPresented: $showSettingsView) {
             SettingsView(showSettingsView: $showSettingsView)
+        }
+        .sheet(isPresented: $showFavoritesView) {
+            FavoritesView(showFavoritesView: $showFavoritesView, navigateTo: $navigateTo)
         }
         .sheet(isPresented: $showSocialsView) {
             SocialsView(showSocialsView: $showSocialsView)
@@ -100,7 +102,26 @@ struct RootView: View {
         .onAppear {
             createQuestionsBookmarkFolder()
             getLocalTranslation()
+            
+            quranFilterModel.quranModel = quranModel
+            quranFilterModel.preferencesModel = preferencesModel
         }
+    }
+    
+    private var rootViewButtons: [RootViewButton] {
+        [
+            RootViewButton(view: AnyView(QuranView()), image: "quran", text: "Quran"),
+            RootViewButton(view: AnyView(CalendarView()), image: "calendar", text: "Calendar"),
+            RootViewButton(view: AnyView(EventsView()), image: "events", text: "Events"),
+            RootViewButton(view: AnyView(IbadatView(ibadat: $duaModel.duas, navigationTitle: "Du'as")), image: "duas", text: "Du'as"),
+            RootViewButton(view: AnyView(IbadatView(ibadat: $ziyaratModel.ziaraah, navigationTitle: "Ziaraah")), image: "ziaraah", text: "Ziaraah"),
+            RootViewButton(view: AnyView(IbadatView(ibadat: $amaalModel.amaals, navigationTitle: "Amaals")), image: "amaals", text: "Amaals"),
+            RootViewButton(view: AnyView(TasbeehView()), image: "tasbeeh", text: "Tasbeeh"),
+            RootViewButton(view: AnyView(QiblaFinder()), image: "qibla", text: "Qibla"),
+            RootViewButton(view: AnyView(QuestionsView()), image: "questions", text: "Questions"),
+            RootViewButton(view: AnyView(DonationsView()), image: "donations", text: "Donations"),
+            RootViewButton(view: AnyView(MadrassahView()), image: "madrassah", text: "Madrassah")
+        ]
     }
     
     private var navigationButtons: some View {
@@ -126,15 +147,16 @@ struct RootView: View {
             self.showSocialsView.toggle()
         } label: {
             VStack(spacing: 15) {
-                Image("\("socials")-\(colorScheme == .dark ? "dark" : "light")")
+                Image("socials-\(colorScheme == .dark ? "dark" : "light")")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 30, height: 30)
                 
                 Text("Socials")
+                    .foregroundStyle(Color.primary)
+                    .bold()
+                    .multilineTextAlignment(.center)
             }
-            .foregroundStyle(Color.primary)
-            .bold()
             .frame(maxWidth: .infinity)
             .frame(maxHeight: 75)
             .padding()
@@ -144,12 +166,21 @@ struct RootView: View {
         }
     }
     
+    private var favoritesToolbarButton: some View {
+        Button {
+            self.showFavoritesView.toggle()
+        } label: {
+            Image(systemName: "heart")
+                .foregroundStyle(Color.primary)
+        }
+    }
+    
     private var dateSection: some View {
         VStack {
             gregorianDate
             
             islamicDate
-        }.padding(.top)
+        }
     }
     
     private var gregorianDate: Text {
@@ -169,12 +200,25 @@ struct RootView: View {
         }.font(.system(.title2, weight: .bold))
     }
     
-    private var favoritesToolbarButton: some View {
-        Button {
-            self.showFavoritesView.toggle()
-        } label: {
-            Image(systemName: "heart")
-                .foregroundStyle(Color.primary)
+    private var userInformation: some View {
+        HStack(spacing: 10) {
+            if let user = authenticationModel.user {
+                if let username = user.displayName {
+                    Text("👋  Salaam, \(username)")
+                        .font(.headline)
+                        .multilineTextAlignment(.trailing)
+                }
+                
+                if let photoURL = user.photoURL {
+                    WebImage(url: photoURL)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 25)
+                        .clipShape(Circle())
+                        .overlay { Circle().stroke(lineWidth: 1) }
+                        .frame(width: 25, height: 25)
+                }
+            }
         }
     }
     
@@ -244,13 +288,14 @@ struct NavigationButton: View {
             symbol
             
             Text(button.text)
+                .bold()
+                .minimumScaleFactor(.leastNonzeroMagnitude)
+                .foregroundStyle(Color.primary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 10)
         }
-        .foregroundStyle(Color.primary)
-        .bold()
-        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
-        .frame(maxHeight: 75)
-        .padding()
+        .frame(height: 100)
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(2.5)

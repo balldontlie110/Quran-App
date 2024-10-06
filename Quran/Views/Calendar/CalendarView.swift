@@ -12,6 +12,8 @@ struct CalendarView: View {
     @ObservedObject private var calendarModel: CalendarModel = CalendarModel()
     @EnvironmentObject private var eventsModel: EventsModel
     
+    @State private var showImportantDates: Bool = false
+    
     private let columns: [GridItem] = [GridItem](repeating: GridItem(.flexible()), count: 7)
     
     private let prayerTimesColumns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
@@ -22,21 +24,21 @@ struct CalendarView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 20) {
                 datePicker
                 calendar
                 
                 todayButton
                 
-                importantDates
-                selectedDateEvents
-                
                 dateSection
-                prayerTimes
                 
-                Spacer()
+                selectedDateEvents
+                importantDates
+                
+                prayerTimes
             }.padding(.horizontal, 5)
         }
+        .scrollIndicators(.hidden)
         .navigationTitle("Calendar")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -70,7 +72,7 @@ struct CalendarView: View {
             }
         }
         .bold()
-        .padding()
+        .padding([.horizontal, .top])
     }
     
     private var monthYearText: Text {
@@ -173,29 +175,48 @@ struct CalendarView: View {
             calendarModel.currentMonth = Date()
         } label: {
             Text("Today")
-        }
-        .buttonStyle(BorderedButtonStyle())
-        .padding(.vertical)
+        }.buttonStyle(BorderedButtonStyle())
     }
     
+    @ViewBuilder
     private var importantDates: some View {
-        LazyVStack(spacing: 10) {
-            importantDatesHeader
-            
-            ForEach(importantDatesInMonth.sorted { $0.value < $1.value }, id: \.key.id) { (importantDate, date) in
-                ImportantDateCard(importantDate: importantDate, date: date)
-            }
+        if !importantDatesInMonth.isEmpty {
+            LazyVStack(spacing: 10) {
+                importantDatesHeader
+                
+                if showImportantDates {
+                    ForEach(importantDatesInMonth.sorted { $0.value < $1.value }, id: \.key.id) { (importantDate, date) in
+                        ImportantDateCard(importantDate: importantDate, date: date)
+                    }
+                }
+            }.padding(.horizontal, 10)
         }
-        .padding(.horizontal, 10)
-        .padding(.bottom, importantDatesInMonth.count > 0 ? 20 : 0)
     }
     
     @ViewBuilder
     private var importantDatesHeader: some View {
         if importantDatesInMonth.count > 0 {
-            Text("Important Dates This Month (\(currentIslamicMonths))")
-                .font(.system(.title3, weight: .bold))
-                .multilineTextAlignment(.center)
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Important Dates This Month")
+                        .font(.system(.title3, weight: .bold))
+                    
+                    Text("(\(currentIslamicMonths))")
+                        .bold()
+                        .foregroundStyle(Color.secondary)
+                }
+                
+                Spacer()
+                
+                Button {
+                    withAnimation {
+                        showImportantDates.toggle()
+                    }
+                } label: {
+                    Image(systemName: showImportantDates ? "chevron.up" : "chevron.down")
+                        .bold()
+                }
+            }
         }
     }
     
@@ -208,7 +229,11 @@ struct CalendarView: View {
             return nil
         }
         
-        return Set(currentIslamicMonths).joined(separator: "/")
+        let months = Set(currentIslamicMonths).sorted { month1, month2 in
+            islamicMonths.firstIndex(of: month1) ?? 0 < islamicMonths.firstIndex(of: month2) ?? 0
+        }
+        
+        return months.joined(separator: "/")
     }
     
     private var importantDatesInMonth: [ImportantDate : Date] {
@@ -235,23 +260,23 @@ struct CalendarView: View {
         return Dictionary(uniqueKeysWithValues: zip(importantDates, dates))
     }
     
+    @ViewBuilder
     private var selectedDateEvents: some View {
-        VStack(spacing: 10) {
-            selectedDateEventsHeader
-            
-            LazyVStack(spacing: 20) {
-                ForEach(events) { event in
-                    NavigationLink {
-                        EventView(event: event)
-                    } label: {
-                        EventCard(event: event)
+        if !events.isEmpty {
+            VStack(spacing: 10) {
+                selectedDateEventsHeader
+                
+                LazyVStack(spacing: 20) {
+                    ForEach(events) { event in
+                        NavigationLink {
+                            EventView(event: event)
+                        } label: {
+                            EventCard(event: event)
+                        }
                     }
                 }
-            }
+            }.padding(.horizontal, 10)
         }
-        .padding(.horizontal, -5)
-        .padding(.horizontal)
-        .padding(.bottom, events.count > 0 ? 20 : 0)
     }
     
     @ViewBuilder
@@ -284,7 +309,7 @@ struct CalendarView: View {
     }
     
     private var dateSection: some View {
-        VStack(spacing: 10) {
+        VStack {
             gregorianDateText
             
             islamicDateText

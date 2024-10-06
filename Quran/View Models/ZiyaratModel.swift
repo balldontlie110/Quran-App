@@ -8,7 +8,7 @@
 import Foundation
 
 class ZiyaratModel: ObservableObject {
-    @Published var ziaraah: [Ziyarat] = []
+    @Published var ziaraah: [Ibadah] = []
     
     init() {
         getZiaraah()
@@ -19,7 +19,9 @@ class ZiyaratModel: ObservableObject {
             if let data = try? Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe),
                let jsonData = try? JSONDecoder().decode([Ziyarat].self, from: data) {
                 
-                self.ziaraah = jsonData
+                self.ziaraah = jsonData.map { ziyarat in
+                    Ibadah(id: ziyarat.id, dua: nil, ziyarat: ziyarat, amaal: nil)
+                }
             }
         }
     }

@@ -7,12 +7,20 @@
 
 import Foundation
 
-struct Ziyarat: Identifiable, Decodable {
+struct Ziyarat: Identifiable, Decodable, Hashable, Equatable {
     let id: Int
     
     let title: String
     let subtitle: String?
     let verses: [ZiyaratVerse]
+    
+    static func ==(lhs: Ziyarat, rhs: Ziyarat) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct ZiyaratVerse: Identifiable, Decodable, Hashable {

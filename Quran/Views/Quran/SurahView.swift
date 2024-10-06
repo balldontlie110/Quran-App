@@ -15,7 +15,7 @@ struct SurahView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     @EnvironmentObject private var preferencesModel: PreferencesModel
-    @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel()
+    @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel(preferencesModel: PreferencesModel())
     
     let surah: Surah
     
@@ -62,7 +62,6 @@ struct SurahView: View {
                             ForEach(surahFilterModel.filteredVerses) { verse in
                                 if let index = surahFilterModel.filteredVerses.firstIndex(where: { $0.id == verse.id }) {
                                     VerseRow(
-                                        preferencesModel: preferencesModel,
                                         verse: verse,
                                         versesCount: surahFilterModel.filteredVerses.count,
                                         verseIndex: index,
@@ -76,8 +75,7 @@ struct SurahView: View {
                                         removeBookmark: { verse in
                                             removeBookmark(verse)
                                         },
-                                        audioPlayer: audioPlayer,
-                                        nextVerse: nextVerse
+                                        audioPlayer: audioPlayer
                                     ).id(verse.id)
                                 }
                             }
@@ -114,10 +112,17 @@ struct SurahView: View {
         .disabled(showVerseSelector || showBookmarkAlert != nil)
         .onAppear {
             surahFilterModel.surah = surah
+            surahFilterModel.preferencesModel = preferencesModel
             
             if let initialSearchText = initialSearchText {
                 surahFilterModel.searchText = initialSearchText
             }
+            
+            audioPlayer.surahNumber = String(surah.id)
+            audioPlayer.surahName = surah.transliteration
+            audioPlayer.nextVerse = nextVerse
+            audioPlayer.previousVerse = previousVerse
+            audioPlayer.reciterSubfolder = preferencesModel.preferences?.reciterSubfolder
             
             initialiseScrollPosition()
         }
@@ -187,25 +192,29 @@ struct SurahView: View {
     private var searchBar: some View {
         HStack {
             HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(Color.secondary)
-                
-                TextField("Search", text: $surahFilterModel.searchText)
-                
-                if surahFilterModel.searchText != "" {
-                    Button {
-                        surahFilterModel.searchText = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Color.secondary)
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(Color.secondary)
+                    
+                    TextField("Search", text: $surahFilterModel.searchText)
+                    
+                    if surahFilterModel.searchText != "" {
+                        Button {
+                            surahFilterModel.searchText = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(Color.secondary)
+                        }
                     }
-                }
-            }.padding(5)
+                }.padding(5)
+                
+                scrollToVerseButtons
+            }
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
             
-            scrollToVerseButtons
+            wordByWordToggle
         }
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(.horizontal)
         .padding(.vertical, 10)
     }
@@ -246,6 +255,23 @@ struct SurahView: View {
                     .bold()
             }.padding(5)
         }.padding(.trailing, 5)
+    }
+    
+    @ViewBuilder
+    private var wordByWordToggle: some View {
+        if let wordByWord = preferencesModel.preferences?.wordByWord {
+            Button {
+                preferencesModel.updatePreferences(wordByWord: !wordByWord)
+            } label: {
+                let wordByWordState = wordByWord ? "On" : "Off"
+                let colorScheme = colorScheme == .dark ? "dark" : "light"
+                
+                Image("wordByWord\(wordByWordState)-\(colorScheme)")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 25)
+            }
+        }
     }
     
     private var header: some View {
@@ -375,12 +401,28 @@ struct SurahView: View {
         
         return nil
     }
+    
+    private func previousVerse(verse: Verse) -> Verse? {
+        if let previousVerse = surah.verses.first(where: { check in
+            check.id == verse.id - 1
+        }) {
+            scrollPosition = dummyId
+            Task { @MainActor in
+                withAnimation {
+                    self.scrollPosition = previousVerse.id
+                }
+            }
+            
+            return previousVerse
+        }
+        
+        return nil
+    }
 }
 
 struct VerseRow: View {
     @Environment(\.colorScheme) private var colorScheme
-    
-    let preferencesModel: PreferencesModel
+    @EnvironmentObject private var preferencesModel: PreferencesModel
     
     let verse: Verse
     let versesCount: Int
@@ -391,16 +433,11 @@ struct VerseRow: View {
     
     let readingMode: Bool
     
-    @State private var tappedText: String = ""
-    @State private var showTranslation: Bool = false
-    
     let bookmarkedVerses: FetchedResults<BookmarkedVerse>
     let addBookmark: () -> ()
     let removeBookmark: (BookmarkedVerse) -> ()
     
     @StateObject var audioPlayer: AudioPlayer
-    
-    let nextVerse: (Verse) -> Verse?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -422,19 +459,7 @@ struct VerseRow: View {
             if verseIndex != versesCount - 1 && !readingMode {
                 Divider()
             }
-        }
-        .padding(.horizontal, 10)
-        .onChange(of: audioPlayer.finished) { _, newVal in
-            guard audioPlayer.finished,
-                    let verse = audioPlayer.verse,
-                  let nextVerse = nextVerse(verse),
-                  let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder,
-                  let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(nextVerse.audio).mp3")
-            else { return }
-            
-            audioPlayer.setupPlayer(with: audioUrl, verse: nextVerse)
-            audioPlayer.playPause()
-        }
+        }.padding(.horizontal, 10)
     }
     
     private var text: some View {
@@ -449,12 +474,12 @@ struct VerseRow: View {
                 
                 let font = isDefaultFont ? defaultFont : uthmanicFont
                 
-                if readingMode {
+                if readingMode || !(preferencesModel.preferences?.wordByWord ?? false) {
                     let verseText = getVerse(verse)
                     
                     Text(verseText.text)
                         .font(font)
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(readingMode ? .center : .trailing)
                         .lineSpacing(20)
                 } else {
                     WStack(verse.words, spacing: 20, lineSpacing: 20) { word in
@@ -480,9 +505,24 @@ struct VerseRow: View {
         func clean(_ str: String) -> (cleaned: String, originalIndices: [Int]) {
             var cleaned = ""
             var indices: [Int] = []
+            var inBracket = false
+            var bracketStack: [Character] = []
             
             for (index, char) in str.enumerated() {
-                if char.isLetter || char.isNumber {
+                if char == "[" || char == "(" || char == "{" {
+                    inBracket = true
+                    bracketStack.append(char)
+                } else if char == "]" || char == ")" || char == "}" {
+                    if let lastBracket = bracketStack.last,
+                       (char == "]" && lastBracket == "[") ||
+                       (char == ")" && lastBracket == "(") ||
+                       (char == "}" && lastBracket == "{") {
+                        bracketStack.removeLast()
+                    }
+                    if bracketStack.isEmpty {
+                        inBracket = false
+                    }
+                } else if !inBracket && (char.isLetter || char.isNumber) {
                     cleaned.append(char.lowercased())
                     indices.append(index)
                 }
@@ -516,15 +556,17 @@ struct VerseRow: View {
             let startIndex = translation.index(translation.startIndex, offsetBy: originalIndices[startCleanedIndex])
             let endIndex = translation.index(translation.startIndex, offsetBy: originalIndices[endCleanedIndex - 1] + 1)
             
-            let part = String(translation[lastEndIndex..<startIndex])
-            let attributedPart = AttributedString(part)
-            attributedStrings.append(attributedPart)
+            if lastEndIndex < startIndex {
+                let part = String(translation[lastEndIndex..<startIndex])
+                let attributedPart = AttributedString(part)
+                attributedStrings.append(attributedPart)
+            }
             
-            let separatorPart = String(translation[startIndex..<endIndex])
-            var attributedSeparator = AttributedString(separatorPart)
-            attributedSeparator.backgroundColor = .yellow
-            attributedSeparator.foregroundColor = .black
-            attributedStrings.append(attributedSeparator)
+            let highlightedPart = String(translation[startIndex..<endIndex])
+            var attributedHighlighted = AttributedString(highlightedPart)
+            attributedHighlighted.backgroundColor = .yellow
+            attributedHighlighted.foregroundColor = .black
+            attributedStrings.append(attributedHighlighted)
             
             lastEndIndex = endIndex
         }
@@ -543,34 +585,32 @@ struct VerseRow: View {
         return combinedAttributedString
     }
     
+    @ViewBuilder
     private var translation: some View {
-        Group {
-            if !readingMode {
-                HStack(alignment: .top) {
-                    Group {
-                        Text("\(verse.id).")
-                        
-                        Text(highlightedTranslation)
-                    }
-                    .font(.system(size: 20))
-                    .multilineTextAlignment(.leading)
+        if !readingMode {
+            HStack(alignment: .top) {
+                Group {
+                    Text("\(verse.id).")
                     
-                    Spacer()
+                    Text(highlightedTranslation)
                 }
+                .font(.system(size: 20))
+                .multilineTextAlignment(.leading)
+                
+                Spacer()
             }
         }
     }
     
+    @ViewBuilder
     private var verseButtons: some View {
-        Group {
-            if !readingMode {
-                VStack(spacing: 10) {
-                    bookmarkButton
-                    audioButton
-                }
-                .font(.system(size: 20))
-                .foregroundStyle(Color.primary)
+        if !readingMode {
+            VStack(spacing: 10) {
+                bookmarkButton
+                audioButton
             }
+            .font(.system(size: 20))
+            .foregroundStyle(Color.primary)
         }
     }
     
@@ -724,13 +764,16 @@ extension View {
 
 class SurahFilterModel: ObservableObject {
     @Published var searchText: String = ""
+    @Published var preferencesModel: PreferencesModel
     @Published var filteredVerses: [Verse] = []
     @Published var isLoading: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     @Published var surah: Surah?
     
-    init() {
+    init(preferencesModel: PreferencesModel) {
+        self.preferencesModel = preferencesModel
+        
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -762,7 +805,9 @@ class SurahFilterModel: ObservableObject {
                 return true
             }
             
-            for translation in verse.translations {
+            if let translation = verse.translations.first(where: { translation in
+                translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+            }) {
                 if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
                     return true
                 }

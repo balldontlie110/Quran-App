@@ -253,13 +253,16 @@ class QuranModel: ObservableObject {
 class QuranFilterModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var quranModel: QuranModel
+    @Published var preferencesModel: PreferencesModel
     @Published var filteredQuran: [Surah] = []
+    @Published var versesContainingText: [String : Verse] = [:]
     @Published var isLoading: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     
-    init(quranModel: QuranModel) {
-        self.quranModel = quranModel
+    init() {
+        self.quranModel = QuranModel()
+        self.preferencesModel = PreferencesModel()
         
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -275,8 +278,12 @@ class QuranFilterModel: ObservableObject {
             .assign(to: \.filteredQuran, on: self)
             .store(in: &cancellables)
     }
-
+    
     private func filterQuran(with searchText: String) -> [Surah] {
+        DispatchQueue.main.async {
+            self.versesContainingText = [:]
+        }
+        
         let cleanedSearchText = searchText.lowercasedLettersAndNumbers
         
         guard !cleanedSearchText.isEmpty else { return quranModel.quran }
@@ -298,18 +305,26 @@ class QuranFilterModel: ObservableObject {
                 return true
             }
             
-            if isSurahToVerse(surah: surah) {
-                return true
+            if let verse = surahToVerse(surah: surah) {
+                DispatchQueue.main.async {
+                    self.versesContainingText["\(surah.id):\(verse.id)"] = verse
+                }
             }
             
             for verse in surah.verses {
                 if verse.text.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
-                    return true
+                    DispatchQueue.main.async {
+                        self.versesContainingText["\(surah.id):\(verse.id)"] = verse
+                    }
                 }
                 
-                for translation in verse.translations {
+                if let translation = verse.translations.first(where: { translation in
+                    translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                }) {
                     if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
-                        return true
+                        DispatchQueue.main.async {
+                            self.versesContainingText["\(surah.id):\(verse.id)"] = verse
+                        }
                     }
                 }
             }
@@ -324,23 +339,44 @@ class QuranFilterModel: ObservableObject {
         }
     }
     
-    func isSurahToVerse(surah: Surah) -> Bool {
+    func surahToVerse(surah: Surah) -> Verse? {
         let surahToVerseRegex = "\\d+\\s*:\\s*\\d+"
         let surahToVersePredicate = NSPredicate(format: "SELF MATCHES %@", surahToVerseRegex)
         
         if surahToVersePredicate.evaluate(with: searchText) {
             let components = searchText.split(separator: ":").map { $0.trimmingCharacters(in: .whitespaces) }
             if let surahId = Int(components.first ?? ""), let verseId = Int(components.last ?? ""), surahId == surah.id && verseId <= surah.total_verses {
-                return true
+                if let verse = surah.verses.first(where: { verse in
+                    verse.id == verseId
+                }) {
+                    return verse
+                }
             }
         }
         
-        return false
+        return nil
     }
 }
 
 extension String {
     var lowercasedLettersAndNumbers: String {
-        return String(unicodeScalars.filter(CharacterSet.alphanumerics.contains)).lowercased()
+        let lettersNumbersAndBracketsCharacterSet = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "[](){}"))
+        let lowercasedLettersAndNumbers = String(unicodeScalars.filter(lettersNumbersAndBracketsCharacterSet.contains)).lowercased()
+        
+        return lowercasedLettersAndNumbers.removeTextInBrackets()
+    }
+    
+    func removeTextInBrackets() -> String {
+        let pattern = "\\[[^\\]]*\\]|\\([^\\)]*\\)|\\{[^\\}]*\\}"
+        
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else { return self }
+        
+        return regex.stringByReplacingMatches(in: self, options: [], range: NSRange(location: 0, length: self.count), withTemplate: "")
+    }
+}
+
+extension Character {
+    func isBracket() -> Bool {
+        return "[](){}".contains(self)
     }
 }

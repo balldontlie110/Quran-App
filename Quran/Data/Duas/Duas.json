@@ -706,8 +706,8 @@
     },
     {
         "id": 6,
-        "title": "Du'a Allahumma Kunle",
-        "subtitle": null,
+        "title": "Du'a Hujjat",
+        "subtitle": "Imam Mahdi (as)",
         "verses": [
             {
                 "id": 1,
@@ -770,77 +770,6 @@
     },
     {
         "id": 7,
-        "title": "Dua before exams",
-        "subtitle": null,
-        "verses": [
-            {
-                "id": 1,
-                "text": "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي",
-                "translation": "Oh Allah! Make useful for me what You have taught me and teach me knowledge that will be useful to me.",
-                "transliteration": "ALLAHUMMA INFA'NII BIMAA 'ALLAMTANII WA'ALLIMNII MAA YANFA'UUNII",
-                "audio": null
-            },
-            {
-                "id": 2,
-                "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ فَهْمَ النَّبِيِّينَ وَحِفْظَ الْمُرْسَلِينَ وَالْمُقَرَّبِينَ",
-                "translation": "Oh Allah! I ask You for the understanding of the prophets and the memory of the messengers, and those nearest to You.",
-                "transliteration": "ALLAHUMMA INII AS'ALUKA FAHMAL-NABIYYEN WA HIFTHAL MURSALEEN AL-MUQARRABEEN",
-                "audio": null
-            },
-            {
-                "id": 3,
-                "text": "اللَّهُمَّ اجْعَلْ لِسَانِي عَامِرًا بِذِكْرِكَ وَقَلْبِي بِخَشْيَتِكَ",
-                "translation": "Oh Allah! Make my tongue full of Your remembrance and my heart with consciousness of You.",
-                "transliteration": "ALLAHUMMA IJ'AL LISANEE 'AMIRAN BI DHIKRIKA WA QALBI BI KHASHYATIKA",
-                "audio": null
-            },
-            {
-                "id": 4,
-                "text": "إِنَّكَ عَلَىٰ مَا تَشَاءُ قَدِيرٌ وَأَنْتَ حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
-                "translation": "Oh Allah! You do whatever You wish, and You are my Availer and Protector and the best of aid.",
-                "transliteration": "INNAKA 'ALA MA-TASHA'U QADEER WA ANTA HASBUNA-ALLAHU WA NI'MAL WAKEEL",
-                "audio": null
-            },
-            {
-                "id": 5,
-                "text": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا",
-                "translation": "Oh Allah! Nothing is easy except what You have made easy.",
-                "transliteration": "ALLAHUMMA LA SAHLA ILLAMA JA-‘ALTAHU SAHLA",
-                "audio": null
-            },
-            {
-                "id": 6,
-                "text": "تَجْعَلُ الْحَزَنَ إِذَا شِئْتَ سَهْلًا",
-                "translation": "If You wish, You can make the difficult easy.",
-                "transliteration": "TAJ‘ALU AL HAZANA ETHA MA SHI’TA SAHLA",
-                "audio": null
-            },
-            {
-                "id": 7,
-                "text": "اللَّهُمَّ إِنِّي أَسْتَوْدِعُكَ مَا قَرَأْتُ وَمَا حَفِظْتُ",
-                "translation": "Oh Allah! I entrust You with what I have read and I have studied.",
-                "transliteration": "ALLAHUMMA INNI ASTAODI'UKA MA QARA'TU WAMA HAFATH-TU",
-                "audio": null
-            },
-            {
-                "id": 8,
-                "text": "فَرُدَّهُ إِلَيَّ عِنْدَ حَاجَتِي إِلَيْهِ",
-                "translation": "Oh Allah! Bring it back to me when I am in need of it.",
-                "transliteration": "FARUDDAHU 'ALLAYA INDA HAJATI ILAYHI",
-                "audio": null
-            },
-            {
-                "id": 9,
-                "text": "إِنَّكَ عَلَىٰ مَا تَشَاءُ قَدِيرٌ وَأَنْتَ حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
-                "translation": "Oh Allah! You do whatever You wish, You are my Availer and Protector and the best of aid.",
-                "transliteration": "INNAKA 'ALA MA-TASHA'-U QADEER WA ANTA HASBUNA ALLAH WA NI'MAL WAKEEL",
-                "audio": null
-            }
-        ],
-        "audio": null
-    },
-    {
-        "id": 8,
         "title": "Du'a of Imam Zainul Abideen",
         "subtitle": "After Jummah Salaat",
         "verses": [
@@ -1091,5 +1020,168 @@
             }
         ],
         "audio": "Jummah"
+    },
+    {
+        "id": 8,
+        "title": "Safar Du'a",
+        "subtitle": "Daily during month of Safar",
+        "verses": [
+            {
+                "id": 1,
+                "text": "يَا شَدِيدَ ٱلْقُوَىٰ",
+                "translation": "O Lord of mighty prowess!",
+                "transliteration": "YA SHADIDA ALQUWA",
+                "audio": 0
+            },
+            {
+                "id": 2,
+                "text": "وَيَا شَدِيدَ ٱلْمِحَالِ",
+                "translation": "O Lord of mighty power!",
+                "transliteration": "WA YA SHADIDA ALMIHALI",
+                "audio": 16
+            },
+            {
+                "id": 3,
+                "text": "يَا عَزِيزُ يَا عَزِيزُ يَا عَزِيزُ",
+                "translation": "O Exalted in might! O Exalted in might! O Exalted in might!",
+                "transliteration": "YA `AZIZU YA `AZIZU YA `AZIZU",
+                "audio": 21
+            },
+            {
+                "id": 4,
+                "text": "ذَلَّتْ بِعَظَمَتِكَ جَمِيعُ خَلْقِكَ",
+                "translation": "Submissive to Your Almightiness are all of Your creatures;",
+                "transliteration": "DHALLAT BI`AZAMATIKA JAMI`U KHALQIKA",
+                "audio": 27
+            },
+            {
+                "id": 5,
+                "text": "فَاكْفِنِي شَرَّ خَلْقِكَ",
+                "translation": "so, (please) save me from the evil of Your creatures.",
+                "transliteration": "FAKFINI SHARRA KHALQIKA",
+                "audio": 32
+            },
+            {
+                "id": 6,
+                "text": "يَا مُحْسِنُ يَا مُجْمِلُ",
+                "translation": "O All-liberal! O All-bountiful!",
+                "transliteration": "YA MUHSINU YA MUJMILU",
+                "audio": 35
+            },
+            {
+                "id": 7,
+                "text": "يَا مُنْعِمُ يَا مُفْضِلُ",
+                "translation": "O Source of all bounties! O Doer of favors!",
+                "transliteration": "YA MUN`IMU YA MUFDILU",
+                "audio": 40
+            },
+            {
+                "id": 8,
+                "text": "يَا لاَ إِلٰهَ إِلاَّ انْتَ سُبْحَانَكَ",
+                "translation": "O He save Whom there is no god! All glory be to You!",
+                "transliteration": "YA LA ILAHA ILLA ANTA SUBHANAKA",
+                "audio": 45
+            },
+            {
+                "id": 9,
+                "text": "إِنِّي كُنْتُ مِنَ ٱلظَّالِمِينَ",
+                "translation": "Verily, I have been a wrongdoer.",
+                "transliteration": "INNI KUNTU MIN ALZZALIMINA",
+                "audio": 53
+            },
+            {
+                "id": 10,
+                "text": "فَٱسْتَجَبْنَا لَهُ وَنَجّيْنَاهُ مِنَ ٱلْغَمِّ",
+                "translation": "So We heard his prayer and saved him from the anguish.",
+                "transliteration": "FASTAJABNA LAHU WA NAJJAYNAHU MIN ALGHAMMI",
+                "audio": 58
+            },
+            {
+                "id": 11,
+                "text": "وَكَذلِكَ نُنْجِي ٱلْمُؤْمِنِينَ",
+                "translation": "Thus do We save the believers.",
+                "transliteration": "WA KADHALIKA NUNJI ALMU'MININA",
+                "audio": 65
+            },
+            {
+                "id": 12,
+                "text": "وَصَلَّىٰ ٱللَّهُ عَلَىٰ مُحَمَّدٍ وَآلِهِ ٱلطَّيِّبِينَ ٱلطَّاهِرِينَ",
+                "translation": "May Allah send blessings to Muhammad and his Household, the pure and immaculate.",
+                "transliteration": "WA SALLA ALLAHU `ALA MUHAMMADIN WA ALIHI ALTTAYYIBINA ALTTAHIRINA",
+                "audio": 70
+            }
+        ],
+        "audio": "Safar"
+    },
+    {
+        "id": 9,
+        "title": "Du'a before exams",
+        "subtitle": null,
+        "verses": [
+            {
+                "id": 1,
+                "text": "اللَّهُمَّ انْفَعْنِي بِمَا عَلَّمْتَنِي وَعَلِّمْنِي مَا يَنْفَعُنِي",
+                "translation": "Oh Allah! Make useful for me what You have taught me and teach me knowledge that will be useful to me.",
+                "transliteration": "ALLAHUMMA INFA'NII BIMAA 'ALLAMTANII WA'ALLIMNII MAA YANFA'UUNII",
+                "audio": null
+            },
+            {
+                "id": 2,
+                "text": "اللَّهُمَّ إِنِّي أَسْأَلُكَ فَهْمَ النَّبِيِّينَ وَحِفْظَ الْمُرْسَلِينَ وَالْمُقَرَّبِينَ",
+                "translation": "Oh Allah! I ask You for the understanding of the prophets and the memory of the messengers, and those nearest to You.",
+                "transliteration": "ALLAHUMMA INII AS'ALUKA FAHMAL-NABIYYEN WA HIFTHAL MURSALEEN AL-MUQARRABEEN",
+                "audio": null
+            },
+            {
+                "id": 3,
+                "text": "اللَّهُمَّ اجْعَلْ لِسَانِي عَامِرًا بِذِكْرِكَ وَقَلْبِي بِخَشْيَتِكَ",
+                "translation": "Oh Allah! Make my tongue full of Your remembrance and my heart with consciousness of You.",
+                "transliteration": "ALLAHUMMA IJ'AL LISANEE 'AMIRAN BI DHIKRIKA WA QALBI BI KHASHYATIKA",
+                "audio": null
+            },
+            {
+                "id": 4,
+                "text": "إِنَّكَ عَلَىٰ مَا تَشَاءُ قَدِيرٌ وَأَنْتَ حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+                "translation": "Oh Allah! You do whatever You wish, and You are my Availer and Protector and the best of aid.",
+                "transliteration": "INNAKA 'ALA MA-TASHA'U QADEER WA ANTA HASBUNA-ALLAHU WA NI'MAL WAKEEL",
+                "audio": null
+            },
+            {
+                "id": 5,
+                "text": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا",
+                "translation": "Oh Allah! Nothing is easy except what You have made easy.",
+                "transliteration": "ALLAHUMMA LA SAHLA ILLAMA JA-‘ALTAHU SAHLA",
+                "audio": null
+            },
+            {
+                "id": 6,
+                "text": "تَجْعَلُ الْحَزَنَ إِذَا شِئْتَ سَهْلًا",
+                "translation": "If You wish, You can make the difficult easy.",
+                "transliteration": "TAJ‘ALU AL HAZANA ETHA MA SHI’TA SAHLA",
+                "audio": null
+            },
+            {
+                "id": 7,
+                "text": "اللَّهُمَّ إِنِّي أَسْتَوْدِعُكَ مَا قَرَأْتُ وَمَا حَفِظْتُ",
+                "translation": "Oh Allah! I entrust You with what I have read and I have studied.",
+                "transliteration": "ALLAHUMMA INNI ASTAODI'UKA MA QARA'TU WAMA HAFATH-TU",
+                "audio": null
+            },
+            {
+                "id": 8,
+                "text": "فَرُدَّهُ إِلَيَّ عِنْدَ حَاجَتِي إِلَيْهِ",
+                "translation": "Oh Allah! Bring it back to me when I am in need of it.",
+                "transliteration": "FARUDDAHU 'ALLAYA INDA HAJATI ILAYHI",
+                "audio": null
+            },
+            {
+                "id": 9,
+                "text": "إِنَّكَ عَلَىٰ مَا تَشَاءُ قَدِيرٌ وَأَنْتَ حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+                "translation": "Oh Allah! You do whatever You wish, You are my Availer and Protector and the best of aid.",
+                "transliteration": "INNAKA 'ALA MA-TASHA'-U QADEER WA ANTA HASBUNA ALLAH WA NI'MAL WAKEEL",
+                "audio": null
+            }
+        ],
+        "audio": null
     }
 ]

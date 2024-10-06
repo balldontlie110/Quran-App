@@ -8,7 +8,7 @@
 import Foundation
 
 class DuaModel: ObservableObject {
-    @Published var duas: [Dua] = []
+    @Published var duas: [Ibadah] = []
     
     init() {
         getDuas()
@@ -19,7 +19,9 @@ class DuaModel: ObservableObject {
             if let data = try? Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe),
                let jsonData = try? JSONDecoder().decode([Dua].self, from: data) {
                 
-                self.duas = jsonData
+                self.duas = jsonData.map { dua in
+                    Ibadah(id: dua.id, dua: dua, ziyarat: nil, amaal: nil)
+                }
             }
         }
     }

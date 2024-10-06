@@ -10,17 +10,9 @@ import Combine
 import CoreData
 
 struct QuranView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    
     @EnvironmentObject private var quranModel: QuranModel
-    @StateObject private var quranFilterModel: QuranFilterModel = QuranFilterModel(quranModel: QuranModel())
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Favorite.date, ascending: true)],
-        animation: .default
-    )
-    
-    private var favorites: FetchedResults<Favorite>
+    @EnvironmentObject private var preferencesModel: PreferencesModel
+    @EnvironmentObject private var quranFilterModel: QuranFilterModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -37,9 +29,6 @@ struct QuranView: View {
         .toolbar(.visible, for: .navigationBar)
         .toolbar {
             bookmarksButton
-        }
-        .onAppear {
-            quranFilterModel.quranModel = quranModel
         }
     }
     
@@ -68,8 +57,43 @@ struct QuranView: View {
                     let initialScroll = getVerse.initialScroll
                     let initialSearchText = getVerse.initialSearchText
                     
-                    SurahCard(surah: surah, initialScroll: initialScroll, initialSearchText: initialSearchText, isFavorite: isFavorite(surah: surah)) {
-                        favoriteSurah(surah: surah)
+                    NavigationLink {
+                        SurahView(surah: surah, initialScroll: initialScroll, initialSearchText: initialSearchText)
+                    } label: {
+                        SurahCard(surah: surah)
+                    }
+                }
+                
+                if quranFilterModel.filteredQuran.count > 0 && quranFilterModel.versesContainingText.count > 0 {
+                    Divider()
+                }
+                
+                let versesContainingText = quranFilterModel.versesContainingText.sorted { verse1, verse2 in
+                    if let surahId1 = verse1.key.split(separator: ":").first, let surahId2 = verse2.key.split(separator: ":").first, let surahId1 = Int(surahId1), let surahId2 = Int(surahId2) {
+                        
+                        if surahId1 < surahId2 {
+                            return true
+                        }
+                        
+                        if surahId1 > surahId2 {
+                            return false
+                        }
+                        
+                        return verse1.value.id < verse2.value.id
+                    }
+                    
+                    return false
+                }
+                
+                ForEach(versesContainingText, id: \.key) { surahToVerseId, verse in
+                    if let surah = quranModel.quran.first(where: { surah in
+                        if let surahId = surahToVerseId.split(separator: ":").first {
+                            return String(surah.id) == surahId
+                        }
+                        
+                        return false
+                    }) {
+                        VerseCard(surah: surah, verse: verse)
                     }
                 }
             }.padding()
@@ -85,30 +109,9 @@ struct QuranView: View {
         }
     }
     
-    private func isFavorite(surah: Surah) -> Bool {
-        return favorites.contains { favorite in
-            favorite.surahId == surah.id
-        }
-    }
-    
-    private func favoriteSurah(surah: Surah) {
-        if let favorite = favorites.first(where: { favorite in
-            favorite.surahId == surah.id
-        }) {
-            viewContext.delete(favorite)
-        } else {
-            let favorite = Favorite(context: viewContext)
-            favorite.surahId = Int64(surah.id)
-        }
-        
-        try? viewContext.save()
-    }
-    
     private func getVerse(surah: Surah) -> (initialScroll: Int?, initialSearchText: String?) {
-        if quranFilterModel.isSurahToVerse(surah: surah) {
-            if let verseId = Int(quranFilterModel.searchText.split(separator: ":").last ?? "") {
-                return (verseId, nil)
-            }
+        if let verse = quranFilterModel.surahToVerse(surah: surah) {
+            return (verse.id, nil)
         }
         
         let cleanedSearchText = quranFilterModel.searchText.lowercasedLettersAndNumbers
@@ -131,33 +134,21 @@ struct QuranView: View {
 
 struct SurahCard: View {
     let surah: Surah
-    var initialScroll: Int?
-    var initialSearchText: String?
-    
-    let isFavorite: Bool
-    let favoriteSurah: () -> Void
     
     var body: some View {
-        NavigationLink {
-            SurahView(surah: surah, initialScroll: initialScroll, initialSearchText: initialSearchText)
-        } label: {
-            HStack(spacing: 15) {
-                surahNumber
-                
-                surahName
-                
-                Spacer()
-                
-                surahInfo
-            }
-            .foregroundStyle(Color.primary)
-            .padding()
-            .background(Color(.secondarySystemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-            .contextMenu {
-                favoriteButton
-            }
+        HStack(spacing: 15) {
+            surahNumber
+            
+            surahName
+            
+            Spacer()
+            
+            surahInfo
         }
+        .foregroundStyle(Color.primary)
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 5))
     }
     
     private var surahNumber: some View {
@@ -183,29 +174,176 @@ struct SurahCard: View {
     }
     
     private var surahInfo: some View {
-        VStack {
+        VStack(alignment: .trailing) {
             Text(surah.name)
                 .fontWeight(.heavy)
             
             Text("\(surah.total_verses) Ayahs")
                 .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Color.secondary)
+        }.multilineTextAlignment(.trailing)
+    }
+}
+
+struct VerseCard: View {
+    @EnvironmentObject private var preferencesModel: PreferencesModel
+    @EnvironmentObject private var quranFilterModel: QuranFilterModel
+    
+    let surah: Surah
+    let verse: Verse
+    
+    var body: some View {
+        NavigationLink {
+            if quranFilterModel.surahToVerse(surah: surah) != nil {
+                SurahView(surah: surah, initialScroll: verse.id, initialSearchText: nil)
+            } else {
+                SurahView(surah: surah, initialScroll: verse.id, initialSearchText: quranFilterModel.searchText)
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 15) {
+                    surahNumber
+                    
+                    surahName
+                    
+                    Spacer()
+                    
+                    surahAndVerseInfo
+                }
+                
+                verseTranslation
+            }
+            .foregroundStyle(Color.primary)
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 5))
         }
     }
     
-    private var favoriteButton: some View {
-        Button {
-            favoriteSurah()
-        } label: {
-            HStack {
-                Image(systemName: isFavorite ? "heart.fill" : "heart")
-                    .foregroundStyle(Color.red)
-                
-                Text(isFavorite ? "Unfavorite" : "Favorite")
-                
-                Spacer()
+    private var surahNumber: some View {
+        Text(String(surah.id))
+            .bold()
+            .overlay {
+                Image(systemName: "diamond")
+                    .font(.system(size: 40))
+                    .fontWeight(.ultraLight)
             }
+            .frame(width: 40)
+    }
+    
+    private var surahName: some View {
+        VStack(alignment: .leading) {
+            Text(surah.transliteration)
+                .fontWeight(.heavy)
+            
+            Text(surah.translation)
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Color.secondary)
+        }.multilineTextAlignment(.leading)
+    }
+    
+    private var surahAndVerseInfo: some View {
+        VStack {
+            Text(surah.name)
+                .fontWeight(.heavy)
+            
+            Text("Verse: \(verse.id)")
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Color.secondary)
         }
+    }
+    
+    private var verseTranslation: some View {
+        HStack(alignment: .top) {
+            Text("\(verse.id).")
+            
+            Text(highlightedTranslation)
+                .multilineTextAlignment(.leading)
+        }.font(.subheadline)
+    }
+    
+    private var highlightedTranslation: AttributedString {
+        func clean(_ str: String) -> (cleaned: String, originalIndices: [Int]) {
+            var cleaned = ""
+            var indices: [Int] = []
+            var inBracket = false
+            var bracketStack: [Character] = []
+            
+            for (index, char) in str.enumerated() {
+                if char == "[" || char == "(" || char == "{" {
+                    inBracket = true
+                    bracketStack.append(char)
+                } else if char == "]" || char == ")" || char == "}" {
+                    if let lastBracket = bracketStack.last,
+                       (char == "]" && lastBracket == "[") ||
+                       (char == ")" && lastBracket == "(") ||
+                       (char == "}" && lastBracket == "{") {
+                        bracketStack.removeLast()
+                    }
+                    if bracketStack.isEmpty {
+                        inBracket = false
+                    }
+                } else if !inBracket && (char.isLetter || char.isNumber) {
+                    cleaned.append(char.lowercased())
+                    indices.append(index)
+                }
+            }
+            
+            return (cleaned, indices)
+        }
+        
+        guard let translation = verse.translations.first(where: { translation in
+            translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+        })?.translation else { return AttributedString() }
+        
+        let (cleanedTranslation, originalIndices) = clean(translation)
+        let cleanedSearchText = clean(quranFilterModel.searchText).cleaned
+        
+        var positions: [Range<String.Index>] = []
+        var startIndex = cleanedTranslation.startIndex
+        
+        while let range = cleanedTranslation.range(of: cleanedSearchText, range: startIndex..<cleanedTranslation.endIndex) {
+            positions.append(range)
+            startIndex = range.upperBound
+        }
+        
+        var attributedStrings: [AttributedString] = []
+        var lastEndIndex = translation.startIndex
+        
+        for position in positions {
+            let startCleanedIndex = cleanedTranslation.distance(from: cleanedTranslation.startIndex, to: position.lowerBound)
+            let endCleanedIndex = cleanedTranslation.distance(from: cleanedTranslation.startIndex, to: position.upperBound)
+            
+            let startIndex = translation.index(translation.startIndex, offsetBy: originalIndices[startCleanedIndex])
+            let endIndex = translation.index(translation.startIndex, offsetBy: originalIndices[endCleanedIndex - 1] + 1)
+            
+            if lastEndIndex < startIndex {
+                let part = String(translation[lastEndIndex..<startIndex])
+                let attributedPart = AttributedString(part)
+                attributedStrings.append(attributedPart)
+            }
+            
+            let highlightedPart = String(translation[startIndex..<endIndex])
+            var attributedHighlighted = AttributedString(highlightedPart)
+            attributedHighlighted.backgroundColor = .yellow
+            attributedHighlighted.foregroundColor = .black
+            attributedStrings.append(attributedHighlighted)
+            
+            lastEndIndex = endIndex
+        }
+        
+        if lastEndIndex < translation.endIndex {
+            let part = String(translation[lastEndIndex..<translation.endIndex])
+            let attributedPart = AttributedString(part)
+            attributedStrings.append(attributedPart)
+        }
+        
+        var combinedAttributedString = AttributedString("")
+        for attributedString in attributedStrings {
+            combinedAttributedString.append(attributedString)
+        }
+        
+        return combinedAttributedString
     }
 }
 

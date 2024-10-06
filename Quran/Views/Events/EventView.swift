@@ -119,12 +119,9 @@ struct EventView: View {
         Group {
             if let url = event.url {
                 Link(destination: url) {
-                    HStack(alignment: .top) {
-                        Text("URL:")
-                        Text(url.absoluteString)
-                    }
-                    .foregroundStyle(Color.accentColor)
-                    .multilineTextAlignment(.leading)
+                    Text(url.absoluteString)
+                        .foregroundStyle(Color.accentColor)
+                        .multilineTextAlignment(.leading)
                 }
                 
                 Divider()

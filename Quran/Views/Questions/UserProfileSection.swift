@@ -18,24 +18,30 @@ struct UserProfileSection: View {
     var font: Font.TextStyle = .caption
     
     var body: some View {
-        let userProfile = userProfiles.first(where: { $0.id == uid })
-        
-        VStack(alignment: .trailing) {
-            Text(userProfile?.username ?? "")
-            Text(timestamp.string())
+        HStack {
+            let userProfile = userProfiles.first(where: { $0.id == uid })
+            
+            VStack(alignment: .trailing) {
+                Text(userProfile?.username ?? "")
+                Text(timestamp.string())
+            }
+            .foregroundStyle(Color.secondary)
+            .font(.system(font, weight: .semibold))
+            .multilineTextAlignment(.trailing)
+            
+            WebImage(url: userProfile?.photoURL) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+            } placeholder: {
+                Image(systemName: "person.circle")
+                    .resizable()
+                    .scaledToFill()
+                    .foregroundStyle(Color.gray)
+                    .fontWeight(.thin)
+            }.frame(width: size, height: size)
         }
-        .foregroundStyle(Color.secondary)
-        .font(.system(font, weight: .semibold))
-        .multilineTextAlignment(.trailing)
-        
-        WebImage(url: userProfile?.photoURL) { image in
-            image
-                .resizable()
-                .scaledToFill()
-                .clipShape(Circle())
-        } placeholder: {
-            EmptyView()
-        }.frame(width: size, height: size)
     }
 }
 

@@ -16,15 +16,20 @@ struct DonationsView: View {
     private let predefinedAmounts = ["10", "25", "50", "100", "250"]
     
     var body: some View {
-        Group {
-            VStack(spacing: 50) {
+        ZStack {
+            Button {
+                hideKeyboard()
+            } label: {
+                Color.clear
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            
+            VStack {
                 VStack(spacing: 25) {
                     donationField
                     
                     predefinedAmountsButtons
                 }
-                
-                donateButton
                 
                 Spacer()
                 
@@ -33,11 +38,13 @@ struct DonationsView: View {
                 }
                 
                 Spacer()
+                
+                donateButton
             }.padding()
         }
+        .paymentSheet(isPresented: $paymentModel.showPaymentSheet, paymentSheet: paymentModel.paymentSheet, onCompletion: paymentModel.onPaymentCompletion)
         .navigationTitle("Donations")
         .navigationBarTitleDisplayMode(.inline)
-        .paymentSheet(isPresented: $paymentModel.showPaymentSheet, paymentSheet: paymentModel.paymentSheet, onCompletion: paymentModel.onPaymentCompletion)
     }
     
     private var donationField: some View {
@@ -80,7 +87,7 @@ struct DonationsView: View {
             paymentModel.preparePaymentSheet()
         } label: {
             Text("Donate")
-                .bold()
+                .font(.headline)
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
                 .padding()

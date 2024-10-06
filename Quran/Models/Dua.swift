@@ -7,12 +7,20 @@
 
 import Foundation
 
-struct Dua: Identifiable, Decodable {
+struct Dua: Identifiable, Decodable, Hashable, Equatable {
     let id: Int
     let title: String
     let subtitle: String?
     let verses: [DuaVerse]
     let audio: String?
+    
+    static func ==(lhs: Dua, rhs: Dua) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct DuaVerse: Identifiable, Decodable {

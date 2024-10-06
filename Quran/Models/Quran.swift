@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Surah: Identifiable, Decodable {
+struct Surah: Identifiable, Decodable, Hashable {
     let id: Int
     let name: String
     let transliteration: String
@@ -15,9 +15,13 @@ struct Surah: Identifiable, Decodable {
     let type: String
     let total_verses: Int
     var verses: [Verse]
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
-struct Verse: Identifiable, Decodable, Equatable {
+struct Verse: Identifiable, Decodable, Equatable, Hashable {
     let id: Int
     let text: String
     var translations: [Translation]
@@ -27,6 +31,10 @@ struct Verse: Identifiable, Decodable, Equatable {
     static func ==(lhs: Verse, rhs: Verse) -> Bool {
         return lhs.id == rhs.id
     }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct Translation: Identifiable, Decodable {
@@ -34,10 +42,14 @@ struct Translation: Identifiable, Decodable {
     let translation: String
 }
 
-struct Word: Identifiable, Decodable {
+struct Word: Identifiable, Decodable, Equatable {
     let id: String
     let text: String
     var translations: [WordTranslation]
+    
+    static func ==(lhs: Word, rhs: Word) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 struct WordTranslation: Identifiable, Decodable {

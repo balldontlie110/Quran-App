@@ -36,7 +36,7 @@ struct PrayerTimesView: View {
             var dateComponents = DateComponents()
             
             if let hour = Int(time.dropLast(3)) {
-                if (prayer == "Noon" && hour != 11) || prayer == "Sunset" || prayer == "Maghrib" || prayer == "Midnight" {
+                if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" || prayer == "Midnight" {
                     dateComponents.hour = hour + 12
                 } else {
                     dateComponents.hour = hour

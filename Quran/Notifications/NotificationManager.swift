@@ -46,7 +46,6 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
                 let request = PrayerNotification.fetchRequest()
                 
                 if let prayerNotifications = try? self.moc.fetch(request) {
-                    
                     let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
                     var prayerTimesDates: [String : Date] = [:]
                     

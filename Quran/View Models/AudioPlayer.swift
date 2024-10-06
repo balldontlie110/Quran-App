@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import MediaPlayer
 import Combine
 
 class AudioPlayer: ObservableObject {
@@ -23,11 +24,20 @@ class AudioPlayer: ObservableObject {
     @Published var verse: Verse?
     @Published var showAudioPlayerSlider: Bool = true
     
-    @Published var finished: Bool = false
     @Published var continuePlaying: Bool = false
     
+    @Published var surahNumber: String?
+    @Published var surahName: String?
+    @Published var nextVerse: ((Verse) -> Verse?)?
+    @Published var previousVerse: ((Verse) -> Verse?)?
+    @Published var reciterSubfolder: String?
+    
+    private var pauseTarget: Any?
+    private var playTarget: Any?
+    private var nextVerseTarget: Any?
+    private var previousVerseTarget: Any?
+    
     func setupPlayer(with url: URL, verse: Verse? = nil) {
-        finished = false
         showAudioPlayerSlider = true
         
         if isPlaying {
@@ -48,6 +58,9 @@ class AudioPlayer: ObservableObject {
             self?.currentTime = time.seconds
         }
         
+        setMediaPlayerControls()
+        setNowPlayingInfo()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(audioDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
     }
     
@@ -56,10 +69,67 @@ class AudioPlayer: ObservableObject {
         
         if isPlaying {
             player.pause()
+            
             isPlaying = false
         } else {
             player.play()
+            
             isPlaying = true
+        }
+    }
+    
+    private func setMediaPlayerControls() {
+        pauseTarget = MPRemoteCommandCenter.shared().pauseCommand.addTarget { event in
+            self.playPause()
+            
+            return .success
+        }
+        
+        playTarget = MPRemoteCommandCenter.shared().playCommand.addTarget { event in
+            self.playPause()
+            
+            return .success
+        }
+        
+        nextVerseTarget = MPRemoteCommandCenter.shared().nextTrackCommand.addTarget { event in
+            self.skipToVerse(forwards: true)
+            
+            return .success
+        }
+        
+        previousVerseTarget = MPRemoteCommandCenter.shared().previousTrackCommand.addTarget { event in
+            self.skipToVerse(forwards: false)
+            
+            return .success
+        }
+    }
+    
+    private func removeMediaCommandTargets() {
+        MPRemoteCommandCenter.shared().pauseCommand.removeTarget(pauseTarget)
+        MPRemoteCommandCenter.shared().playCommand.removeTarget(playTarget)
+        MPRemoteCommandCenter.shared().nextTrackCommand.removeTarget(nextVerseTarget)
+        MPRemoteCommandCenter.shared().previousTrackCommand.removeTarget(previousVerseTarget)
+    }
+    
+    private func setNowPlayingInfo() {
+        if let surahNumber = surahNumber, let surahName = surahName, let verse = verse {
+            let nowPlayingInfoCenter = MPNowPlayingInfoCenter.default()
+            var nowPlayingInfo = nowPlayingInfoCenter.nowPlayingInfo ?? [String: Any]()
+            
+            let title = surahName
+            let details = "\(surahNumber):\(verse.id)"
+            
+            if let image = UIImage(named: "Quran") {
+                let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: {  (_) -> UIImage in
+                    return image
+                })
+                
+                nowPlayingInfo[MPMediaItemPropertyTitle] = title
+                nowPlayingInfo[MPMediaItemPropertyArtist] = details
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                
+                nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+            }
         }
     }
     
@@ -73,8 +143,30 @@ class AudioPlayer: ObservableObject {
         player?.seek(to: CMTime.zero)
         
         if continuePlaying {
-            finished = true
+            guard let verse = self.verse,
+                  let nextVerse = nextVerse?(verse),
+                  let reciterSubfolder = reciterSubfolder,
+                  let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(nextVerse.audio).mp3")
+            else { return }
+            
+            self.setupPlayer(with: audioUrl, verse: nextVerse)
+            self.playPause()
         }
+        
+        removeMediaCommandTargets()
+    }
+    
+    private func skipToVerse(forwards: Bool) {
+        guard let verse = self.verse,
+              let newVerse = forwards ? nextVerse?(verse) : previousVerse?(verse),
+              let reciterSubfolder = reciterSubfolder,
+              let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(newVerse.audio).mp3")
+        else { return }
+        
+        self.setupPlayer(with: audioUrl, verse: newVerse)
+        self.playPause()
+        
+        removeMediaCommandTargets()
     }
     
     func resetPlayer() {
@@ -84,7 +176,6 @@ class AudioPlayer: ObservableObject {
         currentTime = 0.0
         duration = 0.0
         url = nil
-        finished = false
         player = nil
         playerItem = nil
     }

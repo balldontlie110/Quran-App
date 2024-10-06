@@ -11,7 +11,6 @@ import CoreData
 struct FavoritesView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @EnvironmentObject private var quranModel: QuranModel
     @EnvironmentObject private var duaModel: DuaModel
     @EnvironmentObject private var ziyaratModel: ZiyaratModel
     @EnvironmentObject private var amaalModel: AmaalModel
@@ -26,15 +25,47 @@ struct FavoritesView: View {
     
     private var favorites: FetchedResults<Favorite>
     
+    @State private var timer: Timer?
+    @State private var heartLocation: CGPoint?
+    @State private var heartRotation: Angle = Angle(degrees: Double.random(in: -45...45))
+    
+    @State private var ignoreNavigationGesture: Bool = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 20){
-                    surahsSection
-                    duasSection
-                    ziaraahSection
-                    amaalsSection
-                }.padding(.horizontal)
+                    FavoritesSection(context: viewContext, ibadat: duas, title: "Du'as", showFavoritesView: $showFavoritesView, navigateTo: $navigateTo, favorites: favorites, timer: $timer, heartLocation: $heartLocation, heartRotation: $heartRotation, ignoreNavigationGesture: $ignoreNavigationGesture)
+                    
+                    FavoritesSection(context: viewContext, ibadat: ziaraah, title: "Ziaraah", showFavoritesView: $showFavoritesView, navigateTo: $navigateTo, favorites: favorites, timer: $timer, heartLocation: $heartLocation, heartRotation: $heartRotation, ignoreNavigationGesture: $ignoreNavigationGesture)
+                    
+                    FavoritesSection(context: viewContext, ibadat: amaals, title: "Amaals", showFavoritesView: $showFavoritesView, navigateTo: $navigateTo, favorites: favorites, timer: $timer, heartLocation: $heartLocation, heartRotation: $heartRotation, ignoreNavigationGesture: $ignoreNavigationGesture)
+                }.padding([.horizontal, .top])
+            }
+            .overlay {
+                if let heartLocation = heartLocation {
+                    Image(systemName: "heart.slash.fill")
+                        .font(.largeTitle)
+                        .foregroundStyle(Color(.darkGray))
+                        .rotationEffect(heartRotation)
+                        .position(heartLocation)
+                        .ignoresSafeArea(.all)
+                        .onAppear {
+                            withAnimation(.spring(duration: 1)) {
+                                self.heartLocation = heartLocation.applying(CGAffineTransform(translationX: 0, y: -250))
+                                self.heartRotation = Angle(degrees: Double.random(in: -30...30))
+                            }
+                        }
+                }
+            }
+            .onChange(of: heartLocation) { oldLocation, _ in
+                if heartLocation != nil && oldLocation == nil {
+                    self.timer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { timer in
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            heartLocation = nil
+                        }
+                    }
+                }
             }
             .navigationTitle("Favorites")
             .toolbar {
@@ -54,135 +85,176 @@ struct FavoritesView: View {
         }
     }
     
-    private var surahsSection: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            if surahs.count > 0 {
-                Text("Surahs")
-                    .font(.title)
-                    .bold()
-                
-                ForEach(surahs) { surah in
-                    Button {
-                        self.showFavoritesView = false
-                        self.navigateTo = AnyView(SurahView(surah: surah))
-                    } label: {
-                        SurahCard(surah: surah, isFavorite: true) {
-                            favoriteSurah(surah: surah)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    private func favoriteSurah(surah: Surah) {
-        if let favorite = favorites.first(where: { favorite in
-            favorite.surahId == surah.id
-        }) {
-            viewContext.delete(favorite)
-        } else {
-            let favorite = Favorite(context: viewContext)
-            favorite.surahId = Int64(surah.id)
-        }
-        
-        try? viewContext.save()
-    }
-    
-    private var duasSection: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            if duas.count > 0 {
-                Text("Duas")
-                    .font(.title)
-                    .bold()
-                
-                ForEach(duas) { dua in
-                    Button {
-                        self.showFavoritesView = false
-                        self.navigateTo = AnyView(DuaView(dua: dua))
-                    } label: {
-                        DuaCard(context: viewContext, favorites: favorites, dua: dua)
-                    }
-                }
-            }
-        }
-    }
-    
-    private var ziaraahSection: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            if ziaraah.count > 0 {
-                Text("Ziaraah")
-                    .font(.title)
-                    .bold()
-                
-                ForEach(ziaraah) { ziyarat in
-                    Button {
-                        self.showFavoritesView = false
-                        self.navigateTo = AnyView(ZiyaratView(ziyarat: ziyarat))
-                    } label: {
-                        ZiyaratCard(context: viewContext, favorites: favorites, ziyarat: ziyarat)
-                    }
-                }
-            }
-        }
-    }
-    
-    private var amaalsSection: some View {
-        LazyVStack(alignment: .leading, spacing: 10) {
-            if amaals.count > 0 {
-                Text("Amaals")
-                    .font(.title)
-                    .bold()
-                
-                ForEach(amaals) { amaal in
-                    Button {
-                        self.showFavoritesView = false
-                        self.navigateTo = AnyView(AmaalView(amaal: amaal))
-                    } label: {
-                        AmaalCard(context: viewContext, favorites: favorites, amaal: amaal)
-                    }
-                }
-            }
-        }
-    }
-    
-    private var surahs: [Surah] {
-        return favorites.filter { favorite in
-            favorite.surahId != 0
-        }.compactMap { favorite in
-            quranModel.quran.first { surah in
-                surah.id == favorite.surahId
-            }
-        }
-    }
-    
-    private var duas: [Dua] {
+    private var duas: [Ibadah] {
         return favorites.filter { favorite in
             favorite.duaId != 0
         }.compactMap { favorite in
-            duaModel.duas.first { dua in
+            duaModel.duas.compactMap { ibadah in
+                ibadah.dua
+            }.first { dua in
                 dua.id == favorite.duaId
             }
+        }.sorted { dua1, dua2 in
+            if let favorite1 = favorites.first(where: { favorite in
+                favorite.duaId == dua1.id
+            }), let favorite2 = favorites.first(where: { favorite in
+                favorite.duaId == dua2.id
+            }), let date1 = favorite1.date, let date2 = favorite2.date {
+                return date1 < date2
+            }
+            
+            return false
+        }.map { dua in
+            Ibadah(id: dua.id, dua: dua, ziyarat: nil, amaal: nil)
         }
     }
     
-    private var ziaraah: [Ziyarat] {
+    private var ziaraah: [Ibadah] {
         return favorites.filter { favorite in
             favorite.ziyaratId != 0
         }.compactMap { favorite in
-            ziyaratModel.ziaraah.first { ziyarat in
+            ziyaratModel.ziaraah.compactMap { ibadah in
+                ibadah.ziyarat
+            }.first { ziyarat in
                 ziyarat.id == favorite.ziyaratId
+            }
+        }.sorted { ziyarat1, ziyarat2 in
+            if let favorite1 = favorites.first(where: { favorite in
+                favorite.ziyaratId == ziyarat1.id
+            }), let favorite2 = favorites.first(where: { favorite in
+                favorite.ziyaratId == ziyarat2.id
+            }), let date1 = favorite1.date, let date2 = favorite2.date {
+                return date1 < date2
+            }
+            
+            return false
+        }.map { ziyarat in
+            Ibadah(id: ziyarat.id, dua: nil, ziyarat: ziyarat, amaal: nil)
+        }
+    }
+    
+    private var amaals: [Ibadah] {
+        return favorites.filter { favorite in
+            favorite.amaalId != 0
+        }.compactMap { favorite in
+            amaalModel.amaals.compactMap { ibadah in
+                ibadah.amaal
+            }.first { amaal in
+                amaal.id == favorite.amaalId
+            }
+        }.sorted { amaal1, amaal2 in
+            if let favorite1 = favorites.first(where: { favorite in
+                favorite.amaalId == amaal1.id
+            }), let favorite2 = favorites.first(where: { favorite in
+                favorite.amaalId == amaal2.id
+            }), let date1 = favorite1.date, let date2 = favorite2.date {
+                return date1 < date2
+            }
+            
+            return false
+        }.map { amaal in
+            Ibadah(id: amaal.id, dua: nil, ziyarat: nil, amaal: amaal)
+        }
+    }
+}
+
+struct FavoritesSection: View {
+    let context: NSManagedObjectContext
+    
+    let ibadat: [Ibadah]
+    let title: String
+    
+    @Binding var showFavoritesView: Bool
+    @Binding var navigateTo: AnyView?
+    
+    let favorites: FetchedResults<Favorite>
+    
+    @Binding var timer: Timer?
+    @Binding var heartLocation: CGPoint?
+    @Binding var heartRotation: Angle
+    
+    @Binding var ignoreNavigationGesture: Bool
+    
+    var body: some View {
+        if ibadat.count > 0 {
+            LazyVStack(alignment: .leading, spacing: 10) {
+                Text(title)
+                    .font(.title)
+                    .bold()
+                
+                ForEach(Array(ibadat.enumerated()), id: \.offset) { index, ibadah in
+                    Button {
+                        
+                    } label: {
+                        IbadahCard(ignoreNavigationGesture: $ignoreNavigationGesture, index: index, ibadah: ibadah, isFavorite: true, editMode: .constant(false)) {
+                            favoriteIbadah(ibadah: ibadah)
+                        }
+                    }
+                    .simultaneousGesture(
+                        SpatialTapGesture(count: 2, coordinateSpace: .global).onEnded { location in
+                            favoriteIbadah(ibadah: ibadah)
+                            
+                            self.heartLocation = nil
+                            timer?.invalidate()
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                withAnimation {
+                                    self.heartLocation = location.location
+                                }
+                            }
+                        }.exclusively(before: TapGesture(count: 1).onEnded {
+                            if !ignoreNavigationGesture {
+                                self.showFavoritesView = false
+                                
+                                if let dua = ibadah.dua {
+                                    self.navigateTo = AnyView(DuaView(dua: dua))
+                                } else if let ziyarat = ibadah.ziyarat {
+                                    self.navigateTo = AnyView(ZiyaratView(ziyarat: ziyarat))
+                                } else if let amaal = ibadah.amaal {
+                                    self.navigateTo = AnyView(AmaalView(amaal: amaal))
+                                }
+                            }
+                            
+                            ignoreNavigationGesture = false
+                        })
+                    )
+                }
             }
         }
     }
     
-    private var amaals: [Amaal] {
-        return favorites.filter { favorite in
-            favorite.amaalId != 0
-        }.compactMap { favorite in
-            amaalModel.amaals.first { amaal in
-                amaal.id == favorite.amaalId
+    private func favoriteIbadah(ibadah: Ibadah) {
+        if let favorite = favorites.first(where: { favorite in
+            if let dua = ibadah.dua {
+                return favorite.duaId == dua.id
+            } else if let ziyarat = ibadah.ziyarat {
+                return favorite.ziyaratId == ziyarat.id
+            } else if let amaal = ibadah.amaal {
+                return favorite.amaalId == amaal.id
+            }
+            
+            return false
+        }) {
+            context.delete(favorite)
+        } else {
+            let favorite = Favorite(context: context)
+            
+            if let dua = ibadah.dua {
+                favorite.duaId = Int64(dua.id)
+            } else if let ziyarat = ibadah.ziyarat {
+                favorite.ziyaratId = Int64(ziyarat.id)
+            } else if let amaal = ibadah.amaal {
+                favorite.amaalId = Int64(amaal.id)
+            }
+            
+            if let highestPosition = favorites.filter({ $0.duaId != 0 }).max(by: { $0.position < $1.position })?.position {
+                favorite.position = Int64(highestPosition + 1)
+            } else {
+                favorite.position = Int64(1)
             }
         }
+        
+        try? context.save()
     }
 }
 

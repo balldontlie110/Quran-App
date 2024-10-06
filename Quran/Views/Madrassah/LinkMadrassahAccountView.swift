@@ -8,25 +8,49 @@
 import SwiftUI
 
 struct LinkMadrassahAccountView: View {
-    @EnvironmentObject private var madrassahModel: MadrassahModel
+    @StateObject var madrassahModel: MadrassahModel
     
     @State private var madrassahId: String = ""
     
     @FocusState private var focused: Bool
     
     var body: some View {
-        if madrassahModel.user == nil {
-            loginMessage
-        } else {
-            madrassahIdField
+        VStack {
+            if madrassahModel.user == nil {
+                loginMessage
+            } else {
+                madrassahIdField
+                errorMessage
+                
+                Spacer()
+                
+                if madrassahModel.loading {
+                    ProgressView()
+                }
+                
+                Spacer()
+                
+                linkAccountButton
+            }
+        }
+        .padding()
+        .onAppear {
+            madrassahModel.error = ""
+            madrassahModel.loading = false
+            
+            self.focused = true
+        }
+        .onDisappear {
+            madrassahModel.error = ""
+            madrassahModel.loading = false
         }
     }
     
     private var loginMessage: some View {
-        Text("In order to link to a Madrassah account, you first have to be logged in by going to settings on the home page.")
+        Text("In order to link to a Madrassah account, you first have to be logged in by going to settings on the home page")
             .font(.system(.title3, weight: .bold))
             .multilineTextAlignment(.center)
-            .padding(.bottom)
+            .padding()
     }
     
     private var madrassahIdField: some View {
@@ -39,11 +63,11 @@ struct LinkMadrassahAccountView: View {
             .focused($focused)
     }
     
-    private var continueButton: some View {
+    private var linkAccountButton: some View {
         Button {
-            
+            madrassahModel.linkMadrassahAccount(madrassahId: madrassahId)
         } label: {
-            Text("Connect Account")
+            Text("Link Account")
                 .font(.headline)
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
@@ -56,8 +80,8 @@ struct LinkMadrassahAccountView: View {
     
     @ViewBuilder
     private var errorMessage: some View {
-        if authenticationModel.error != "" {
-            Text(authenticationModel.error)
+        if madrassahModel.error != "" {
+            Text(madrassahModel.error)
                 .foregroundStyle(Color.red)
                 .multilineTextAlignment(.center)
                 .font(.caption)
@@ -67,5 +91,5 @@ struct LinkMadrassahAccountView: View {
 }
 
 #Preview {
-    LinkMadrassahAccountView()
+    LinkMadrassahAccountView(madrassahModel: MadrassahModel())
 }

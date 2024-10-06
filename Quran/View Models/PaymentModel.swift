@@ -78,9 +78,9 @@ class PaymentModel: ObservableObject {
         var error: NSError?
         
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-            let reason = "We need to verify it's really you to make a donation."
-
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+            let reason = "To verify that it's really you to make a donation."
+            
+            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authenticationError in
                 if success {
                     completion(true)
                 }
