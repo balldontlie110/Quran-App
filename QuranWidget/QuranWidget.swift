@@ -71,6 +71,8 @@ struct Provider: TimelineProvider {
         }
     }
     
+    private let islamicMonths = ["Muharram" : "Muharram", "Safar" : "Safar", "Rabi I" : "Rabi Al Awwal", "Rabi' II" : "Rabi Al Thaani", "Jumada I" : "Jamaada Al Ula", "Jumada II" : "Jamaada Al Thani", "Rajab" : "Rajab", "Shabban" : "Shabaan", "Ramadan" : "Ramadhan", "Shawaal" : "Shawwal", "Thi Alqida" : "Dhu Al Qadah", "Thul-Hijja" : "Dhu Al Hijjah"]
+    
     private func fetchDate(completion: @escaping (String?) -> Void) {
         let url = "https://najaf.org/english/"
         
@@ -84,7 +86,10 @@ struct Provider: TimelineProvider {
                     
                     if splitDate.count == 3 {
                         let day = String(splitDate[0])
-                        let month = String(splitDate[1])
+                        
+                        let islamicMonth = String(splitDate[1])
+                        let month = self.islamicMonths[islamicMonth] ?? islamicMonth
+                        
                         let year = String(splitDate[2])
                         
                         let islamicDate = "\(day) \(month) \(year)"

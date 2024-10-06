@@ -37,6 +37,10 @@ class CalendarModel: ObservableObject {
     @Published var prayerTimes: [MonthPrayerTimes] = []
     
     init() {
+        load()
+    }
+    
+    func load() {
         fetchDate()
         fetchImportantDates()
         
@@ -46,6 +50,8 @@ class CalendarModel: ObservableObject {
             }
         }
     }
+    
+    private let islamicMonths = ["Muharram" : "Muharram", "Safar" : "Safar", "Rabi I" : "Rabi Al Awwal", "Rabi' II" : "Rabi Al Thaani", "Jumada I" : "Jamaada Al Ula", "Jumada II" : "Jamaada Al Thani", "Rajab" : "Rajab", "Shabban" : "Shabaan", "Ramadan" : "Ramadhan", "Shawaal" : "Shawwal", "Thi Alqida" : "Dhu Al Qadah", "Thul-Hijja" : "Dhu Al Hijjah"]
     
     private func fetchDate() {
         let url = "https://najaf.org/english/?cachebust=\(UUID().uuidString)"
@@ -60,7 +66,10 @@ class CalendarModel: ObservableObject {
                         if splitDate.count == 3 {
                             DispatchQueue.main.async {
                                 self.day = String(splitDate[0])
-                                self.month = String(splitDate[1])
+                                
+                                let islamicMonth = String(splitDate[1])
+                                
+                                self.month = self.islamicMonths[islamicMonth] ?? islamicMonth
                                 self.year = String(splitDate[2])
                             }
                         }

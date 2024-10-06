@@ -20,7 +20,7 @@ struct CalendarView: View {
     private let prayers = ["Imsaak", "Dawn", "Sunrise", "Noon", "Sunset", "Maghrib", "Midnight"]
     private let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib", "Midnight" : "Midnight"]
     
-    private let islamicMonths = ["Muharram", "Safar", "Rabi Al Awwal", "Rabi Al Thaani", "Jamaada Al Ula", "Jamaada Al Thani", "Rajab", "Shabaan", "Ramadan", "Shawwal", "Dhu Al Qadah", "Dhu Al Hijjah"]
+    private let islamicMonths = ["Muharram", "Safar", "Rabi Al Awwal", "Rabi Al Thaani", "Jamaada Al Ula", "Jamaada Al Thani", "Rajab", "Shabaan", "Ramadhan", "Shawwal", "Dhu Al Qadah", "Dhu Al Hijjah"]
     
     var body: some View {
         ScrollView {
@@ -389,7 +389,7 @@ struct ImportantDateCard: View {
     let importantDate: ImportantDate
     let date: Date
     
-    private let islamicMonths = ["Muharram", "Safar", "Rabi Al Awwal", "Rabi Al Thaani", "Jamaada Al Ula", "Jamaada Al Thani", "Rajab", "Shabaan", "Ramadan", "Shawwal", "Dhu Al Qadah", "Dhu Al Hijjah"]
+    private let islamicMonths = ["Muharram", "Safar", "Rabi Al Awwal", "Rabi Al Thaani", "Jamaada Al Ula", "Jamaada Al Thani", "Rajab", "Shabaan", "Ramadhan", "Shawwal", "Dhu Al Qadah", "Dhu Al Hijjah"]
     
     var body: some View {
         HStack {

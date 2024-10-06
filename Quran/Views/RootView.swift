@@ -75,6 +75,9 @@ struct RootView: View {
             .navigationDestination(item: $navigateTo) { view in
                 view
             }
+            .refreshable {
+                calendarModel.load()
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     HStack {
