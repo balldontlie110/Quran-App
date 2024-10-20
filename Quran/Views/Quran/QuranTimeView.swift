@@ -52,17 +52,22 @@ struct QuranTimeView: View {
                 }
                 .chartXScale(domain: selectedWeek...endOfSelectedWeek)
                 .chartXAxis {
-                    AxisMarks(position: .bottom, values: .stride(by: .day)) { value in
+                    AxisMarks(preset: .aligned, position: .bottom, values: .stride(by: .day)) { value in
                         AxisGridLine()
                         AxisTick()
                         AxisValueLabel {
-                            Text(dayAndMonthString(value: value))
+                            VStack {
+                                let (day, month) = dayAndMonthString(value: value)
+                                
+                                Text(day)
+                                Text(month)
+                            }.multilineTextAlignment(.center)
                         }
                     }
                 }
                 .chartYScale(domain: 0...maxValue)
                 .chartYAxis {
-                    AxisMarks { value in
+                    AxisMarks(preset: .aligned, position: .trailing) { value in
                         AxisGridLine()
                         AxisTick()
                         AxisValueLabel {
@@ -71,7 +76,7 @@ struct QuranTimeView: View {
                     }
                 }
                 .frame(height: 300)
-                .padding(.horizontal)
+                .padding(.horizontal, 25)
                 
                 VStack {
                     Text("Total time this week:")
@@ -117,15 +122,18 @@ struct QuranTimeView: View {
         case hours
     }
     
-    private func dayAndMonthString(value: AxisValue) -> String {
+    private func dayAndMonthString(value: AxisValue) -> (day: String, month: String) {
         if let date = value.as(Date.self) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "d MMM"
+            let dayFormatter = DateFormatter()
+            dayFormatter.dateFormat = "d"
             
-            return formatter.string(from: date)
+            let monthFormatter = DateFormatter()
+            monthFormatter.dateFormat = "MMM"
+            
+            return (dayFormatter.string(from: date), monthFormatter.string(from: date))
         }
         
-        return ""
+        return ("", "")
     }
     
     private func totalTimeThisWeek(days: [DailyTime]) -> String {
@@ -140,7 +148,13 @@ struct QuranTimeView: View {
     
     private var weekPicker: some View {
         HStack {
-            if let selectedWeek = selectedWeek, let newWeek = Calendar.current.date(byAdding: .day, value: -7, to: selectedWeek), let firstWeekDate = weeks.first?.date, firstWeekDate < selectedWeek {
+            if let selectedWeek = selectedWeek, let newWeek = weeks.last(where: { week in
+                if let date = week.date {
+                    return date < selectedWeek
+                }
+                
+                return false
+            })?.date {
                 Button {
                     Task { @MainActor in
                         self.selectedWeek = newWeek
@@ -152,7 +166,7 @@ struct QuranTimeView: View {
                 Button {
                     
                 } label: {
-                    Image(systemName: "chevron.right")
+                    Image(systemName: "chevron.left")
                 }.disabled(true)
             }
             
@@ -162,7 +176,13 @@ struct QuranTimeView: View {
             
             Spacer()
             
-            if let selectedWeek = selectedWeek, let newWeek = Calendar.current.date(byAdding: .day, value: 7, to: selectedWeek), let firstWeekDate = weeks.first?.date, firstWeekDate < selectedWeek {
+            if let selectedWeek = selectedWeek, let newWeek = weeks.first(where: { week in
+                if let date = week.date {
+                    return date > selectedWeek
+                }
+                
+                return false
+            })?.date {
                 Button {
                     Task { @MainActor in
                         self.selectedWeek = newWeek
@@ -183,10 +203,10 @@ struct QuranTimeView: View {
     }
     
     private var weekText: Text {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMMM"
-        
         if let selectedWeek = selectedWeek, let endDate = Calendar.current.date(byAdding: .day, value: 6, to: selectedWeek) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd MMMM"
+            
             let start = formatter.string(from: selectedWeek)
             let end = formatter.string(from: endDate)
             

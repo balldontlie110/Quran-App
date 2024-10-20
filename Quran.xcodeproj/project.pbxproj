@@ -586,6 +586,7 @@
 				A2C74A492C4B692100D353FC /* Amaal.swift */,
 				A266AC5C2C335EBE0058156B /* Question.swift */,
 				A2ED6C6B2C88F323002183EC /* Madrassah */,
+				A2FD25BB2C1EEBA5003785CF /* Core Data */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -617,7 +618,6 @@
 				A220AC952C49D6C30052F245 /* Ziaraah.json */,
 				A2C74A472C4B68EB00D353FC /* Amaals.json */,
 				A27818C92C50836D00A80D53 /* ImportantDates.json */,
-				A2FD25BB2C1EEBA5003785CF /* Core Data */,
 				A23E2AE22C5125C6008C84E7 /* Fonts */,
 			);
 			path = Data;
