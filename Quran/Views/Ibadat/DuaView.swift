@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct DuaView: View {
-    @EnvironmentObject private var preferencesModel: PreferencesModel
-    
     let dua: Dua
     
     @EnvironmentObject private var audioPlayer: AudioPlayer
@@ -26,17 +24,18 @@ struct DuaView: View {
                     ForEach(dua.verses) { verse in
                         VStack(spacing: 0) {
                             VStack(spacing: 15) {
-                                if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
-                                    let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
-                                    let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
-                                    
-                                    let font = isDefaultFont ? defaultFont : uthmanicFont
-                                    
-                                    Text(verse.text)
-                                        .font(font)
-                                        .multilineTextAlignment(.center)
-                                        .lineSpacing(20)
-                                }
+                                let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                                
+                                let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
+                                let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                                let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                                
+                                let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+                                
+                                Text(verse.text)
+                                    .font(font)
+                                    .multilineTextAlignment(.center)
+                                    .lineSpacing(20)
                                 
                                 Text(verse.transliteration.uppercased())
                                     .font(.system(size: 20))

@@ -10,7 +10,6 @@ import FirebaseAuth
 
 struct NewQuestionView: View {
     @EnvironmentObject private var quranModel: QuranModel
-    @EnvironmentObject private var preferencesModel: PreferencesModel
     
     @StateObject var questionsModel: QuestionsModel
     
@@ -91,7 +90,7 @@ struct NewQuestionView: View {
                             Text("\(verse.id).")
                             
                             if let translation = verse.translations.first(where: { translation in
-                                translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                                translation.id == UserDefaults.standard.integer(forKey: "translatorId")
                             }) {
                                 Text(translation.translation)
                             }
@@ -160,5 +159,4 @@ struct NewQuestionView: View {
     @FocusState var questionTitleFocused: Bool
     
     NewQuestionView(questionsModel: QuestionsModel(), questionTitleFocused: $questionTitleFocused)
-        .environmentObject(PreferencesModel())
 }

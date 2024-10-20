@@ -59,19 +59,19 @@ class QuranModel: ObservableObject {
         }
     }
     
-    func checkLocalTranslation(translationId: Int, completion: @escaping () -> Void = {}) {
+    func checkLocalTranslation(translatorId: Int, completion: @escaping () -> Void = {}) {
         errorMessage = nil
-        let fileURL = getTranslationFileURL(for: translationId)
+        let fileURL = getTranslationFileURL(for: translatorId)
         
         if FileManager.default.fileExists(atPath: fileURL.path) {
-            getLocalTranslation(translationId: translationId, completion: completion)
+            getLocalTranslation(translatorId: translatorId, completion: completion)
         } else {
-            downloadTranslation(translationId: translationId, completion: completion)
+            downloadTranslation(translatorId: translatorId, completion: completion)
         }
     }
     
-    private func downloadTranslation(translationId: Int, completion: @escaping () -> Void) {
-        guard let translationUrl = URL(string: "\(translationBaseURL)\(translationId)") else {
+    private func downloadTranslation(translatorId: Int, completion: @escaping () -> Void) {
+        guard let translationUrl = URL(string: "\(translationBaseURL)\(translatorId)") else {
             errorMessage = "Unable to download translation"
             return
         }
@@ -87,23 +87,23 @@ class QuranModel: ObservableObject {
                 return
             }
             
-            self?.saveTranslation(data: data, translationId: translationId, completion: completion)
+            self?.saveTranslation(data: data, translatorId: translatorId, completion: completion)
         }.resume()
     }
     
-    private func saveTranslation(data: Data, translationId: Int, completion: @escaping () -> Void) {
+    private func saveTranslation(data: Data, translatorId: Int, completion: @escaping () -> Void) {
         do {
-            let fileURL = getTranslationFileURL(for: translationId)
+            let fileURL = getTranslationFileURL(for: translatorId)
             try data.write(to: fileURL, options: [.atomicWrite, .completeFileProtection])
             
-            getLocalTranslation(translationId: translationId, completion: completion)
+            getLocalTranslation(translatorId: translatorId, completion: completion)
         } catch {
             errorMessage = "Unable to save translation."
         }
     }
     
-    private func getLocalTranslation(translationId: Int, completion: @escaping () -> ()) {
-        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("translation\(translationId).json")
+    private func getLocalTranslation(translatorId: Int, completion: @escaping () -> ()) {
+        let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("translation\(translatorId).json")
         
         do {
             let data = try Data(contentsOf: fileURL)
@@ -114,10 +114,10 @@ class QuranModel: ObservableObject {
             
             for (surahIndex, surah) in self.quran.enumerated() {
                 for (verseIndex, _) in surah.verses.enumerated() {
-                    let translationId = translations[index].resource_id
+                    let translatorId = translations[index].resource_id
                     let text = translations[index].text
                     
-                    let newTranslation = Translation(id: translationId, translation: text)
+                    let newTranslation = Translation(id: translatorId, translation: text)
                     
                     if let oldTranslationIndex = self.quran[surahIndex].verses[verseIndex].translations.firstIndex(where: { translation in
                         translation.id == newTranslation.id
@@ -143,8 +143,8 @@ class QuranModel: ObservableObject {
         }
     }
     
-    private func getTranslationFileURL(for translationId: Int) -> URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("translation\(translationId).json")
+    private func getTranslationFileURL(for translatorId: Int) -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("translation\(translatorId).json")
     }
     
     func checkLocalWBWTranslation(wbwTranslationId: String, completion: @escaping () -> Void = {}) {
@@ -253,7 +253,6 @@ class QuranModel: ObservableObject {
 class QuranFilterModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var quranModel: QuranModel
-    @Published var preferencesModel: PreferencesModel
     @Published var filteredQuran: [Surah] = []
     @Published var versesContainingText: [String : Verse] = [:]
     @Published var isLoading: Bool = false
@@ -262,7 +261,6 @@ class QuranFilterModel: ObservableObject {
     
     init() {
         self.quranModel = QuranModel()
-        self.preferencesModel = PreferencesModel()
         
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -319,7 +317,7 @@ class QuranFilterModel: ObservableObject {
                 }
                 
                 if let translation = verse.translations.first(where: { translation in
-                    translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                    translation.id == UserDefaults.standard.integer(forKey: "translatorId")
                 }) {
                     if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
                         DispatchQueue.main.async {

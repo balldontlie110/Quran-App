@@ -22,7 +22,6 @@ struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject private var authenticationModel: AuthenticationModel
-    @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var prayerTimesModel: PrayerTimesModel
     @EnvironmentObject private var quranModel: QuranModel
     @EnvironmentObject private var audioPlayer: AudioPlayer
@@ -62,17 +61,20 @@ struct SettingsView: View {
     private var prayerNotifications: FetchedResults<PrayerNotification>
     private let renamedPrayers: [String : String] = ["Fajr" : "Dawn", "Sunrise" : "Sunrise", "Zuhr" : "Noon", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
     
-    @State private var fontSize: Double = 0.0
-    @State private var isDefaultFont: Bool = true
+    @AppStorage("fontSize") private var fontSize: Double = 40.0
+    @AppStorage("fontNumber") private var fontNumber: Int = 1
     
-    @State private var translatorId: Int = 0
+    @AppStorage("translatorId") private var translatorId: Int = 131
+    @AppStorage("translationLanguage") private var translatorLanguage: String = "en"
+    
+    @AppStorage("reciterName") private var reciterName: String = "Ghamadi"
+    @AppStorage("reciterSubfolder") private var reciterSubfolder: String = "Ghamadi_40kbps"
+    
     @State private var showAllTranslators: Bool = false
     @State private var translatorsSearchText: String = ""
     
     private let wbwLanguageCodes: [String : String] = ["bengali" : "bn", "german" : "de", "english" : "en", "persian" : "fa", "hindi" : "hi", "indonesian" : "id", "russian" : "ru", "tamil" : "ta", "turkish" : "tr", "urdu" : "ur"]
     
-    @State private var reciterName: String = ""
-    @State private var reciterSubfolder: String = ""
     @State private var showAllReciters: Bool = false
     @State private var recitersSearchText: String = ""
     
@@ -118,7 +120,6 @@ struct SettingsView: View {
             authenticationModel.loading = false
             
             initialisePrayerNotifications()
-            initialisePreferences()
         }
         .onDisappear {
             authenticationModel.error = ""
@@ -171,9 +172,9 @@ struct SettingsView: View {
             
             accountManagementButtons
             
-//            Divider()
-//            
-//            attributions
+            Divider()
+            
+            attributions
         }
     }
     
@@ -181,7 +182,6 @@ struct SettingsView: View {
     private var updatePhotoPicker: some View {
         HStack {
             Spacer()
-            
             
             PhotosPicker(selection: $authenticationModel.photoItem, matching: .images) {
                 let photoImage = authenticationModel.photoImage
@@ -253,9 +253,14 @@ struct SettingsView: View {
             editMode.toggle()
             authenticationModel.resetFields()
         } label: {
-            Image(systemName: "slider.horizontal.3")
-                .font(.title3)
-                .bold()
+            if editMode {
+                Text("Done")
+                    .bold()
+            } else {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.title3)
+                    .bold()
+            }
         }
     }
     
@@ -594,16 +599,15 @@ struct SettingsView: View {
             
             Slider(value: $fontSize, in: 20...60, step: 1.0)
                 .padding(.vertical, 10)
-                .onChange(of: fontSize) { _, _ in
-                    preferencesModel.updatePreferences(
-                        fontSize: fontSize
-                    )
-                }
+//                .onChange(of: fontSize) { _, _ in
+//                    UserDefaults.standard.setValue(fontSize, forKey: "fontSize")
+//                }
             
-            let defaultFont = Font.system(size: fontSize, weight: .bold)
-            let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: fontSize)
+            let defaultFont = Font.system(size: CGFloat(fontSize), weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(fontSize))
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(fontSize))
             
-            let font = isDefaultFont ? defaultFont : uthmanicFont
+            let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
             
             Text("بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ")
                 .font(font)
@@ -619,39 +623,48 @@ struct SettingsView: View {
             
             Menu {
                 Button {
-                    self.isDefaultFont = true
+                    fontNumber = 1
                 } label: {
                     HStack {
                         Text("Default")
                         
                         Spacer()
                         
-                        if isDefaultFont {
+                        if fontNumber == 1 {
                             Image(systemName: "checkmark")
                         }
                     }
                 }
                 
                 Button {
-                    self.isDefaultFont = false
+                    fontNumber = 2
                 } label: {
                     HStack {
                         Text("Uthmanic Hafs")
                         
                         Spacer()
                         
-                        if !isDefaultFont {
+                        if fontNumber == 2 {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+                
+                Button {
+                    fontNumber = 3
+                } label: {
+                    HStack {
+                        Text("Noto Nastaliq")
+                        
+                        Spacer()
+                        
+                        if fontNumber == 3 {
                             Image(systemName: "checkmark")
                         }
                     }
                 }
             } label: {
-                Text(isDefaultFont ? "Default" : "Uthmanic Hafs")
-            }
-            .onChange(of: isDefaultFont) { _, _ in
-                preferencesModel.updatePreferences(
-                    isDefaultFont: isDefaultFont
-                )
+                Text(fontNumber == 1 ? "Default" : fontNumber == 2 ? "Uthmanic Hafs" : "Noto Nastaliq")
             }
         }
     }
@@ -678,7 +691,7 @@ struct SettingsView: View {
                 .font(.system(.headline, weight: .bold))
             
             if let translator = quranModel.translators.first(where: { translator in
-                translator.id == Int(preferencesModel.preferences?.translationId ?? 0)
+                translator.id == translatorId
             }) {
                 TranslatorRow(translator: translator)
                     .padding(.vertical, 5)
@@ -698,13 +711,9 @@ struct SettingsView: View {
     private var translatorsList: some View {
         ForEach(filteredTranslators) { translator in
             Button {
-                quranModel.checkLocalTranslation(translationId: Int(translatorId)) {
-                    self.translatorId = translator.id
-                    
-                    preferencesModel.updatePreferences(
-                        translatorId: translatorId,
-                        translationLanguage: translationLanguage
-                    )
+                quranModel.checkLocalTranslation(translatorId: Int(translator.id)) {
+                    translatorId = translator.id
+                    translatorLanguage = translationLanguage
                     
                     quranModel.checkLocalWBWTranslation(wbwTranslationId: translationLanguage)
                 }
@@ -764,7 +773,7 @@ struct SettingsView: View {
                 .font(.system(.headline, weight: .bold))
             
             if let reciter = quranModel.reciters.first(where: { reciter in
-                reciter.subfolder == preferencesModel.preferences?.reciterSubfolder ?? ""
+                reciter.subfolder == reciterSubfolder
             }) {
                 Text(reciter.name)
                     .foregroundStyle(Color.primary)
@@ -786,15 +795,10 @@ struct SettingsView: View {
     private var recitersList: some View {
         ForEach(filteredReciters) { reciter in
             Button {
-                self.reciterName = reciter.name
-                self.reciterSubfolder = reciter.subfolder
+                reciterName = reciter.name
+                reciterSubfolder = reciter.subfolder
                 
-                preferencesModel.updatePreferences(
-                    reciterName: reciterName,
-                    reciterSubfolder: reciterSubfolder
-                )
-                
-                if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/001001.mp3") {
+                if let audioUrl = URL(string: "https://everyayah.com/data/\(reciter.subfolder)/001001.mp3") {
                     audioPlayer.setupPlayer(with: audioUrl)
                     audioPlayer.playPause()
                 }
@@ -921,16 +925,6 @@ struct SettingsView: View {
             NotificationManager.shared.updatePrayerNotifications(prayer.prayer, time: prayerTime.value)
         }
     }
-    
-    private func initialisePreferences() {
-        if let preferences = preferencesModel.preferences {
-            self.fontSize = preferences.fontSize
-            self.isDefaultFont = preferences.isDefaultFont
-            self.translatorId = Int(preferences.translationId)
-            self.reciterName = preferences.reciterName ?? "Ghamadi"
-            self.reciterSubfolder = preferences.reciterSubfolder ?? "Ghamadi_40kbps"
-        }
-    }
 }
 
 extension UIImage: @retroactive Identifiable {
@@ -973,6 +967,5 @@ struct TranslatorRow: View {
 
 #Preview {
     SettingsView(showSettingsView: .constant(true))
-        .environmentObject(PreferencesModel())
         .environmentObject(QuranModel())
 }

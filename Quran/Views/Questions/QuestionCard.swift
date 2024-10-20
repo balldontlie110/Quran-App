@@ -9,8 +9,6 @@ import SwiftUI
 import FirebaseFirestore
 
 struct QuestionCard: View {
-    @EnvironmentObject private var preferencesModel: PreferencesModel
-    
     let quran: [Surah]
     
     let question: Question
@@ -44,7 +42,7 @@ struct QuestionCard: View {
                             Text("\(verse.id).")
                             
                             if let translation = verse.translations.first(where: { translation in
-                                translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                                translation.id == UserDefaults.standard.integer(forKey: "translatorId")
                             }) {
                                 Text(translation.translation)
                             }

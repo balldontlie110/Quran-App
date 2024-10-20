@@ -22,7 +22,6 @@ struct RootView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     @EnvironmentObject private var authenticationModel: AuthenticationModel
-    @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranModel: QuranModel
     @EnvironmentObject private var quranFilterModel: QuranFilterModel
     @EnvironmentObject private var calendarModel: CalendarModel
@@ -107,7 +106,6 @@ struct RootView: View {
             getLocalTranslation()
             
             quranFilterModel.quranModel = quranModel
-            quranFilterModel.preferencesModel = preferencesModel
         }
     }
     
@@ -249,13 +247,15 @@ struct RootView: View {
     }
     
     private func getLocalTranslation() {
-        guard let translationId = preferencesModel.preferences?.translationId, translationId != 131 else { return }
+        let translatorId = UserDefaults.standard.integer(forKey: "translatorId")
         
-        quranModel.checkLocalTranslation(translationId: Int(translationId))
+        guard translatorId != 131 else { return }
+        
+        quranModel.checkLocalTranslation(translatorId: Int(translatorId))
     }
     
     private func getLocalWBWTranslation() {
-        guard let wbwTranslationId = preferencesModel.preferences?.translationLanguage, wbwTranslationId != "en" else { return }
+        guard let wbwTranslationId = UserDefaults.standard.string(forKey: "translationLanguage"), wbwTranslationId != "en" else { return }
         
         quranModel.checkLocalWBWTranslation(wbwTranslationId: wbwTranslationId)
     }

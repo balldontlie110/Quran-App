@@ -14,8 +14,7 @@ struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
     
-    @EnvironmentObject private var preferencesModel: PreferencesModel
-    @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel(preferencesModel: PreferencesModel())
+    @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel()
     
     let surah: Surah
     
@@ -38,8 +37,21 @@ struct SurahView: View {
     
     @State private var showBookmarkAlert: Verse?
     
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \WeeklyTime.date, ascending: true)],
+        animation: .default
+    )
+    
+    private var weeks: FetchedResults<WeeklyTime>
+    
+    @State private var timer: Timer?
+    @State private var time: Int = 0
+    
     @EnvironmentObject private var audioPlayer: AudioPlayer
     @State private var sliderValue: Double = 0.0
+    
+    @AppStorage("wordByWord") private var wordByWord: Bool = false
+    @AppStorage("continuePlaying") private var continuePlaying = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -58,7 +70,9 @@ struct SurahView: View {
                         
                         ProgressView()
                     } else {
-                        LazyVStack(spacing: 20) {
+                        let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                        
+                        LazyVStack(spacing: fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10) {
                             ForEach(surahFilterModel.filteredVerses) { verse in
                                 if let index = surahFilterModel.filteredVerses.firstIndex(where: { $0.id == verse.id }) {
                                     VerseRow(
@@ -112,7 +126,6 @@ struct SurahView: View {
         .disabled(showVerseSelector || showBookmarkAlert != nil)
         .onAppear {
             surahFilterModel.surah = surah
-            surahFilterModel.preferencesModel = preferencesModel
             
             if let initialSearchText = initialSearchText {
                 surahFilterModel.searchText = initialSearchText
@@ -122,12 +135,14 @@ struct SurahView: View {
             audioPlayer.surahName = surah.transliteration
             audioPlayer.nextVerse = nextVerse
             audioPlayer.previousVerse = previousVerse
-            audioPlayer.reciterSubfolder = preferencesModel.preferences?.reciterSubfolder
+            audioPlayer.reciterSubfolder = UserDefaults.standard.string(forKey: "reciterSubfolder")
             
             initialiseScrollPosition()
+            initialiseQuranTime()
         }
         .onDisappear {
             audioPlayer.resetPlayer()
+            logQuranTime()
         }
         .onTapGesture {
             hideBookmarkAlertAndVerseSelector()
@@ -187,6 +202,51 @@ struct SurahView: View {
         .overlay(alignment: .bottom) {
             audioPlayerSlider
         }
+    }
+    
+    private func initialiseQuranTime() {
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            self.time += 1
+        }
+        
+        if !Calendar.current.isDate(Date(), inSameDayAs: (weeks.last?.days?.allObjects as? [DailyTime])?.last?.date ?? .distantPast), let currentWeekDate = Calendar.current.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: Date()).date {
+            
+            if let lastWeek = weeks.last, let lastWeekDate = lastWeek.date {
+                if currentWeekDate == lastWeekDate {
+                    let dailyTime = DailyTime(context: viewContext)
+                    
+                    dailyTime.date = Calendar.current.startOfDay(for: Date())
+                    dailyTime.seconds = 0
+                    
+                    lastWeek.days = NSSet(set: lastWeek.days?.adding(dailyTime) ?? Set())
+                    
+                    try? viewContext.save()
+                    
+                    return
+                }
+            }
+            
+            let weeklyTime = WeeklyTime(context: viewContext)
+            
+            weeklyTime.date = currentWeekDate
+            
+            let dailyTime = DailyTime(context: viewContext)
+            
+            dailyTime.date = Calendar.current.startOfDay(for: Date())
+            dailyTime.seconds = 0
+            
+            weeklyTime.days = NSSet(array: [dailyTime])
+            
+            try? viewContext.save()
+        }
+    }
+    
+    private func logQuranTime() {
+        if let lastWeekDay = (weeks.last?.days?.allObjects as? [DailyTime])?.last {
+            lastWeekDay.seconds = lastWeekDay.seconds + Int64(time)
+        }
+        
+        timer?.invalidate()
     }
     
     private var searchBar: some View {
@@ -257,27 +317,32 @@ struct SurahView: View {
         }.padding(.trailing, 5)
     }
     
-    @ViewBuilder
     private var wordByWordToggle: some View {
-        if let wordByWord = preferencesModel.preferences?.wordByWord {
-            Button {
-                preferencesModel.updatePreferences(wordByWord: !wordByWord)
-            } label: {
-                let wordByWordState = wordByWord ? "On" : "Off"
-                let colorScheme = colorScheme == .dark ? "dark" : "light"
-                
-                Image("wordByWord\(wordByWordState)-\(colorScheme)")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 25)
-            }
+        Button {
+            self.wordByWord.toggle()
+        } label: {
+            let wordByWordState = wordByWord ? "On" : "Off"
+            let colorScheme = colorScheme == .dark ? "dark" : "light"
+            
+            Image("wordByWord\(wordByWordState)-\(colorScheme)")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 25)
         }
     }
     
     private var header: some View {
         VStack(spacing: 0) {
+            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            
+            let defaultFont = Font.system(size: 50, weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: 50)
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: 50)
+            
+            let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+            
             Text(surah.name)
-                .font(.system(size: 50, weight: .bold))
+                .font(font)
             
             Text(surah.translation)
                 .font(.system(size: 20, weight: .semibold))
@@ -299,57 +364,55 @@ struct SurahView: View {
         }.disabled(showBookmarkAlert != nil)
     }
     
+    @ViewBuilder
     private var verseSelector: some View {
-        Group {
-            if showVerseSelector {
-                Picker("", selection: $scrollPosition) {
-                    ForEach(0..<surah.total_verses, id: \.self) { number in
-                        Text(String(number + 1))
-                            .tag(number + 1)
-                    }
+        if showVerseSelector {
+            Picker("", selection: $scrollPosition) {
+                ForEach(0..<surah.total_verses, id: \.self) { number in
+                    Text(String(number + 1))
+                        .tag(number + 1)
                 }
-                .pickerStyle(.wheel)
-                .padding()
-                .background(Material.thin)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
-                .padding(.horizontal, 50)
             }
+            .pickerStyle(.wheel)
+            .padding()
+            .background(Material.thin)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .padding(.horizontal, 50)
         }
     }
     
+    @ViewBuilder
     private var audioPlayerSlider: some View {
-        Group {
-            if audioPlayer.url != nil && audioPlayer.showAudioPlayerSlider {
-                HStack {
-                    Button {
-                        audioPlayer.playPause()
-                    } label: {
-                        Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 20))
-                    }
-                    
-                    Text(formatTime(audioPlayer.currentTime))
-                    
-                    Slider(value: $sliderValue, in: 0...audioPlayer.duration, onEditingChanged: sliderEditingChanged)
-                    
-                    Text(formatTime(audioPlayer.duration))
-                    
-                    Button {
-                        audioPlayer.continuePlaying.toggle()
-                    } label: {
-                        Image(systemName: "arrow.forward.circle")
-                            .font(.system(size: 20, weight: audioPlayer.continuePlaying ? .bold : .thin))
-                            .foregroundStyle(audioPlayer.continuePlaying ? Color.accentColor : Color.primary)
-                    }
+        if audioPlayer.url != nil && audioPlayer.showAudioPlayerSlider {
+            HStack {
+                Button {
+                    audioPlayer.playPause()
+                } label: {
+                    Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 20))
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .draggableView(isPresented: $audioPlayer.showAudioPlayerSlider)
-                .shadow(radius: 5)
-                .padding()
+                
+                Text(formatTime(audioPlayer.currentTime))
+                
+                Slider(value: $sliderValue, in: 0...audioPlayer.duration, onEditingChanged: sliderEditingChanged)
+                
+                Text(formatTime(audioPlayer.duration))
+                
+                Button {
+                    continuePlaying.toggle()
+                } label: {
+                    Image(systemName: "arrow.forward.circle")
+                        .font(.system(size: 20, weight: continuePlaying ? .bold : .thin))
+                        .foregroundStyle(continuePlaying ? Color.accentColor : Color.primary)
+                }
             }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(Color(.secondarySystemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .draggableView(isPresented: $audioPlayer.showAudioPlayerSlider)
+            .shadow(radius: 5)
+            .padding()
         }
     }
     
@@ -422,7 +485,6 @@ struct SurahView: View {
 
 struct VerseRow: View {
     @Environment(\.colorScheme) private var colorScheme
-    @EnvironmentObject private var preferencesModel: PreferencesModel
     
     let verse: Verse
     let versesCount: Int
@@ -468,35 +530,36 @@ struct VerseRow: View {
                 Spacer()
             }
             
-            if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
-                let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
-                let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
+            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            
+            let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+            
+            let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+            
+            if readingMode || !UserDefaults.standard.bool(forKey: "wordByWord") {
+                let verseText = getVerse(verse)
                 
-                let font = isDefaultFont ? defaultFont : uthmanicFont
-                
-                if readingMode || !(preferencesModel.preferences?.wordByWord ?? false) {
-                    let verseText = getVerse(verse)
-                    
-                    Text(verseText.text)
-                        .font(font)
-                        .multilineTextAlignment(readingMode ? .center : .trailing)
-                        .lineSpacing(20)
-                } else {
-                    WStack(verse.words, spacing: 20, lineSpacing: 20) { word in
-                        VStack(alignment: .center, spacing: 10) {
-                            Text(word.text)
-                                .font(font)
-                                .lineSpacing(20)
-                            
-                            if let translationLanguage = preferencesModel.preferences?.translationLanguage, let translation = word.translations.first(where: { translation in
-                                translation.id == translationLanguage
-                            }) {
-                                Text(translation.translation)
-                                    .foregroundStyle(Color.secondary)
-                            }
-                        }.multilineTextAlignment(.center)
-                    }.environment(\.layoutDirection, .rightToLeft)
-                }
+                Text(verseText.text)
+                    .font(font)
+                    .multilineTextAlignment(readingMode ? .center : .trailing)
+                    .lineSpacing(fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10)
+            } else {
+                WStack(verse.words, spacing: 20, lineSpacing: fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10) { word in
+                    VStack(alignment: .center, spacing: 10) {
+                        Text(word.text)
+                            .font(font)
+                            .lineSpacing(fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10)
+                        
+                        if let translationLanguage = UserDefaults.standard.string(forKey: "translationLanguage"), let translation = word.translations.first(where: { translation in
+                            translation.id == translationLanguage
+                        }) {
+                            Text(translation.translation)
+                                .foregroundStyle(Color.secondary)
+                        }
+                    }.multilineTextAlignment(.center)
+                }.environment(\.layoutDirection, .rightToLeft)
             }
         }
     }
@@ -532,7 +595,7 @@ struct VerseRow: View {
         }
         
         guard let translation = verse.translations.first(where: { translation in
-            translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+            translation.id == UserDefaults.standard.integer(forKey: "translatorId")
         })?.translation else { return AttributedString() }
         
         let (cleanedTranslation, originalIndices) = clean(translation)
@@ -650,7 +713,7 @@ struct VerseRow: View {
     
     private var audioButton: some View {
         Group {
-            if let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder {
+            if let reciterSubfolder = UserDefaults.standard.string(forKey: "reciterSubfolder") {
                 if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
                     if audioPlayer.url == audioUrl {
                         Button {
@@ -673,7 +736,7 @@ struct VerseRow: View {
     
     private var contextMenuAudioButton: some View {
         Group {
-            if let reciterSubfolder = preferencesModel.preferences?.reciterSubfolder {
+            if let reciterSubfolder = UserDefaults.standard.string(forKey: "reciterSubfolder") {
                 if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
                     if audioPlayer.url == audioUrl {
                         Button {
@@ -721,7 +784,11 @@ struct VerseRow: View {
             }
         }
         
-        return "(" + arabicString + ")"
+        if UserDefaults.standard.integer(forKey: "fontNumber") == 2 {
+            return arabicString
+        } else {
+            return "(\(arabicString))"
+        }
     }
     
     private func bookmark() {
@@ -764,16 +831,13 @@ extension View {
 
 class SurahFilterModel: ObservableObject {
     @Published var searchText: String = ""
-    @Published var preferencesModel: PreferencesModel
     @Published var filteredVerses: [Verse] = []
     @Published var isLoading: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     @Published var surah: Surah?
     
-    init(preferencesModel: PreferencesModel) {
-        self.preferencesModel = preferencesModel
-        
+    init() {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -806,7 +870,7 @@ class SurahFilterModel: ObservableObject {
             }
             
             if let translation = verse.translations.first(where: { translation in
-                translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                translation.id == UserDefaults.standard.integer(forKey: "translatorId")
             }) {
                 if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
                     return true
@@ -833,7 +897,6 @@ class SurahFilterModel: ObservableObject {
         }) {
             SurahView(surah: surah)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
-                .environmentObject(PreferencesModel())
         }
     }
 }

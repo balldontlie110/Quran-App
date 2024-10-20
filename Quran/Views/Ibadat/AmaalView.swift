@@ -98,28 +98,27 @@ struct AmaalSectionDetailHeading: View {
 }
 
 struct SurahVerse: View {
-    @EnvironmentObject private var preferencesModel: PreferencesModel
-    
     let verse: Verse
     let lastId: Int?
     
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 15) {
-                if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
-                    let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
-                    let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
-                    
-                    let font = isDefaultFont ? defaultFont : uthmanicFont
-                    
-                    Text(verse.text)
-                        .font(font)
-                        .lineSpacing(20)
-                        .multilineTextAlignment(.center)
-                }
+                let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                
+                let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
+                let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                
+                let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+                
+                Text(verse.text)
+                    .font(font)
+                    .lineSpacing(20)
+                    .multilineTextAlignment(.center)
                 
                 if let translation = verse.translations.first(where: { translation in
-                    translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+                    translation.id == UserDefaults.standard.integer(forKey: "translatorId")
                 }) {
                     Text(translation.translation)
                         .font(.system(size: 20))
@@ -134,8 +133,6 @@ struct SurahVerse: View {
 }
 
 struct AmaalSectionDetailBodyVerse: View {
-    @EnvironmentObject private var preferencesModel: PreferencesModel
-    
     let verse: AmaalSectionDetailBody
     let lastId: String?
     
@@ -143,17 +140,18 @@ struct AmaalSectionDetailBodyVerse: View {
         VStack(spacing: 0) {
             VStack(spacing: 15) {
                 if let text = verse.text {
-                    if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
-                        let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
-                        let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
-                        
-                        let font = isDefaultFont ? defaultFont : uthmanicFont
-                        
-                        Text(text)
-                            .font(font)
-                            .lineSpacing(20)
-                            .multilineTextAlignment(.center)
-                    }
+                    let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                    
+                    let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
+                    let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                    let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                    
+                    let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+                    
+                    Text(text)
+                        .font(font)
+                        .lineSpacing(20)
+                        .multilineTextAlignment(.center)
                 }
                 
                 if let transliteration = verse.transliteration {

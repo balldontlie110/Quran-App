@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct TasbeehView: View {
-    @EnvironmentObject private var preferencesModel: PreferencesModel
-    
     @State private var count: Int = 0
     
     var body: some View {
@@ -104,37 +102,38 @@ struct TasbeehView: View {
     
     private var dhikrText: some View {
         VStack(spacing: 15) {
-            if let isDefaultFont = preferencesModel.preferences?.isDefaultFont {
-                let defaultFont = Font.system(size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0), weight: .bold)
-                let uthmanicFont = Font.custom("KFGQPC Uthmanic Script HAFS Regular", size: CGFloat(preferencesModel.preferences?.fontSize ?? 40.0))
+            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            
+            let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+            
+            let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+            
+            if count < 34 {
+                Text("ٱللَّٰهُ أَكْبَرُ")
+                    .font(font)
                 
-                let font = isDefaultFont ? defaultFont : uthmanicFont
+                Text("ALLAHUAKBAR")
+                    .foregroundStyle(Color.secondary)
                 
-                if count < 34 {
-                    Text("ٱللَّٰهُ أَكْبَرُ")
-                        .font(font)
-                    
-                    Text("ALLAHUAKBAR")
-                        .foregroundStyle(Color.secondary)
-                    
-                    Text("Allah is Greatest")
-                } else if count < 67 {
-                    Text("ٱلْحَمْدُ لِلَّٰهِ")
-                        .font(font)
-                    
-                    Text("ALHUMDULILLAH")
-                        .foregroundStyle(Color.secondary)
-                    
-                    Text("Praise be to Allah")
-                } else {
-                    Text("سُبْحَانَ ٱللَّٰهِ")
-                        .font(font)
-                    
-                    Text("SUBHANALLAH")
-                        .foregroundStyle(Color.secondary)
-                    
-                    Text("Glory be to Allah")
-                }
+                Text("Allah is Greatest")
+            } else if count < 67 {
+                Text("ٱلْحَمْدُ لِلَّٰهِ")
+                    .font(font)
+                
+                Text("ALHUMDULILLAH")
+                    .foregroundStyle(Color.secondary)
+                
+                Text("Praise be to Allah")
+            } else {
+                Text("سُبْحَانَ ٱللَّٰهِ")
+                    .font(font)
+                
+                Text("SUBHANALLAH")
+                    .foregroundStyle(Color.secondary)
+                
+                Text("Glory be to Allah")
             }
         }
         .font(.system(size: 20))

@@ -11,7 +11,6 @@ import CoreData
 
 struct QuranView: View {
     @EnvironmentObject private var quranModel: QuranModel
-    @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranFilterModel: QuranFilterModel
     
     var body: some View {
@@ -28,6 +27,8 @@ struct QuranView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .toolbar {
+            quranTimeButton
+            
             bookmarksButton
         }
     }
@@ -109,6 +110,15 @@ struct QuranView: View {
         }
     }
     
+    private var quranTimeButton: some View {
+        NavigationLink {
+            QuranTimeView()
+        } label: {
+            Image(systemName: "timer")
+                .foregroundStyle(Color.primary)
+        }
+    }
+    
     private func getVerse(surah: Surah) -> (initialScroll: Int?, initialSearchText: String?) {
         if let verse = quranFilterModel.surahToVerse(surah: surah) {
             return (verse.id, nil)
@@ -175,8 +185,16 @@ struct SurahCard: View {
     
     private var surahInfo: some View {
         VStack(alignment: .trailing) {
+            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            
+            let defaultFont = Font.system(size: 17, weight: .heavy)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: 17)
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: 17)
+            
+            let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
+            
             Text(surah.name)
-                .fontWeight(.heavy)
+                .font(font)
             
             Text("\(surah.total_verses) Ayahs")
                 .font(.system(.subheadline, weight: .semibold))
@@ -186,7 +204,6 @@ struct SurahCard: View {
 }
 
 struct VerseCard: View {
-    @EnvironmentObject private var preferencesModel: PreferencesModel
     @EnvironmentObject private var quranFilterModel: QuranFilterModel
     
     let surah: Surah
@@ -293,7 +310,7 @@ struct VerseCard: View {
         }
         
         guard let translation = verse.translations.first(where: { translation in
-            translation.id == Int(preferencesModel.preferences?.translationId ?? 131)
+            translation.id == UserDefaults.standard.integer(forKey: "translatorId")
         })?.translation else { return AttributedString() }
         
         let (cleanedTranslation, originalIndices) = clean(translation)

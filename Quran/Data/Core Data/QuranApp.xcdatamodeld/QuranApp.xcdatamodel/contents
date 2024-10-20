@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23173.10" systemVersion="24A5331b" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23173.10" systemVersion="24B5070a" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="BookmarkedFolder" representedClassName="BookmarkedFolder" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -19,6 +19,10 @@
         <attribute name="verseId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookmarkedFolder" inverseName="verses" inverseEntity="BookmarkedFolder"/>
     </entity>
+    <entity name="DailyTime" representedClassName="DailyTime" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="seconds" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="Favorite" representedClassName="Favorite" syncable="YES" codeGenerationType="class">
         <attribute name="amaalId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -30,13 +34,8 @@
         <attribute name="active" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="prayer" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Preferences" representedClassName="Preferences" syncable="YES" codeGenerationType="class">
-        <attribute name="fontSize" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="isDefaultFont" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="reciterName" optional="YES" attributeType="String"/>
-        <attribute name="reciterSubfolder" optional="YES" attributeType="String"/>
-        <attribute name="translationId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="translationLanguage" optional="YES" attributeType="String"/>
-        <attribute name="wordByWord" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+    <entity name="WeeklyTime" representedClassName="WeeklyTime" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="days" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DailyTime"/>
     </entity>
 </model>

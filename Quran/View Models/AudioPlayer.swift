@@ -24,8 +24,6 @@ class AudioPlayer: ObservableObject {
     @Published var verse: Verse?
     @Published var showAudioPlayerSlider: Bool = true
     
-    @Published var continuePlaying: Bool = false
-    
     @Published var surahNumber: String?
     @Published var surahName: String?
     @Published var nextVerse: ((Verse) -> Verse?)?
@@ -142,7 +140,7 @@ class AudioPlayer: ObservableObject {
         isPlaying = false
         player?.seek(to: CMTime.zero)
         
-        if continuePlaying {
+        if UserDefaults.standard.bool(forKey: "continuePlaying") {
             guard let verse = self.verse,
                   let nextVerse = nextVerse?(verse),
                   let reciterSubfolder = reciterSubfolder,
