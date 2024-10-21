@@ -45,16 +45,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func handleAppRefresh(task: BGAppRefreshTask) {
         scheduleAppRefresh()
         
-        NotificationManager.shared.updateAllPrayerNotifications()
+        NotificationManager.shared.updatePrayerNotifications()
         
         task.expirationHandler = {
+            
         }
         
         task.setTaskCompleted(success: true)
     }
     
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        NotificationManager.shared.updateAllPrayerNotifications()
+        NotificationManager.shared.updatePrayerNotifications()
         completionHandler(.newData)
     }
 }

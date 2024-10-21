@@ -195,9 +195,7 @@ struct RootView: View {
     
     private var islamicDate: some View {
         HStack {
-            Text(calendarModel.day)
-            Text(calendarModel.month)
-            Text(calendarModel.year)
+            Text("\(calendarModel.day) \(calendarModel.month) \(calendarModel.year)")
         }.font(.system(.title2, weight: .bold))
     }
     

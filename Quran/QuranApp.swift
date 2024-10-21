@@ -47,12 +47,13 @@ struct QuranApp: App {
     
     private func initialiseUserDefaults() {
         if !UserDefaults.standard.bool(forKey: "initialisedUserDefaults") {
+            UserDefaults.standard.setValue("{\"Fajr\": false, \"Sunrise\": false, \"Zuhr\": false, \"Sunset\": false, \"Maghrib\": false}", forKey: "prayerNotifications")
             UserDefaults.standard.setValue(40.0, forKey: "fontSize")
             UserDefaults.standard.setValue(1, forKey: "fontNumber")
             UserDefaults.standard.setValue(131, forKey: "translatorId")
             UserDefaults.standard.setValue("en", forKey: "translationLanguage")
-            UserDefaults.standard.setValue("Ghamadi", forKey: "reciterName")
-            UserDefaults.standard.setValue("Ghamadi_40kbps", forKey: "reciterSubfolder")
+            UserDefaults.standard.setValue("Alafasy", forKey: "reciterName")
+            UserDefaults.standard.setValue("Alafasy_128kbps", forKey: "reciterSubfolder")
             UserDefaults.standard.setValue(false, forKey: "continuePlaying")
             UserDefaults.standard.setValue(false, forKey: "wordByWord")
             UserDefaults.standard.setValue(true, forKey: "initialisedUserDefaults")

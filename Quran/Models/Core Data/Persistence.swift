@@ -18,9 +18,17 @@ struct PersistenceController {
         
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+        } else {
+            if let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.Ali.Quran") {
+                let storeURL = appGroupURL.appendingPathComponent("QuranApp.sqlite")
+                
+                container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: storeURL)]
+            } else {
+                fatalError("Unable to find App Group container URL. Ensure that the App Group is correctly configured.")
+            }
         }
         
-        container.loadPersistentStores { _, _ in
+        container.loadPersistentStores { description, error in
             
         }
         

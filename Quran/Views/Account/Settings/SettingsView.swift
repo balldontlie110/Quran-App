@@ -11,13 +11,6 @@ import PhotosUI
 import SDWebImageSwiftUI
 import SwiftyCrop
 
-struct Prayer: Identifiable {
-    var id: String { prayer }
-    
-    let prayer: String
-    var active: Bool
-}
-
 struct SettingsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -45,21 +38,19 @@ struct SettingsView: View {
     
     @State private var reauthenticationAction: ReauthenticateView.ReauthenticateAction?
     
-    @State private var prayers: [Prayer] = [
-        Prayer(prayer: "Fajr", active: false),
-        Prayer(prayer: "Sunrise", active: false),
-        Prayer(prayer: "Zuhr", active: false),
-        Prayer(prayer: "Sunset", active: false),
-        Prayer(prayer: "Maghrib", active: false)
-    ]
+    @AppStorage("prayerNotifications") private var prayerNotificationsString: String = ""
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \PrayerNotification.prayer, ascending: true)],
-        animation: .default
-    )
+    var prayerNotifications: [String : Bool] {
+        get {
+            if let data = prayerNotificationsString.data(using: .utf8) {
+                return (try? JSONDecoder().decode([String : Bool].self, from: data)) ?? [:]
+            }
+            
+            return [:]
+        }
+    }
     
-    private var prayerNotifications: FetchedResults<PrayerNotification>
-    private let renamedPrayers: [String : String] = ["Fajr" : "Dawn", "Sunrise" : "Sunrise", "Zuhr" : "Noon", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
+    private let renamedPrayers: [String] = ["Fajr", "Sunrise", "Zuhr", "Sunset", "Maghrib"]
     
     @AppStorage("fontSize") private var fontSize: Double = 40.0
     @AppStorage("fontNumber") private var fontNumber: Int = 1
@@ -118,8 +109,6 @@ struct SettingsView: View {
         .onAppear {
             authenticationModel.error = ""
             authenticationModel.loading = false
-            
-            initialisePrayerNotifications()
         }
         .onDisappear {
             authenticationModel.error = ""
@@ -172,9 +161,9 @@ struct SettingsView: View {
             
             accountManagementButtons
             
-            Divider()
-            
-            attributions
+//            Divider()
+//            
+//            attributions
         }
     }
     
@@ -542,16 +531,41 @@ struct SettingsView: View {
     
     private var prayerNotificationsToggles: some View {
         LazyVStack(spacing: 10) {
-            ForEach($prayers) { $prayer in
-                Toggle(isOn: $prayer.active) {
-                    Text(prayer.prayer)
+            ForEach(Array(prayerNotifications.keys.sorted(by: {
+                if let index1 = renamedPrayers.firstIndex(of: $0), let index2 = renamedPrayers.firstIndex(of: $1) {
+                    return index1 < index2
+                }
+                
+                return true
+            })), id: \.self) { prayer in
+                Toggle(isOn: binding(for: prayer)) {
+                    Text(prayer)
                         .bold()
                 }
-                .onChange(of: prayer.active) { _, _ in
-                    updatePrayerNotification(prayer)
-                }
             }
-        }.padding()
+        }
+        .onChange(of: prayerNotificationsString) { _, _ in
+            NotificationManager.shared.updatePrayerNotifications()
+        }
+        .padding()
+    }
+    
+    private func binding(for key: String) -> Binding<Bool> {
+        return Binding(
+            get: { self.prayerNotifications[key, default: false] },
+            set: {
+                var currentPrayerNotifications = prayerNotifications
+                currentPrayerNotifications[key] = $0
+                
+                updatePrayerNotifications(with: currentPrayerNotifications)
+            }
+        )
+    }
+    
+    private func updatePrayerNotifications(with newValue: [String: Bool]) {
+        if let data = try? JSONEncoder().encode(newValue), let json = String(data: data, encoding: .utf8) {
+            prayerNotificationsString = json
+        }
     }
     
     private var translationLanguage: String {
@@ -599,9 +613,6 @@ struct SettingsView: View {
             
             Slider(value: $fontSize, in: 20...60, step: 1.0)
                 .padding(.vertical, 10)
-//                .onChange(of: fontSize) { _, _ in
-//                    UserDefaults.standard.setValue(fontSize, forKey: "fontSize")
-//                }
             
             let defaultFont = Font.system(size: CGFloat(fontSize), weight: .bold)
             let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(fontSize))
@@ -891,38 +902,6 @@ struct SettingsView: View {
         
         return quranModel.reciters.filter { reciter in
             return reciter.name.lowercased().contains(recitersSearchText.lowercased())
-        }
-    }
-    
-    private func initialisePrayerNotifications() {
-        for prayerNotification in prayerNotifications {
-            if let prayerIndex = prayers.firstIndex(where: { prayer in
-                prayer.prayer == prayerNotification.prayer
-            }) {
-                prayers[prayerIndex].active = prayerNotification.active
-            }
-        }
-    }
-    
-    @MainActor
-    private func updatePrayerNotification(_ prayer: Prayer) {
-        if let prayerNotification = prayerNotifications.first(where: { prayerNotification in
-            prayerNotification.prayer == prayer.prayer
-        }) {
-            prayerNotification.active = prayer.active
-        } else {
-            let prayerNotification = PrayerNotification(context: viewContext)
-            
-            prayerNotification.prayer = prayer.prayer
-            prayerNotification.active = prayer.active
-        }
-        
-        try? viewContext.save()
-        
-        if let prayerTime = prayerTimesModel.prayerTimes.first(where: { prayerTime in
-            prayerTime.key == renamedPrayers[prayer.prayer]
-        }) {
-            NotificationManager.shared.updatePrayerNotifications(prayer.prayer, time: prayerTime.value)
         }
     }
 }

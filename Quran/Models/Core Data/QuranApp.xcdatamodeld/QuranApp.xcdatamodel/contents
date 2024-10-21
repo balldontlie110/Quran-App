@@ -30,10 +30,6 @@
         <attribute name="position" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="ziyaratId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="PrayerNotification" representedClassName="PrayerNotification" syncable="YES" codeGenerationType="class">
-        <attribute name="active" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="prayer" optional="YES" attributeType="String"/>
-    </entity>
     <entity name="WeeklyTime" representedClassName="WeeklyTime" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="days" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DailyTime"/>

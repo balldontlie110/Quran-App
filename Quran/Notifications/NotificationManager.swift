@@ -35,91 +35,71 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
-                self.updateAllPrayerNotifications()
+                self.updatePrayerNotifications()
             }
         }
     }
     
-    func updateAllPrayerNotifications() {
+    private func fetchPrayerTimes(completion: @escaping ([String : Date]) -> Void) {
         PrayerTimesModel().fetchPrayerTimes { prayerTimes in
-            if let prayerTimes = prayerTimes {
-                let request = PrayerNotification.fetchRequest()
+            let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
+            
+            if let keys = Array(prayersRenamed.keys) as? [String], let prayerTimes = prayerTimes?.filter({ keys.contains($0.key) }) {
+                var prayerDates: [String : Date] = [:]
                 
-                if let prayerNotifications = try? self.moc.fetch(request) {
-                    let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib"]
-                    var prayerTimesDates: [String : Date] = [:]
+                for (prayer, time) in prayerTimes {
+                    var dateComponents = DateComponents()
                     
-                    for (prayer, time) in prayerTimes.filter({ (prayer, time) in
-                        return prayerNotifications.contains { prayerNotification in
-                            prayerNotification.prayer == prayersRenamed[prayer] && prayerNotification.active == true
+                    if let hour = Int(time.dropLast(3)) {
+                        if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" {
+                            dateComponents.hour = hour + 12
+                        } else {
+                            dateComponents.hour = hour
                         }
-                    }) {
-                        var dateComponents = DateComponents()
-                        
-                        if let hour = Int(time.dropLast(3)) {
-                            if (prayer == "Noon" && hour != 11) || prayer == "Sunset" || prayer == "Maghrib" {
-                                dateComponents.hour = hour + 12
-                            } else {
-                                dateComponents.hour = hour
-                            }
-                        }
-                        
-                        dateComponents.minute = Int(time.dropFirst(3))
-                        
-                        prayerTimesDates[prayersRenamed[prayer] ?? prayer] = Calendar.current.date(from: dateComponents)
                     }
                     
-                    self.schedulePrayerNotifications(prayerTimes: prayerTimesDates)
+                    dateComponents.minute = Int(time.dropFirst(3))
+                    
+                    prayerDates[prayersRenamed[prayer] ?? prayer] = Calendar.current.date(from: dateComponents)
                 }
             }
         }
     }
     
-    func updatePrayerNotifications(_ prayer: String, time: String) {
-        var dateComponents = DateComponents()
-        
-        if let hour = Int(time.dropLast(3)) {
-            if (prayer == "Noon" && hour != 11) || prayer == "Sunset" || prayer == "Maghrib" {
-                dateComponents.hour = hour + 12
-            } else {
-                dateComponents.hour = hour
+    func updatePrayerNotifications() {
+        fetchPrayerTimes { prayerTimes in
+            if let data = UserDefaults.standard.string(forKey: "prayerNotifications")?.data(using: .utf8) {
+                let prayerNotifications = (try? JSONDecoder().decode([String : Bool].self, from: data)) ?? [:]
+                let activePrayerNotifications = prayerTimes.filter({ prayerNotifications[$0.key] ?? false })
+                
+                let center = UNUserNotificationCenter.current()
+                
+                center.removePendingNotificationRequests(withIdentifiers: Array(prayerTimes.keys))
+                
+                for (prayer, time) in activePrayerNotifications {
+                    let content = UNMutableNotificationContent()
+                    content.title = "\(prayer) \(prayer != "Sunset" && prayer != "Sunrise" ? "Salaat" : "")"
+                    
+                    let formatter = DateFormatter()
+                    formatter.timeStyle = .short
+                    
+                    content.body = "\(prayer == "Sunset" ? "🌙" : prayer == "Sunrise" ? "☀️" : "🕌") \(prayer) at \(formatter.string(from: time))"
+                    
+                    if prayer != "Sunset" && prayer != "Sunrise" {
+                        content.sound = UNNotificationSound(named: UNNotificationSoundName("Adhan.wav"))
+                    } else {
+                        content.sound = .default
+                    }
+                    
+                    let triggerDate = Calendar.current.dateComponents([.hour, .minute], from: time)
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+                    let identifier = prayer
+                    
+                    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+                    
+                    center.add(request)
+                }
             }
-        }
-        
-        dateComponents.minute = Int(time.dropFirst(3))
-        
-        if let time = Calendar.current.date(from: dateComponents) {
-            self.schedulePrayerNotifications(prayerTimes: [prayer : time])
-        }
-    }
-    
-    func schedulePrayerNotifications(prayerTimes: [String: Date]) {
-        let center = UNUserNotificationCenter.current()
-        
-        center.removePendingNotificationRequests(withIdentifiers: Array(prayerTimes.keys))
-        
-        for (prayer, time) in prayerTimes {
-            let content = UNMutableNotificationContent()
-            content.title = "\(prayer) \(prayer != "Sunset" && prayer != "Sunrise" ? "Salaat" : "")"
-            
-            let formatter = DateFormatter()
-            formatter.timeStyle = .short
-            
-            content.body = "\(prayer == "Sunset" ? "🌙" : prayer == "Sunrise" ? "☀️" : "🕌") \(prayer) at \(formatter.string(from: time))"
-            
-            if prayer != "Sunset" && prayer != "Sunrise" {
-                content.sound = UNNotificationSound(named: UNNotificationSoundName("Adhan.wav"))
-            } else {
-                content.sound = .default
-            }
-            
-            let triggerDate = Calendar.current.dateComponents([.hour, .minute], from: time)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-            let identifier = prayer
-            
-            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-            
-            center.add(request)
         }
     }
     

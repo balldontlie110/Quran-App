@@ -110,7 +110,7 @@ struct SimpleEntry: TimelineEntry {
     let islamicDate: String
 }
 
-struct QuranWidgetEntryView : View {
+struct PrayerTimesWidgetEntryView : View {
     @Environment(\.widgetFamily) private var widgetFamily
     
     var entry: Provider.Entry
@@ -261,7 +261,7 @@ struct QuranWidgetEntryView : View {
             var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
             
             if let hour = Int(time.dropLast(3)) {
-                if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" || prayer == "Midnight" {
+                if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" || (prayer == "Midnight" && hour == 11) {
                     dateComponents.hour = hour + 12
                 } else {
                     dateComponents.hour = hour
@@ -318,7 +318,13 @@ struct QuranWidgetEntryView : View {
         let end = prayer.value
         
         if prayerName == "Dawn", let midnight = prayerTimes.first(where: { $0.key == "Midnight" })?.value {
+            if let hour = Calendar.current.dateComponents([.hour], from: midnight).hour, hour == 23, let midnight = Calendar.current.date(byAdding: .day, value: -1, to: midnight) {
+                
+                return (midnight, end)
+            }
+            
             return (midnight, end)
+            
         } else if prayerName == "Sunrise", let fajr = prayerTimes.first(where: { $0.key == "Dawn" })?.value {
             return (fajr, end)
         } else if prayerName == "Noon", let sunrise = prayerTimes.first(where: { $0.key == "Sunrise" })?.value {
@@ -328,6 +334,11 @@ struct QuranWidgetEntryView : View {
         } else if prayerName == "Maghrib", let sunset = prayerTimes.first(where: { $0.key == "Sunset" })?.value {
             return (sunset, end)
         } else if prayerName == "Midnight", let maghrib = prayerTimes.first(where: { $0.key == "Maghrib" })?.value {
+            if let endHour = Calendar.current.dateComponents([.hour], from: end).hour, let currentHour = Calendar.current.dateComponents([.hour], from: Date()).hour, endHour == currentHour, let maghrib = Calendar.current.date(byAdding: .day, value: -1, to: maghrib) {
+                
+                return (maghrib, end)
+            }
+            
             return (maghrib, end)
         }
         
@@ -335,16 +346,16 @@ struct QuranWidgetEntryView : View {
     }
 }
 
-struct QuranWidget: Widget {
+struct PrayerTimesWidget: Widget {
     let kind: String = "QuranWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
-                QuranWidgetEntryView(entry: entry)
+                PrayerTimesWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
             } else {
-                QuranWidgetEntryView(entry: entry)
+                PrayerTimesWidgetEntryView(entry: entry)
                     .padding()
                     .background()
             }
@@ -356,7 +367,7 @@ struct QuranWidget: Widget {
 }
 
 #Preview(as: .systemSmall) {
-    QuranWidget()
+    PrayerTimesWidget()
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
@@ -364,7 +375,7 @@ struct QuranWidget: Widget {
 }
 
 #Preview(as: .systemMedium) {
-    QuranWidget()
+    PrayerTimesWidget()
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     

@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import Combine
 import WStack
+import WidgetKit
 
 struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -247,6 +248,10 @@ struct SurahView: View {
         }
         
         timer?.invalidate()
+        
+        try? viewContext.save()
+        
+        WidgetCenter.shared.reloadTimelines(ofKind: "QuranTimeWidget")
     }
     
     private var searchBar: some View {

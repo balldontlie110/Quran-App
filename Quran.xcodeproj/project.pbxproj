@@ -45,6 +45,16 @@
 		A230CE5F2C1C8F32002DC576 /* QuranView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A230CE5E2C1C8F32002DC576 /* QuranView.swift */; };
 		A231ACE92C4322ED00DA54F2 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		A232714A2CC4233C006AFD44 /* QuranTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23271492CC4233C006AFD44 /* QuranTimeView.swift */; };
+		A232714E2CC554CD006AFD44 /* WeeklyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A232714D2CC554CD006AFD44 /* WeeklyView.swift */; };
+		A23271502CC554D6006AFD44 /* LifetimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A232714F2CC554D6006AFD44 /* LifetimeView.swift */; };
+		A23271512CC58ED8006AFD44 /* WeeklyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A232714D2CC554CD006AFD44 /* WeeklyView.swift */; };
+		A23271532CC59096006AFD44 /* QuranTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23271522CC59096006AFD44 /* QuranTimeWidget.swift */; };
+		A23271542CC59096006AFD44 /* QuranTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23271522CC59096006AFD44 /* QuranTimeWidget.swift */; };
+		A23271562CC59964006AFD44 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25B92C1EEB9A003785CF /* Persistence.swift */; };
+		A23271582CC59C18006AFD44 /* QuranApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25BC2C1EEBF9003785CF /* QuranApp.xcdatamodeld */; };
+		A232715A2CC5D06A006AFD44 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A23271592CC5D06A006AFD44 /* SDWebImageSwiftUI */; };
+		A232715D2CC5D0C4006AFD44 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A232715C2CC5D0C4006AFD44 /* FirebaseAuth */; };
+		A23271672CC5D786006AFD44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2C781552C3168CC007DAFD3 /* GoogleService-Info.plist */; };
 		A2358C512C5019C0008D6BFA /* SocialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2358C502C5019C0008D6BFA /* SocialsView.swift */; };
 		A23C6B8B2C35A88800F67DDA /* QuestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */; };
 		A23C6B8D2C35ABEB00F67DDA /* UserProfileSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23C6B8C2C35ABEB00F67DDA /* UserProfileSection.swift */; };
@@ -184,6 +194,10 @@
 		A2274B452C52A76B003537EA /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		A230CE5E2C1C8F32002DC576 /* QuranView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranView.swift; sourceTree = "<group>"; };
 		A23271492CC4233C006AFD44 /* QuranTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTimeView.swift; sourceTree = "<group>"; };
+		A232714D2CC554CD006AFD44 /* WeeklyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyView.swift; sourceTree = "<group>"; };
+		A232714F2CC554D6006AFD44 /* LifetimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifetimeView.swift; sourceTree = "<group>"; };
+		A23271522CC59096006AFD44 /* QuranTimeWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTimeWidget.swift; sourceTree = "<group>"; };
+		A23271552CC5948E006AFD44 /* QuranWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QuranWidgetExtension.entitlements; sourceTree = "<group>"; };
 		A2358C502C5019C0008D6BFA /* SocialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsView.swift; sourceTree = "<group>"; };
 		A23C6B8A2C35A88800F67DDA /* QuestionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCard.swift; sourceTree = "<group>"; };
 		A23C6B8C2C35ABEB00F67DDA /* UserProfileSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileSection.swift; sourceTree = "<group>"; };
@@ -282,6 +296,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A232715A2CC5D06A006AFD44 /* SDWebImageSwiftUI in Frameworks */,
+				A232715D2CC5D0C4006AFD44 /* FirebaseAuth in Frameworks */,
 				A210DA5D2C8529A90033701C /* SwiftUI.framework in Frameworks */,
 				A210DA372C8507E50033701C /* Alamofire in Frameworks */,
 				A210DA3C2C8507F10033701C /* SwiftSoup in Frameworks */,
@@ -326,10 +342,11 @@
 		A20E16002C1F5C3300AF9DA4 /* QuranWidget */ = {
 			isa = PBXGroup;
 			children = (
+				A20E16072C1F5C3500AF9DA4 /* Info.plist */,
 				A20E16012C1F5C3300AF9DA4 /* QuranWidgetBundle.swift */,
 				A20E16032C1F5C3300AF9DA4 /* QuranWidget.swift */,
+				A23271522CC59096006AFD44 /* QuranTimeWidget.swift */,
 				A20E16052C1F5C3500AF9DA4 /* Assets.xcassets */,
-				A20E16072C1F5C3500AF9DA4 /* Info.plist */,
 			);
 			path = QuranWidget;
 			sourceTree = "<group>";
@@ -383,6 +400,16 @@
 				A2CEA4DE2C385F4D00D59BF8 /* AddBookmarkView.swift */,
 			);
 			path = Surah;
+			sourceTree = "<group>";
+		};
+		A232714C2CC554B3006AFD44 /* Quran Time */ = {
+			isa = PBXGroup;
+			children = (
+				A23271492CC4233C006AFD44 /* QuranTimeView.swift */,
+				A232714D2CC554CD006AFD44 /* WeeklyView.swift */,
+				A232714F2CC554D6006AFD44 /* LifetimeView.swift */,
+			);
+			path = "Quran Time";
 			sourceTree = "<group>";
 		};
 		A2358C4F2C5019B1008D6BFA /* Socials */ = {
@@ -530,6 +557,7 @@
 		A2D43E462C190A0900C3F21F = {
 			isa = PBXGroup;
 			children = (
+				A23271552CC5948E006AFD44 /* QuranWidgetExtension.entitlements */,
 				A2D43E512C190A0900C3F21F /* Quran */,
 				A20E16002C1F5C3300AF9DA4 /* QuranWidget */,
 				A20E15FB2C1F5C3300AF9DA4 /* Frameworks */,
@@ -629,7 +657,7 @@
 				A230CE5E2C1C8F32002DC576 /* QuranView.swift */,
 				A232714B2CC42344006AFD44 /* Surah */,
 				A2C706AC2C4F036A008FF0C3 /* Bookmarks */,
-				A23271492CC4233C006AFD44 /* QuranTimeView.swift */,
+				A232714C2CC554B3006AFD44 /* Quran Time */,
 			);
 			path = Quran;
 			sourceTree = "<group>";
@@ -740,6 +768,8 @@
 			packageProductDependencies = (
 				A210DA362C8507E50033701C /* Alamofire */,
 				A210DA3B2C8507F10033701C /* SwiftSoup */,
+				A23271592CC5D06A006AFD44 /* SDWebImageSwiftUI */,
+				A232715C2CC5D0C4006AFD44 /* FirebaseAuth */,
 			);
 			productName = QuranWidgetExtension;
 			productReference = A20E15FA2C1F5C3300AF9DA4 /* QuranWidgetExtension.appex */;
@@ -836,6 +866,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A20E16062C1F5C3500AF9DA4 /* Assets.xcassets in Resources */,
+				A23271672CC5D786006AFD44 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -878,6 +909,10 @@
 				A20E160F2C1F5FC200AF9DA4 /* PrayerTimesModel.swift in Sources */,
 				A20E16022C1F5C3300AF9DA4 /* QuranWidgetBundle.swift in Sources */,
 				A20E16042C1F5C3300AF9DA4 /* QuranWidget.swift in Sources */,
+				A23271582CC59C18006AFD44 /* QuranApp.xcdatamodeld in Sources */,
+				A23271562CC59964006AFD44 /* Persistence.swift in Sources */,
+				A23271532CC59096006AFD44 /* QuranTimeWidget.swift in Sources */,
+				A23271512CC58ED8006AFD44 /* WeeklyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -924,6 +959,7 @@
 				A2D17CA32C92194900A2AF23 /* NewAssignmentView.swift in Sources */,
 				A2C6EEC52C90F598006F615E /* TestView.swift in Sources */,
 				A23E2AE82C51AFDD008C84E7 /* ImportantDate.swift in Sources */,
+				A23271502CC554D6006AFD44 /* LifetimeView.swift in Sources */,
 				A2C706B22C4F13C8008FF0C3 /* FavoritesView.swift in Sources */,
 				A214A7122C34BB03000D12A5 /* QuestionDetailView.swift in Sources */,
 				A2ED6C752C88F38E002183EC /* Discussion.swift in Sources */,
@@ -947,10 +983,12 @@
 				A2975CF42C1CC4AF005FA616 /* DuaView.swift in Sources */,
 				A2C273D92C4AA9E700815AC8 /* DonationsView.swift in Sources */,
 				A210DA652C852C7E0033701C /* Ibadah.swift in Sources */,
+				A232714E2CC554CD006AFD44 /* WeeklyView.swift in Sources */,
 				A210DA092C8496220033701C /* NextPrayerView.swift in Sources */,
 				A266AC592C3357C20058156B /* NewQuestionView.swift in Sources */,
 				A2C74A4C2C4B693D00D353FC /* AmaalModel.swift in Sources */,
 				A2358C512C5019C0008D6BFA /* SocialsView.swift in Sources */,
+				A23271542CC59096006AFD44 /* QuranTimeWidget.swift in Sources */,
 				A2A9C8712C49291A00F114FD /* EventsModel.swift in Sources */,
 				A2ED6C842C8E4C6D002183EC /* AssignmentView.swift in Sources */,
 				A2ED6C6A2C88EF6B002183EC /* ResourcesView.swift in Sources */,
@@ -986,6 +1024,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = QuranWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3CS5B84X2T;
@@ -1014,6 +1053,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = QuranWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3CS5B84X2T;
@@ -1178,6 +1218,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -1216,6 +1257,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -1422,6 +1464,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A210DA522C8508560033701C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		A23271592CC5D06A006AFD44 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A210DA3D2C8507F90033701C /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		A232715C2CC5D0C4006AFD44 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A210DA522C8508560033701C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
 		A254ADBF2CA9A39E008C7CD5 /* ExyteMediaPicker */ = {
 			isa = XCSwiftPackageProductDependency;
