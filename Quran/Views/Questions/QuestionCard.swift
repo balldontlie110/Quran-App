@@ -42,7 +42,7 @@ struct QuestionCard: View {
                             Text("\(verse.id).")
                             
                             if let translation = verse.translations.first(where: { translation in
-                                translation.id == UserDefaults.standard.integer(forKey: "translatorId")
+                                translation.id == UserDefaultsController.shared.integer(forKey: "translatorId")
                             }) {
                                 Text(translation.translation)
                             }

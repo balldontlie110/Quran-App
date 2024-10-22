@@ -68,7 +68,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     
     func updatePrayerNotifications() {
         fetchPrayerTimes { prayerTimes in
-            if let data = UserDefaults.standard.string(forKey: "prayerNotifications")?.data(using: .utf8) {
+            if let data = UserDefaultsController.shared.string(forKey: "prayerNotifications")?.data(using: .utf8) {
                 let prayerNotifications = (try? JSONDecoder().decode([String : Bool].self, from: data)) ?? [:]
                 let activePrayerNotifications = prayerTimes.filter({ prayerNotifications[$0.key] ?? false })
                 
@@ -182,5 +182,58 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         }
         
         return nil
+    }
+    
+    func streakReminderNotification(schedule: Bool = false) {
+        let streak = UserDefaultsController.shared.integer(forKey: "streak")
+        let streakDate = Date(timeIntervalSince1970: UserDefaultsController.shared.double(forKey: "streakDate"))
+        
+        if streak > 0 && !Calendar.current.isDate(streakDate, inSameDayAs: Date()) {
+            let startOfDay = Calendar.current.startOfDay(for: Date())
+            
+            if let currentHour = Calendar.current.dateComponents([.hour], from: Date()).hour, currentHour >= (schedule ? 0 : 18), let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) {
+                
+                let center = UNUserNotificationCenter.current()
+                center.removePendingNotificationRequests(withIdentifiers: ["streak"])
+                
+                var timeInterval = 1.0
+                
+                if schedule {
+                    if currentHour < 18 {
+                        timeInterval = (18.0 - Double(currentHour)) * 3600.0
+                    } else {
+                        let timeToEndOfDay = endOfDay.timeIntervalSince(Date())
+                        
+                        timeInterval = timeToEndOfDay < 2700.0 ? (timeToEndOfDay < 900 ? 1.0 : timeToEndOfDay - 450) : 1800.0
+                    }
+                }
+                
+                let content = UNMutableNotificationContent()
+                content.title = "Don't lose your streak!"
+                
+                if let notificationTime = Calendar.current.date(byAdding: .second, value: Int(timeInterval), to: Date()) {
+                    let timeToEndOfDay = Int(endOfDay.timeIntervalSince(notificationTime))
+                    
+                    content.body = "You only have \(timeToEndOfDayString(timeToEndOfDay)) until your \(streak) day streak will be lost"
+                    content.sound = .default
+                    
+                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+                    let identifier = "streak"
+                    
+                    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+                    
+                    center.add(request)
+                }
+            }
+        }
+    }
+    
+    private func timeToEndOfDayString(_ seconds: Int) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .full
+        formatter.maximumUnitCount = 1
+        
+        return formatter.string(from: TimeInterval(seconds)) ?? ""
     }
 }

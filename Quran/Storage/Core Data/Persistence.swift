@@ -35,3 +35,9 @@ struct PersistenceController {
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 }
+
+extension NSSet {
+    func sortedAllObjects() -> [DailyTime]? {
+        return (self.allObjects as? [DailyTime])?.sorted(by: { $0.date ?? Date() < $1.date ?? Date() })
+    }
+}

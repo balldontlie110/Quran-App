@@ -13,12 +13,26 @@ struct LifetimeView: View {
     
     @State private var chartSelection: Date?
     
+    @AppStorage("streak") private var streak: Int = 0
+    @AppStorage("streakDate") private var streakDate: Double = 0.0
+    
     var body: some View {
         VStack {
-            lifetime
+            Spacer()
             
+            lifetime
             chart
-        }
+            
+            Spacer()
+            
+            totalTimeToday
+            
+            Spacer()
+            
+            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
+            
+            Spacer()
+        }.padding(.top)
     }
     
     @ViewBuilder
@@ -29,7 +43,7 @@ struct LifetimeView: View {
             
             Chart {
                 ForEach(weeks) { week in
-                    if let date = week.date, let days = week.days?.allObjects as? [DailyTime] {
+                    if let date = week.date, let days = weeks.last?.days?.sortedAllObjects() {
                         let seconds = Int(days.map({ $0.seconds }).reduce(0, +))
                         
                         BarMark(x: .value("Date", date), y: .value("Time", seconds))
@@ -128,10 +142,59 @@ struct LifetimeView: View {
     }
     
     private var lifetime: some View {
-        Text(getTimeString(totalTimeLifetime()))
-            .font(.system(.headline, weight: .bold))
-            .multilineTextAlignment(.center)
-            .padding()
+        VStack {
+            Text("Lifetime:")
+                .font(.system(.headline, weight: .bold))
+                .foregroundStyle(Color.secondary)
+            
+            Text(getTimeString(totalTimeLifetime()))
+                .font(.system(.title3, weight: .bold))
+        }
+        .multilineTextAlignment(.center)
+        .padding()
+    }
+    
+    private func totalTimeLifetime() -> Int {
+        var days: [DailyTime] = []
+        
+        for week in weeks {
+            if let weekDays = week.days?.sortedAllObjects() {
+                days += weekDays
+            }
+        }
+        
+        let seconds = days.map({ $0.seconds }).reduce(0, +)
+        
+        return Int(seconds)
+    }
+    
+    private var totalTimeToday: some View {
+        VStack {
+            Text("Today:")
+                .font(.system(.headline, weight: .bold))
+                .foregroundStyle(Color.secondary)
+            
+            Text(totalTimeTodayString)
+                .font(.system(.title3, weight: .bold))
+        }
+        .multilineTextAlignment(.center)
+        .padding()
+    }
+    
+    private var totalTimeTodayString: String {
+        let days = weeks.compactMap({ $0.days?.sortedAllObjects() }).flatMap({ $0 })
+        
+        if let lastDay = days.first(where: {
+            if let date = $0.date {
+                return Calendar.current.isDate(date, inSameDayAs: Date())
+            }
+            
+            return false
+        }), let lastDate = lastDay.date {
+            return getTimeString(Int(lastDay.seconds))
+        }
+        
+        return "0 seconds"
     }
     
     private func getTimeString(_ seconds: Int) -> String {
@@ -140,20 +203,6 @@ struct LifetimeView: View {
         formatter.unitsStyle = .full
         
         return formatter.string(from: TimeInterval(seconds)) ?? ""
-    }
-    
-    private func totalTimeLifetime() -> Int {
-        var days: [DailyTime] = []
-        
-        for week in weeks {
-            if let weekDays = week.days?.allObjects as? [DailyTime] {
-                days += weekDays
-            }
-        }
-        
-        let seconds = days.map({ $0.seconds }).reduce(0, +)
-        
-        return Int(seconds)
     }
 }
 

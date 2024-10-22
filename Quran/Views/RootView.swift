@@ -28,6 +28,7 @@ struct RootView: View {
     @EnvironmentObject private var duaModel: DuaModel
     @EnvironmentObject private var ziyaratModel: ZiyaratModel
     @EnvironmentObject private var amaalModel: AmaalModel
+    @EnvironmentObject private var audioPlayer: AudioPlayer
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \BookmarkedFolder.date, ascending: true)],
@@ -40,6 +41,11 @@ struct RootView: View {
     
     @State private var showFavoritesView: Bool = false
     @State private var navigateTo: AnyView?
+    
+    @State private var showStreakView: Bool = false
+    
+    @AppStorage("streak") private var streak: Int = 0
+    @AppStorage("streakDate") private var streakDate: Double = 0.0
     
     @State private var showSettingsView: Bool = false
     @State private var showSocialsView: Bool = false
@@ -74,16 +80,19 @@ struct RootView: View {
             .navigationDestination(item: $navigateTo) { view in
                 view
             }
+            .navigationDestination(isPresented: $showStreakView) {
+                StreakView()
+            }
             .refreshable {
                 calendarModel.load()
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    HStack {
-                        settingsToolbarButton
-                        
-                        favoritesToolbarButton
-                    }
+                    favoritesToolbarButton
+                }
+                
+                ToolbarItem(placement: .topBarLeading) {
+                    streakInfoToolbarButton
                 }
             }
             .toolbar {
@@ -104,8 +113,10 @@ struct RootView: View {
         .onAppear {
             createQuestionsBookmarkFolder()
             getLocalTranslation()
+            checkStreak()
             
             quranFilterModel.quranModel = quranModel
+            audioPlayer.colorScheme = colorScheme
         }
     }
     
@@ -176,6 +187,60 @@ struct RootView: View {
         }
     }
     
+    private var streakInfoToolbarButton: some View {
+        Button {
+            self.showStreakView.toggle()
+        } label: {
+            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .body)
+        }
+    }
+    
+    private func checkStreak() {
+        let streakDate = Date(timeIntervalSince1970: UserDefaultsController.shared.double(forKey: "streakDate"))
+        
+        if let interval = Calendar.current.dateComponents([.day], from: streakDate, to: Date()).day {
+            if interval > 1 {
+                streak = 0
+            } else {
+                NotificationManager.shared.streakReminderNotification(schedule: true)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var userInformation: some View {
+        if let user = authenticationModel.user {
+            HStack(spacing: 0) {
+                if let username = user.displayName {
+                    Text("Salaam, \(username)")
+                        .font(.headline)
+                        .lineLimit(1)
+                }
+                
+                if let photoURL = user.photoURL {
+                    Button {
+                        self.showSettingsView.toggle()
+                    } label: {
+                        WebImage(url: photoURL)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 25)
+                            .clipShape(Circle())
+                            .overlay { Circle().stroke(lineWidth: 1).foregroundStyle(Color.primary) }
+                            .frame(width: 25, height: 25)
+                    }
+                }
+            }
+        } else {
+            Button {
+                self.showSettingsView.toggle()
+            } label: {
+                Image(systemName: "gear")
+                    .foregroundStyle(Color.primary)
+            }
+        }
+    }
+    
     private var dateSection: some View {
         VStack {
             gregorianDate
@@ -199,37 +264,6 @@ struct RootView: View {
         }.font(.system(.title2, weight: .bold))
     }
     
-    private var userInformation: some View {
-        HStack(spacing: 10) {
-            if let user = authenticationModel.user {
-                if let username = user.displayName {
-                    Text("👋  Salaam, \(username)")
-                        .font(.headline)
-                        .multilineTextAlignment(.trailing)
-                }
-                
-                if let photoURL = user.photoURL {
-                    WebImage(url: photoURL)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 25)
-                        .clipShape(Circle())
-                        .overlay { Circle().stroke(lineWidth: 1) }
-                        .frame(width: 25, height: 25)
-                }
-            }
-        }
-    }
-    
-    private var settingsToolbarButton: some View {
-        Button {
-            self.showSettingsView.toggle()
-        } label: {
-            Image(systemName: "gear")
-                .foregroundStyle(Color.primary)
-        }
-    }
-    
     private func createQuestionsBookmarkFolder() {
         if !bookmarkedFolders.contains(where: { bookmarkedFolder in
             bookmarkedFolder.questionFolder == true
@@ -245,7 +279,7 @@ struct RootView: View {
     }
     
     private func getLocalTranslation() {
-        let translatorId = UserDefaults.standard.integer(forKey: "translatorId")
+        let translatorId = UserDefaultsController.shared.integer(forKey: "translatorId")
         
         guard translatorId != 131 else { return }
         
@@ -253,7 +287,7 @@ struct RootView: View {
     }
     
     private func getLocalWBWTranslation() {
-        guard let wbwTranslationId = UserDefaults.standard.string(forKey: "translationLanguage"), wbwTranslationId != "en" else { return }
+        guard let wbwTranslationId = UserDefaultsController.shared.string(forKey: "translationLanguage"), wbwTranslationId != "en" else { return }
         
         quranModel.checkLocalWBWTranslation(wbwTranslationId: wbwTranslationId)
     }

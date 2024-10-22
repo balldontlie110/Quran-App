@@ -46,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         scheduleAppRefresh()
         
         NotificationManager.shared.updatePrayerNotifications()
+        NotificationManager.shared.streakReminderNotification()
         
         task.expirationHandler = {
             

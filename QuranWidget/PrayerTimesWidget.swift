@@ -1,5 +1,5 @@
 //
-//  QuranWidget.swift
+//  PrayerTimesWidget.swift
 //  QuranWidget
 //
 //  Created by Ali Earp on 16/06/2024.
@@ -7,19 +7,20 @@
 
 import WidgetKit
 import SwiftUI
+import FirebaseAuth
 import Alamofire
 import SwiftSoup
 
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), prayerTimes: [:], islamicDate: "")
+struct PrayerTimesProvider: TimelineProvider {
+    func placeholder(in context: Context) -> PrayerTimesSimpleEntry {
+        PrayerTimesSimpleEntry(date: Date(), prayerTimes: [:], islamicDay: "", islamicMonth: "", islamicYear: "")
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+    func getSnapshot(in context: Context, completion: @escaping (PrayerTimesSimpleEntry) -> ()) {
         fetchPrayerTimes { prayerTimes in
-            fetchDate { islamicDate in
-                if let prayerTimes = prayerTimes, let islamicDate = islamicDate {
-                    let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
+            fetchDate { islamicDay, islamicMonth, islamicYear in
+                if let prayerTimes = prayerTimes, let islamicDay = islamicDay, let islamicMonth = islamicMonth, let islamicYear = islamicYear {
+                    let entry = PrayerTimesSimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDay: islamicDay, islamicMonth: islamicMonth, islamicYear: islamicYear)
                     completion(entry)
                 }
             }
@@ -27,12 +28,12 @@ struct Provider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
+        var entries: [PrayerTimesSimpleEntry] = []
         
         fetchPrayerTimes { prayerTimes in
-            fetchDate { islamicDate in
-                if let prayerTimes = prayerTimes, let islamicDate = islamicDate {
-                    let entry = SimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDate: islamicDate)
+            fetchDate { islamicDay, islamicMonth, islamicYear in
+                if let prayerTimes = prayerTimes, let islamicDay = islamicDay, let islamicMonth = islamicMonth, let islamicYear = islamicYear {
+                    let entry = PrayerTimesSimpleEntry(date: Date(), prayerTimes: prayerTimes, islamicDay: islamicDay, islamicMonth: islamicMonth, islamicYear: islamicYear)
                     entries.append(entry)
                 }
                 
@@ -73,7 +74,7 @@ struct Provider: TimelineProvider {
     
     private let islamicMonths = ["Muharram" : "Muharram", "Safar" : "Safar", "Rabi I" : "Rabi Al Awwal", "Rabi' II" : "Rabi Al Thaani", "Jumada I" : "Jamaada Al Ula", "Jumada II" : "Jamaada Al Thani", "Rajab" : "Rajab", "Shabban" : "Shabaan", "Ramadan" : "Ramadhan", "Shawaal" : "Shawwal", "Thi Alqida" : "Dhu Al Qadah", "Thul-Hijja" : "Dhu Al Hijjah"]
     
-    private func fetchDate(completion: @escaping (String?) -> Void) {
+    private func fetchDate(completion: @escaping (String?, String?, String?) -> Void) {
         let url = "https://najaf.org/english/"
         
         AF.request(url).responseString { response in
@@ -92,28 +93,28 @@ struct Provider: TimelineProvider {
                         
                         let year = String(splitDate[2])
                         
-                        let islamicDate = "\(day) \(month) \(year)"
-                        
-                        completion(islamicDate)
+                        completion(day, month, year)
                     }
                 }
             case .failure(_):
-                completion(nil)
+                completion(nil, nil, nil)
             }
         }
     }
 }
 
-struct SimpleEntry: TimelineEntry {
+struct PrayerTimesSimpleEntry: TimelineEntry {
     let date: Date
     let prayerTimes: [String : String]
-    let islamicDate: String
+    let islamicDay: String
+    let islamicMonth: String
+    let islamicYear: String
 }
 
 struct PrayerTimesWidgetEntryView : View {
     @Environment(\.widgetFamily) private var widgetFamily
     
-    var entry: Provider.Entry
+    var entry: PrayerTimesProvider.Entry
     
     private let prayers = ["Dawn", "Sunrise", "Noon", "Sunset", "Maghrib", "Midnight"]
     private let prayersRenamed = ["Dawn" : "Fajr", "Sunrise" : "Sunrise", "Noon" : "Zuhr", "Sunset" : "Sunset", "Maghrib" : "Maghrib", "Midnight" : "Midnight"]
@@ -145,33 +146,58 @@ struct PrayerTimesWidgetEntryView : View {
                 }
             }
         case .systemMedium:
-            VStack(spacing: 0) {
+            VStack(spacing: 2.5) {
+                HStack(spacing: 10) {
+                    if let photoURL = Auth.auth().currentUser?.photoURL, let photoData = try? Data(contentsOf: photoURL), let uiImage = UIImage(data: photoData) {
+                        
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 30)
+                            .clipShape(Circle())
+                            .overlay { Circle().stroke(lineWidth: 0.5) }
+                            .frame(width: 30, height: 30)
+                    }
+                    
+                    if let nextPrayer = (prayerTimes.filter { $0.value > Date() }).min(by: { $0.value < $1.value }), let prayerName = prayersRenamed[nextPrayer.key] {
+                        
+                        let (hours, minutes) = shortTimeUntilDate(from: Date(), to: nextPrayer.value)
+                        
+                        Text("\(prayerName) in \(hours == "" ? "" : "\(hours) ")\(minutes == "" ? "" : minutes)")
+                            .font(.headline)
+                    }
+                    
+                    Spacer()
+                    
+                    Text(entry.islamicMonth)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.secondary)
+                        .multilineTextAlignment(.trailing)
+                    
+                    Text(entry.islamicDay)
+                        .font(.title)
+                        .fontWeight(.heavy)
+                }
+                
                 Spacer()
                 
-                Text(entry.islamicDate)
-                    .bold()
-                    .multilineTextAlignment(.center)
-                
-                Spacer()
-                
-                let prayerTimes = prayerTimes.filter {
+                let sortedPrayerTimes = prayerTimes.filter {
                     prayers.dropLast().contains($0.key)
                 }.sorted {
                     prayers.firstIndex(of: $0.key) ?? 0 < prayers.firstIndex(of: $1.key) ?? 0
                 }
                 
                 LazyVGrid(columns: rows) {
-                    ForEach(prayerTimes, id: \.key) { prayer in
+                    ForEach(sortedPrayerTimes, id: \.key) { prayer in
                         Text(prayersRenamed[prayer.key] ?? prayer.key)
                             .foregroundStyle(Color.secondary)
                             .multilineTextAlignment(.center)
                     }
                 }.font(.system(size: 14))
                 
-                Spacer()
-                
                 LazyVGrid(columns: rows) {
-                    ForEach(prayerTimes, id: \.key) { prayer in
+                    ForEach(sortedPrayerTimes, id: \.key) { prayer in
                         Text(prayerTimeString(prayer.value))
                             .bold()
                             .multilineTextAlignment(.center)
@@ -182,7 +208,7 @@ struct PrayerTimesWidgetEntryView : View {
             }
         case .accessoryInline:
             Label {
-                Text(entry.islamicDate)
+                Text("\(entry.islamicDay) \(entry.islamicMonth) \(entry.islamicYear)")
             } icon: {
                 Image("crescent")
             }
@@ -191,12 +217,12 @@ struct PrayerTimesWidgetEntryView : View {
                 VStack(alignment: .leading) {
                     if let nextPrayer = (prayerTimes.filter { $0.value > Date() }).min(by: { $0.value < $1.value }), let prayerName = prayersRenamed[nextPrayer.key] {
                         
-                        let timeUntil = timeUntilDate(date: nextPrayer.value)
-                        
                         Text("\(prayerName) upcoming")
                             .font(.headline)
                         
                         Spacer()
+                        
+                        let timeUntil = timeUntilDate(date: nextPrayer.value)
                         
                         Text(timeUntil)
                         
@@ -350,15 +376,9 @@ struct PrayerTimesWidget: Widget {
     let kind: String = "QuranWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                PrayerTimesWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                PrayerTimesWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
+        StaticConfiguration(kind: kind, provider: PrayerTimesProvider()) { entry in
+            PrayerTimesWidgetEntryView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Prayer Times")
         .description("See prayer times at a glance.")
@@ -371,7 +391,7 @@ struct PrayerTimesWidget: Widget {
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    SimpleEntry(date: .now, prayerTimes: prayerTimesModel.prayerTimes, islamicDate: "")
+    PrayerTimesSimpleEntry(date: .now, prayerTimes: prayerTimesModel.prayerTimes, islamicDay: "", islamicMonth: "", islamicYear: "")
 }
 
 #Preview(as: .systemMedium) {
@@ -379,5 +399,5 @@ struct PrayerTimesWidget: Widget {
 } timeline: {
     let prayerTimesModel: PrayerTimesModel = PrayerTimesModel()
     
-    SimpleEntry(date: .now, prayerTimes: prayerTimesModel.prayerTimes, islamicDate: "")
+    PrayerTimesSimpleEntry(date: .now, prayerTimes: prayerTimesModel.prayerTimes, islamicDay: "", islamicMonth: "", islamicYear: "")
 }

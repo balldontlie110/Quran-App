@@ -30,14 +30,17 @@ struct QuranTimeView: View {
         }
     }
     
+    @ViewBuilder
     private var timeframePicker: some View {
-        Picker("", selection: $weekly) {
-            Text("Weekly")
-                .tag(true)
-            
-            Text("Lifetime")
-                .tag(false)
-        }.pickerStyle(.menu)
+        if weeks.count > 0 {
+            Picker("", selection: $weekly) {
+                Text("Weekly")
+                    .tag(true)
+                
+                Text("Lifetime")
+                    .tag(false)
+            }.pickerStyle(.menu)
+        }
     }
 }
 

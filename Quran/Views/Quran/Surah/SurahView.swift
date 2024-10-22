@@ -10,6 +10,7 @@ import CoreData
 import Combine
 import WStack
 import WidgetKit
+import UserNotifications
 
 struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -54,6 +55,12 @@ struct SurahView: View {
     @AppStorage("wordByWord") private var wordByWord: Bool = false
     @AppStorage("continuePlaying") private var continuePlaying = false
     
+    @AppStorage("streak") private var streak: Int = 0
+    @AppStorage("streakDate") private var streakDate: Double = 0.0
+    @AppStorage("dailyQuranGoal") private var dailyQuranGoal: Int = 0
+    
+    @State private var streakExtended: Bool = false
+    
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
@@ -71,7 +78,7 @@ struct SurahView: View {
                         
                         ProgressView()
                     } else {
-                        let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                        let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
                         
                         LazyVStack(spacing: fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10) {
                             ForEach(surahFilterModel.filteredVerses) { verse in
@@ -136,14 +143,27 @@ struct SurahView: View {
             audioPlayer.surahName = surah.transliteration
             audioPlayer.nextVerse = nextVerse
             audioPlayer.previousVerse = previousVerse
-            audioPlayer.reciterSubfolder = UserDefaults.standard.string(forKey: "reciterSubfolder")
+            audioPlayer.reciterSubfolder = UserDefaultsController.shared.string(forKey: "reciterSubfolder")
+            audioPlayer.colorScheme = colorScheme
             
             initialiseScrollPosition()
             initialiseQuranTime()
         }
+        .onChange(of: time) { _, _ in
+            if let lastWeekDaySeconds = weeks.last?.days?.sortedAllObjects()?.last?.seconds {
+                let totalSeconds = Int(lastWeekDaySeconds) + time
+                
+                if lastWeekDaySeconds < (dailyQuranGoal * 60) && totalSeconds >= (dailyQuranGoal * 60) {
+                    logQuranTime()
+                }
+            }
+        }
         .onDisappear {
             audioPlayer.resetPlayer()
             logQuranTime()
+        }
+        .onChange(of: colorScheme) { _, _ in
+            audioPlayer.colorScheme = colorScheme
         }
         .onTapGesture {
             hideBookmarkAlertAndVerseSelector()
@@ -203,6 +223,44 @@ struct SurahView: View {
         .overlay(alignment: .bottom) {
             audioPlayerSlider
         }
+        .overlay(alignment: .top) {
+            if streakExtended {
+                HStack {
+                    Image(systemName: "flame.fill")
+                        .foregroundStyle(Color.streak)
+                    
+                    if streak > 1 {
+                        Text("Great Job! You extended your streak to \(streak) days with \(timeToEndOfDayString()) left.")
+                    } else {
+                        Text("Great Job! You've started a streak.")
+                    }
+                }
+                .font(.title3)
+                .multilineTextAlignment(.leading)
+                .padding(10)
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .transition(.move(edge: .top))
+                .padding(10)
+            }
+        }
+    }
+    
+    private func timeToEndOfDayString() -> String {
+        let startOfDay = Calendar.current.startOfDay(for: Date())
+        
+        if let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) {
+            let timeToEndOfDay = endOfDay.timeIntervalSince(Date())
+            
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.hour, .minute, .second]
+            formatter.unitsStyle = .full
+            formatter.maximumUnitCount = 1
+            
+            return formatter.string(from: timeToEndOfDay) ?? ""
+        }
+        
+        return ""
     }
     
     private func initialiseQuranTime() {
@@ -210,48 +268,75 @@ struct SurahView: View {
             self.time += 1
         }
         
-        if !Calendar.current.isDate(Date(), inSameDayAs: (weeks.last?.days?.allObjects as? [DailyTime])?.last?.date ?? .distantPast), let currentWeekDate = Calendar.current.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: Date()).date {
-            
-            if let lastWeek = weeks.last, let lastWeekDate = lastWeek.date {
-                if currentWeekDate == lastWeekDate {
-                    let dailyTime = DailyTime(context: viewContext)
-                    
-                    dailyTime.date = Calendar.current.startOfDay(for: Date())
-                    dailyTime.seconds = 0
-                    
-                    lastWeek.days = NSSet(set: lastWeek.days?.adding(dailyTime) ?? Set())
-                    
-                    try? viewContext.save()
-                    
-                    return
+        if let currentWeekDate = Calendar.current.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: Date()).date {
+            if let lastWeek = weeks.last, let lastWeekDate = lastWeek.date, let lastDate = lastWeek.days?.sortedAllObjects()?.last?.date {
+                if !Calendar.current.isDate(lastDate, inSameDayAs: Date()) {
+                    if lastWeekDate == currentWeekDate {
+                        newDailyTime(for: lastWeek)
+                        
+                        try? viewContext.save()
+                        
+                        return
+                    } else {
+                        newWeeklyTime(with: currentWeekDate)
+                    }
                 }
+            } else {
+                newWeeklyTime(with: currentWeekDate)
             }
-            
-            let weeklyTime = WeeklyTime(context: viewContext)
-            
-            weeklyTime.date = currentWeekDate
-            
-            let dailyTime = DailyTime(context: viewContext)
-            
-            dailyTime.date = Calendar.current.startOfDay(for: Date())
-            dailyTime.seconds = 0
-            
-            weeklyTime.days = NSSet(array: [dailyTime])
-            
-            try? viewContext.save()
         }
     }
     
+    private func newWeeklyTime(with currentWeekDate: Date) {
+        let weeklyTime = WeeklyTime(context: viewContext)
+        
+        weeklyTime.date = currentWeekDate
+        
+        newDailyTime(for: weeklyTime)
+        
+        try? viewContext.save()
+    }
+    
+    private func newDailyTime(for weeklyTime: WeeklyTime) {
+        let dailyTime = DailyTime(context: viewContext)
+        
+        dailyTime.date = Calendar.current.startOfDay(for: Date())
+        dailyTime.seconds = 0
+        
+        weeklyTime.days = NSSet(set: weeklyTime.days?.adding(dailyTime) ?? Set())
+    }
+    
     private func logQuranTime() {
-        if let lastWeekDay = (weeks.last?.days?.allObjects as? [DailyTime])?.last {
-            lastWeekDay.seconds = lastWeekDay.seconds + Int64(time)
+        if let lastWeekDay = weeks.last?.days?.sortedAllObjects()?.last {
+            let previousSeconds = lastWeekDay.seconds
+            let newSeconds = lastWeekDay.seconds + Int64(time)
+            
+            lastWeekDay.seconds = newSeconds
+            
+            try? viewContext.save()
+            
+            WidgetCenter.shared.reloadTimelines(ofKind: "QuranTimeWidget")
+            
+            if previousSeconds < (dailyQuranGoal * 60) && newSeconds >= (dailyQuranGoal * 60) {
+                streak += 1
+                streakDate = Date().timeIntervalSince1970
+                
+                withAnimation {
+                    streakExtended = true
+                }
+                
+                WidgetCenter.shared.reloadTimelines(ofKind: "StreakWidget")
+                
+                let center = UNUserNotificationCenter.current()
+                center.removePendingNotificationRequests(withIdentifiers: ["streak"])
+                
+                Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+                    streakExtended = false
+                }
+            }
         }
         
         timer?.invalidate()
-        
-        try? viewContext.save()
-        
-        WidgetCenter.shared.reloadTimelines(ofKind: "QuranTimeWidget")
     }
     
     private var searchBar: some View {
@@ -338,7 +423,7 @@ struct SurahView: View {
     
     private var header: some View {
         VStack(spacing: 0) {
-            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
             
             let defaultFont = Font.system(size: 50, weight: .bold)
             let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: 50)
@@ -535,15 +620,15 @@ struct VerseRow: View {
                 Spacer()
             }
             
-            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
             
-            let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
-            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
-            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+            let defaultFont = Font.system(size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")), weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
             
             let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
             
-            if readingMode || !UserDefaults.standard.bool(forKey: "wordByWord") {
+            if readingMode || !UserDefaultsController.shared.bool(forKey: "wordByWord") {
                 let verseText = getVerse(verse)
                 
                 Text(verseText.text)
@@ -557,7 +642,7 @@ struct VerseRow: View {
                             .font(font)
                             .lineSpacing(fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10)
                         
-                        if let translationLanguage = UserDefaults.standard.string(forKey: "translationLanguage"), let translation = word.translations.first(where: { translation in
+                        if let translationLanguage = UserDefaultsController.shared.string(forKey: "translationLanguage"), let translation = word.translations.first(where: { translation in
                             translation.id == translationLanguage
                         }) {
                             Text(translation.translation)
@@ -600,7 +685,7 @@ struct VerseRow: View {
         }
         
         guard let translation = verse.translations.first(where: { translation in
-            translation.id == UserDefaults.standard.integer(forKey: "translatorId")
+            translation.id == UserDefaultsController.shared.integer(forKey: "translatorId")
         })?.translation else { return AttributedString() }
         
         let (cleanedTranslation, originalIndices) = clean(translation)
@@ -718,7 +803,7 @@ struct VerseRow: View {
     
     private var audioButton: some View {
         Group {
-            if let reciterSubfolder = UserDefaults.standard.string(forKey: "reciterSubfolder") {
+            if let reciterSubfolder = UserDefaultsController.shared.string(forKey: "reciterSubfolder") {
                 if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
                     if audioPlayer.url == audioUrl {
                         Button {
@@ -741,7 +826,7 @@ struct VerseRow: View {
     
     private var contextMenuAudioButton: some View {
         Group {
-            if let reciterSubfolder = UserDefaults.standard.string(forKey: "reciterSubfolder") {
+            if let reciterSubfolder = UserDefaultsController.shared.string(forKey: "reciterSubfolder") {
                 if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
                     if audioPlayer.url == audioUrl {
                         Button {
@@ -789,7 +874,7 @@ struct VerseRow: View {
             }
         }
         
-        if UserDefaults.standard.integer(forKey: "fontNumber") == 2 {
+        if UserDefaultsController.shared.integer(forKey: "fontNumber") == 2 {
             return arabicString
         } else {
             return "(\(arabicString))"
@@ -875,7 +960,7 @@ class SurahFilterModel: ObservableObject {
             }
             
             if let translation = verse.translations.first(where: { translation in
-                translation.id == UserDefaults.standard.integer(forKey: "translatorId")
+                translation.id == UserDefaultsController.shared.integer(forKey: "translatorId")
             }) {
                 if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
                     return true

@@ -317,7 +317,7 @@ class QuranFilterModel: ObservableObject {
                 }
                 
                 if let translation = verse.translations.first(where: { translation in
-                    translation.id == UserDefaults.standard.integer(forKey: "translatorId")
+                    translation.id == UserDefaultsController.shared.integer(forKey: "translatorId")
                 }) {
                     if translation.translation.lowercasedLettersAndNumbers.contains(cleanedSearchText) {
                         DispatchQueue.main.async {

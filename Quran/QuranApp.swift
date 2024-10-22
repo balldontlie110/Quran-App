@@ -24,6 +24,7 @@ struct QuranApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .defaultAppStorage(UserDefaultsController.shared)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .environmentObject(QuranModel())
                 .environmentObject(QuranFilterModel())
@@ -46,18 +47,21 @@ struct QuranApp: App {
     }
     
     private func initialiseUserDefaults() {
-        if !UserDefaults.standard.bool(forKey: "initialisedUserDefaults") {
-            UserDefaults.standard.setValue("{\"Fajr\": false, \"Sunrise\": false, \"Zuhr\": false, \"Sunset\": false, \"Maghrib\": false}", forKey: "prayerNotifications")
-            UserDefaults.standard.setValue(40.0, forKey: "fontSize")
-            UserDefaults.standard.setValue(1, forKey: "fontNumber")
-            UserDefaults.standard.setValue(131, forKey: "translatorId")
-            UserDefaults.standard.setValue("en", forKey: "translationLanguage")
-            UserDefaults.standard.setValue("Alafasy", forKey: "reciterName")
-            UserDefaults.standard.setValue("Alafasy_128kbps", forKey: "reciterSubfolder")
-            UserDefaults.standard.setValue(false, forKey: "continuePlaying")
-            UserDefaults.standard.setValue(false, forKey: "wordByWord")
-            UserDefaults.standard.setValue(true, forKey: "initialisedUserDefaults")
-            UserDefaults.standard.synchronize()
+        if !UserDefaultsController.shared.bool(forKey: "initialisedUserDefaults") {
+            UserDefaultsController.shared.setValue("{\"Fajr\": false, \"Sunrise\": false, \"Zuhr\": false, \"Sunset\": false, \"Maghrib\": false}", forKey: "prayerNotifications")
+            UserDefaultsController.shared.setValue(40.0, forKey: "fontSize")
+            UserDefaultsController.shared.setValue(1, forKey: "fontNumber")
+            UserDefaultsController.shared.setValue(131, forKey: "translatorId")
+            UserDefaultsController.shared.setValue("en", forKey: "translationLanguage")
+            UserDefaultsController.shared.setValue("Alafasy", forKey: "reciterName")
+            UserDefaultsController.shared.setValue("Alafasy_128kbps", forKey: "reciterSubfolder")
+            UserDefaultsController.shared.setValue(false, forKey: "continuePlaying")
+            UserDefaultsController.shared.setValue(false, forKey: "wordByWord")
+            UserDefaultsController.shared.setValue(0, forKey: "streak")
+            UserDefaultsController.shared.setValue(nil, forKey: "streakDate")
+            UserDefaultsController.shared.setValue(10, forKey: "dailyQuranGoal")
+            UserDefaultsController.shared.setValue(true, forKey: "initialisedUserDefaults")
+            UserDefaultsController.shared.synchronize()
         }
     }
 }

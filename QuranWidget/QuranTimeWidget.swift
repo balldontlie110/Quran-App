@@ -9,7 +9,6 @@ import WidgetKit
 import SwiftUI
 import CoreData
 import Charts
-import SDWebImageSwiftUI
 import FirebaseAuth
 import Alamofire
 import SwiftSoup
@@ -28,7 +27,7 @@ struct QuranTimeProvider: TimelineProvider {
         do {
             let weeks = try moc.fetch(fetchRequest)
             
-            if let week = weeks.last, let weekDate = week.date, let days = week.days?.allObjects as? [DailyTime] {
+            if let week = weeks.last, let weekDate = week.date, let days = weeks.last?.days?.sortedAllObjects() {
                 fetchDate { islamicDay, islamicMonth in
                     if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
                         completion(QuranTimeSimpleEntry(date: weekDate, days: days, islamicDay: islamicDay, islamicMonth: islamicMonth))
@@ -52,10 +51,11 @@ struct QuranTimeProvider: TimelineProvider {
         do {
             let weeks = try moc.fetch(fetchRequest)
             
-            if let week = weeks.last, let weekDate = week.date, let days = weeks.last?.days?.allObjects as? [DailyTime] {
+            if let week = weeks.last, let weekDate = week.date, let days = weeks.last?.days?.sortedAllObjects() {
                 fetchDate { islamicDay, islamicMonth in
                     if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
                         let timeline = Timeline(entries: [QuranTimeSimpleEntry(date: weekDate, days: days, islamicDay: islamicDay, islamicMonth: islamicMonth)], policy: .after(Date()))
+                        
                         completion(timeline)
                     }
                 }
@@ -64,6 +64,7 @@ struct QuranTimeProvider: TimelineProvider {
             fetchDate { islamicDay, islamicMonth in
                 if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
                     let timeline = Timeline(entries: [QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: islamicDay, islamicMonth: islamicMonth)], policy: .after(Date()))
+                    
                     completion(timeline)
                 }
             }
@@ -107,11 +108,7 @@ struct QuranTimeSimpleEntry: TimelineEntry {
 }
 
 struct QuranTimeChart: View {
-    let weekDate: Date
-    let days: [DailyTime]
-    
-    let islamicDay: String
-    let islamicMonth: String
+    let entry: QuranTimeProvider.Entry
     
     var body: some View {
         VStack(spacing: 10) {
@@ -132,28 +129,26 @@ struct QuranTimeChart: View {
                 
                 Spacer()
                 
-                HStack {
-                    Text(islamicMonth)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.secondary)
-                        .multilineTextAlignment(.trailing)
-                    
-                    Text(islamicDay)
-                        .font(.title)
-                        .fontWeight(.heavy)
-                }
+                Text(entry.islamicMonth)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.secondary)
+                    .multilineTextAlignment(.trailing)
+                
+                Text(entry.islamicDay)
+                    .font(.title)
+                    .fontWeight(.heavy)
             }
             
-            if let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: weekDate) {
+            if let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: entry.date) {
                 Chart {
-                    ForEach(days) { day in
+                    ForEach(entry.days) { day in
                         if let date = day.date {
                             BarMark(x: .value("Date", date), y: .value("Time", Int(day.seconds)))
                         }
                     }
                 }
-                .chartXScale(domain: weekDate...endOfSelectedWeek)
+                .chartXScale(domain: entry.date...endOfSelectedWeek)
                 .chartXAxis {
                     AxisMarks(preset: .extended, position: .bottom, values: .stride(by: .day)) { value in
                         AxisGridLine()
@@ -179,7 +174,7 @@ struct QuranTimeChart: View {
     }
     
     private func getTimeString() -> String {
-        let seconds = days.map({ $0.seconds }).reduce(0, +)
+        let seconds = entry.days.map({ $0.seconds }).reduce(0, +)
         
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
@@ -238,11 +233,11 @@ struct QuranTimeWidgetEntryView: View {
     var body: some View {
         switch widgetFamily {
         case .systemMedium:
-            QuranTimeChart(weekDate: entry.date, days: entry.days, islamicDay: entry.islamicDay, islamicMonth: entry.islamicMonth)
+            QuranTimeChart(entry: entry)
         case .systemLarge:
-            QuranTimeChart(weekDate: entry.date, days: entry.days, islamicDay: entry.islamicDay, islamicMonth: entry.islamicMonth)
+            QuranTimeChart(entry: entry)
         case .systemExtraLarge:
-            QuranTimeChart(weekDate: entry.date, days: entry.days, islamicDay: entry.islamicDay, islamicMonth: entry.islamicMonth)
+            QuranTimeChart(entry: entry)
         default:
             EmptyView()
         }
@@ -254,14 +249,8 @@ struct QuranTimeWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: QuranTimeProvider()) { entry in
-            if #available(iOS 17.0, *) {
-                QuranTimeWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                QuranTimeWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
+            QuranTimeWidgetEntryView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Quran Time")
         .description("Easily keep track of how long you've spent reading Quran this week.")

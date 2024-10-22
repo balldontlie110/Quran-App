@@ -14,6 +14,17 @@ struct WeeklyView: View {
     @State private var selectedWeek: Date?
     @State private var chartSelection: Date?
     
+    @State private var selectedDate: Date
+    
+    @AppStorage("streak") private var streak: Int = 0
+    @AppStorage("streakDate") private var streakDate: Double = 0.0
+    
+    init(weeks: FetchedResults<WeeklyTime>, selectedWeek: Date? = nil, selectedDate: Date = Date()) {
+        self.weeks = weeks
+        self.selectedWeek = selectedWeek
+        self.selectedDate = selectedDate
+    }
+    
     var body: some View {
         VStack {
             Spacer()
@@ -21,7 +32,16 @@ struct WeeklyView: View {
             chart
             
             Spacer()
+            
+            totalTimeToday
+            
+            Spacer()
+            
+            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
+            
+            Spacer()
         }
+        .padding(.top)
         .overlay(alignment: .top) {
             weekPicker
         }
@@ -32,26 +52,28 @@ struct WeeklyView: View {
     
     private var weekPicker: some View {
         HStack {
-            if let selectedWeek = selectedWeek, let newWeek = weeks.last(where: { week in
-                if let date = week.date {
-                    return date < selectedWeek
-                }
-                
-                return false
-            })?.date {
-                Button {
-                    Task { @MainActor in
-                        self.selectedWeek = newWeek
+            if let selectedWeek = selectedWeek {
+                if let newWeek = weeks.last(where: { week in
+                    if let date = week.date {
+                        return date < selectedWeek
                     }
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
-            } else {
-                Button {
                     
-                } label: {
-                    Image(systemName: "chevron.left")
-                }.disabled(true)
+                    return false
+                })?.date {
+                    Button {
+                        Task { @MainActor in
+                            self.selectedWeek = newWeek
+                        }
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                } else {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }.disabled(true)
+                }
             }
             
             Spacer()
@@ -60,26 +82,28 @@ struct WeeklyView: View {
             
             Spacer()
             
-            if let selectedWeek = selectedWeek, let newWeek = weeks.first(where: { week in
-                if let date = week.date {
-                    return date > selectedWeek
-                }
-                
-                return false
-            })?.date {
-                Button {
-                    Task { @MainActor in
-                        self.selectedWeek = newWeek
+            if let selectedWeek = selectedWeek {
+                if let newWeek = weeks.first(where: { week in
+                    if let date = week.date {
+                        return date > selectedWeek
                     }
-                } label: {
-                    Image(systemName: "chevron.right")
-                }
-            } else {
-                Button {
                     
-                } label: {
-                    Image(systemName: "chevron.right")
-                }.disabled(true)
+                    return false
+                })?.date {
+                    Button {
+                        Task { @MainActor in
+                            self.selectedWeek = newWeek
+                        }
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                } else {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }.disabled(true)
+                }
             }
         }
         .bold()
@@ -105,11 +129,17 @@ struct WeeklyView: View {
         if let selectedWeek = selectedWeek, let week = weeks.first(where: { weeklyTime in
             Calendar.current.isDate(weeklyTime.date ?? Date(), inSameDayAs: selectedWeek)
         }) {
-            if let days = week.days?.allObjects as? [DailyTime], let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: selectedWeek) {
-                Text(totalTimeThisWeek(days: days))
-                    .font(.system(.headline, weight: .bold))
-                    .multilineTextAlignment(.center)
-                    .padding()
+            if let days = week.days?.sortedAllObjects(), let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: selectedWeek) {
+                VStack {
+                    Text("This Week:")
+                        .font(.system(.headline, weight: .bold))
+                        .foregroundStyle(Color.secondary)
+                    
+                    Text(totalTimeThisWeek(days: days))
+                        .font(.system(.title3, weight: .bold))
+                }
+                .multilineTextAlignment(.center)
+                .padding()
                 
                 Chart {
                     ForEach(days) { day in
@@ -213,12 +243,65 @@ struct WeeklyView: View {
         return getTimeString(seconds)
     }
     
+    private var totalTimeToday: some View {
+        VStack {
+            let selectedToday = Calendar.current.isDate(selectedDate, inSameDayAs: Date())
+            let dayOfWeekAndDayAndMonth = selectedDate.dayOfWeekAndDayAndMonthString()
+            
+            Text("\(selectedToday ? "Today (" : "")\(dayOfWeekAndDayAndMonth)\(selectedToday ? ")" : ""):")
+                .font(.system(.headline, weight: .bold))
+                .foregroundStyle(Color.secondary)
+            
+            Text(totalTimeTodayString)
+                .font(.system(.title3, weight: .bold))
+        }
+        .multilineTextAlignment(.center)
+        .padding()
+    }
+    
+    private var totalTimeTodayString: String {
+        let days = weeks.compactMap({ $0.days?.sortedAllObjects() }).flatMap({ $0 })
+        
+        if let lastDay = days.first(where: {
+            if let date = $0.date {
+                return Calendar.current.isDate(date, inSameDayAs: selectedDate)
+            }
+            
+            return false
+        }) {
+            return getTimeString(Int(lastDay.seconds))
+        }
+        
+        return "0 seconds"
+    }
+    
     private func getTimeString(_ seconds: Int) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
         formatter.unitsStyle = .full
         
         return formatter.string(from: TimeInterval(seconds)) ?? ""
+    }
+}
+
+extension Date {
+    func dayOfWeekAndDayAndMonthString() -> String {
+        let dayOfWeekFormatter = DateFormatter()
+        dayOfWeekFormatter.dateFormat = "EEEE"
+        
+        let dayOfWeek =  dayOfWeekFormatter.string(from: self)
+        
+        let dayFormatter = DateFormatter()
+        dayFormatter.dateFormat = "d"
+        
+        let day = dayFormatter.string(from: self)
+        
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "MMMM"
+        
+        let month = monthFormatter.string(from: self)
+        
+        return "\(dayOfWeek) \(day) \(month)"
     }
 }
 

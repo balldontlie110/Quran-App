@@ -94,6 +94,12 @@ struct TasbeehView: View {
         withAnimation(nil) {
             if count < 100 {
                 count += 1
+                
+                if count == 34 || count == 67 || count == 100 {
+                    UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                } else {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                }
             } else {
                 count = 0
             }
@@ -102,11 +108,11 @@ struct TasbeehView: View {
     
     private var dhikrText: some View {
         VStack(spacing: 15) {
-            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
             
-            let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
-            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
-            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+            let defaultFont = Font.system(size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")), weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
             
             let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
             

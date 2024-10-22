@@ -13,6 +13,9 @@ struct QuranView: View {
     @EnvironmentObject private var quranModel: QuranModel
     @EnvironmentObject private var quranFilterModel: QuranFilterModel
     
+    @AppStorage("streak") private var streak: Int = 0
+    @AppStorage("streakDate") private var streakDate: Double = 0.0
+    
     var body: some View {
         VStack(spacing: 0) {
             searchBar
@@ -114,8 +117,7 @@ struct QuranView: View {
         NavigationLink {
             QuranTimeView()
         } label: {
-            Image(systemName: "timer")
-                .foregroundStyle(Color.primary)
+            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .body)
         }
     }
     
@@ -185,7 +187,7 @@ struct SurahCard: View {
     
     private var surahInfo: some View {
         VStack(alignment: .trailing) {
-            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
             
             let defaultFont = Font.system(size: 17, weight: .heavy)
             let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: 17)
@@ -310,7 +312,7 @@ struct VerseCard: View {
         }
         
         guard let translation = verse.translations.first(where: { translation in
-            translation.id == UserDefaults.standard.integer(forKey: "translatorId")
+            translation.id == UserDefaultsController.shared.integer(forKey: "translatorId")
         })?.translation else { return AttributedString() }
         
         let (cleanedTranslation, originalIndices) = clean(translation)

@@ -5,7 +5,7 @@
 //  Created by Ali Earp on 15/07/2024.
 //
 
-import Foundation
+import SwiftUI
 import AVFoundation
 import MediaPlayer
 import Combine
@@ -34,6 +34,8 @@ class AudioPlayer: ObservableObject {
     private var playTarget: Any?
     private var nextVerseTarget: Any?
     private var previousVerseTarget: Any?
+    
+    @Published var colorScheme: ColorScheme?
     
     func setupPlayer(with url: URL, verse: Verse? = nil) {
         showAudioPlayerSlider = true
@@ -117,7 +119,7 @@ class AudioPlayer: ObservableObject {
             let title = surahName
             let details = "\(surahNumber):\(verse.id)"
             
-            if let image = UIImage(named: "Quran") {
+            if let image = UIImage(named: "hyderi-\(colorScheme == .dark ? "dark" : "light")") {
                 let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: {  (_) -> UIImage in
                     return image
                 })
@@ -140,7 +142,7 @@ class AudioPlayer: ObservableObject {
         isPlaying = false
         player?.seek(to: CMTime.zero)
         
-        if UserDefaults.standard.bool(forKey: "continuePlaying") {
+        if UserDefaultsController.shared.bool(forKey: "continuePlaying") {
             guard let verse = self.verse,
                   let nextVerse = nextVerse?(verse),
                   let reciterSubfolder = reciterSubfolder,

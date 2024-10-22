@@ -12,6 +12,7 @@ import SDWebImageSwiftUI
 import SwiftyCrop
 
 struct SettingsView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject private var authenticationModel: AuthenticationModel
@@ -109,6 +110,11 @@ struct SettingsView: View {
         .onAppear {
             authenticationModel.error = ""
             authenticationModel.loading = false
+            
+            audioPlayer.colorScheme = colorScheme
+        }
+        .onChange(of: colorScheme) { _, _ in
+            audioPlayer.colorScheme = colorScheme
         }
         .onDisappear {
             authenticationModel.error = ""

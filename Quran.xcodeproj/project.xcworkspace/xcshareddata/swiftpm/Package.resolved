@@ -1,5 +1,5 @@
 {
-  "originHash" : "9b87942ef8a30a1bc6c6efb73b5b43ab0cb1b43820d44317d794b9e3c36f33c3",
+  "originHash" : "6ec5fab285dea993786f53cc0506ac295f2f1485b85de6231bd4f6787fb8c2a6",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Alamofire/Alamofire.git",
       "state" : {
-        "revision" : "f455c2975872ccd2d9c81594c658af65716e9b9a",
-        "version" : "5.9.1"
+        "revision" : "e16d3481f5ed35f0472cb93350085853d754913f",
+        "version" : "5.10.1"
       }
     },
     {
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk.git",
       "state" : {
-        "revision" : "9118aca998dbe2ceac45d64b21a91c6376928df7",
-        "version" : "11.1.0"
+        "revision" : "8328630971a8fdd8072b36bb22bef732eb15e1f0",
+        "version" : "11.4.0"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "07a2f57d147d2bf368a0d2dcb5579ff082d9e44f",
-        "version" : "11.1.0"
+        "revision" : "4f234bcbdae841d7015258fbbf8e7743a39b8200",
+        "version" : "11.4.0"
       }
     },
     {
@@ -195,8 +195,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stripe/stripe-ios.git",
       "state" : {
-        "revision" : "65b8ebc4cc8d1c83b31c589bd070a03571ff26ff",
-        "version" : "23.29.2"
+        "revision" : "4cde28405081ccf8d4b182e1709966d7e3f1f337",
+        "version" : "23.32.0"
       }
     },
     {
@@ -241,7 +241,7 @@
       "location" : "https://github.com/benedom/SwiftyCrop.git",
       "state" : {
         "branch" : "master",
-        "revision" : "f3189b74d49db138c9a4a9982314172fff8f9251"
+        "revision" : "454d0a0d4faf6f3a19c8d817ab9d7d27524bd79f"
       }
     },
     {

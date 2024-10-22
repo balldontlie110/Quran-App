@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DuaView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let dua: Dua
     
     @EnvironmentObject private var audioPlayer: AudioPlayer
@@ -24,11 +26,11 @@ struct DuaView: View {
                     ForEach(dua.verses) { verse in
                         VStack(spacing: 0) {
                             VStack(spacing: 15) {
-                                let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                                let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
                                 
-                                let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
-                                let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
-                                let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                                let defaultFont = Font.system(size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")), weight: .bold)
+                                let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
+                                let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
                                 
                                 let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
                                 
@@ -88,9 +90,14 @@ struct DuaView: View {
             if let audio = dua.audio, let audioURL = Bundle.main.url(forResource: audio, withExtension: "mp3") {
                 audioPlayer.setupPlayer(with: audioURL)
             }
+            
+            audioPlayer.colorScheme = colorScheme
         }
         .onChange(of: audioPlayer.currentTime) { newVal, oldVal in
             updateScrollPosition(oldVal: oldVal, newVal: newVal)
+        }
+        .onChange(of: colorScheme) { _, _ in
+            audioPlayer.colorScheme = colorScheme
         }
         .onDisappear {
             audioPlayer.resetPlayer()

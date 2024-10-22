@@ -17,11 +17,18 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>fetch</string>
 		<string>processing</string>
 		<string>audio</string>
+		<string>fetch</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>launch</string>
+		<key>UILaunchScreen</key>
+		<dict/>
+	</dict>
 </dict>
 </plist>

@@ -16,11 +16,11 @@ struct ZiyaratView: View {
                 ForEach(ziyarat.verses) { verse in
                     VStack(spacing: 0) {
                         VStack(spacing: 15) {
-                            let fontNumber = UserDefaults.standard.integer(forKey: "fontNumber")
+                            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
                             
-                            let defaultFont = Font.system(size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")), weight: .bold)
-                            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
-                            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaults.standard.double(forKey: "fontSize")))
+                            let defaultFont = Font.system(size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")), weight: .bold)
+                            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
+                            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
                             
                             let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
                             

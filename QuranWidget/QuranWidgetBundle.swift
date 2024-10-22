@@ -18,5 +18,6 @@ struct QuranWidgetBundle: WidgetBundle {
     var body: some Widget {
         PrayerTimesWidget()
         QuranTimeWidget()
+        StreakWidget()
     }
 }
