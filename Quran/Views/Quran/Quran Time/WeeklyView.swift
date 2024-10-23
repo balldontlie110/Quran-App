@@ -26,22 +26,17 @@ struct WeeklyView: View {
     }
     
     var body: some View {
-        VStack {
-            Spacer()
-            
-            chart
-            
-            Spacer()
-            
-            totalTimeToday
-            
-            Spacer()
-            
-            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
-            
-            Spacer()
+        ScrollView {
+            VStack {
+                chart
+                
+                totalTimeToday
+                
+                StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
+                    .padding(.vertical)
+            }.padding(.top, 75)
         }
-        .padding(.top)
+        .scrollBounceBehavior(.basedOnSize, axes: .vertical)
         .overlay(alignment: .top) {
             weekPicker
         }
@@ -107,7 +102,8 @@ struct WeeklyView: View {
             }
         }
         .bold()
-        .padding([.horizontal, .top])
+        .padding()
+        .background(Color(.systemBackground))
     }
     
     private var weekText: Text {

@@ -53,6 +53,15 @@ struct ZiyaratView: View {
         }
         .navigationTitle(ziyarat.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
+            }
+        }.onDisappear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
+            }
+        }
     }
 }
 

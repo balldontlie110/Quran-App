@@ -111,6 +111,11 @@ struct RootView: View {
             SocialsView(showSocialsView: $showSocialsView)
         }
         .onAppear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
+            }
+        }
+        .onAppear {
             createQuestionsBookmarkFolder()
             getLocalTranslation()
             checkStreak()

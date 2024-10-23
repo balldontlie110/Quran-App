@@ -64,7 +64,7 @@ struct SurahView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack(spacing: 0) {
-                if proxy.size.height >= proxy.size.width {
+                if proxy.size.height >= proxy.size.width && !readingMode {
                     searchBar
                     
                     Divider()
@@ -129,6 +129,28 @@ struct SurahView: View {
                         }
                     }
                 }
+                .overlay(alignment: .top) {
+                    if streakExtended {
+                        HStack(alignment: .top) {
+                            Image(systemName: "flame.fill")
+                                .foregroundStyle(Color.streak)
+                            
+                            if streak > 1 {
+                                Text("Great Job! You extended your streak to \(streak) days with \(timeToEndOfDayString()) left in the day.")
+                            } else {
+                                Text("Great Job! You've started a streak. Recite \(dailyQuranGoal) minutes of Quran every day to extend your streak.")
+                            }
+                        }
+                        .font(.headline)
+                        .multilineTextAlignment(.leading)
+                        .padding(10)
+                        .background(Color(.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                        .shadow(radius: 5)
+                        .transition(.move(edge: .top))
+                        .padding(10)
+                    }
+                }
             }
         }
         .disabled(showVerseSelector || showBookmarkAlert != nil)
@@ -174,6 +196,15 @@ struct SurahView: View {
         .onChange(of: audioPlayer.showAudioPlayerSlider) { _, newValue in
             if newValue == false {
                 audioPlayer.resetPlayer()
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
+            }
+        }.onDisappear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
             }
         }
         .navigationTitle(surah.transliteration)
@@ -223,27 +254,6 @@ struct SurahView: View {
         .overlay(alignment: .bottom) {
             audioPlayerSlider
         }
-        .overlay(alignment: .top) {
-            if streakExtended {
-                HStack {
-                    Image(systemName: "flame.fill")
-                        .foregroundStyle(Color.streak)
-                    
-                    if streak > 1 {
-                        Text("Great Job! You extended your streak to \(streak) days with \(timeToEndOfDayString()) left.")
-                    } else {
-                        Text("Great Job! You've started a streak.")
-                    }
-                }
-                .font(.title3)
-                .multilineTextAlignment(.leading)
-                .padding(10)
-                .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .transition(.move(edge: .top))
-                .padding(10)
-            }
-        }
     }
     
     private func timeToEndOfDayString() -> String {
@@ -264,8 +274,12 @@ struct SurahView: View {
     }
     
     private func initialiseQuranTime() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             self.time += 1
+        }
+        
+        if let timer = timer {
+            RunLoop.current.add(timer, forMode: .common)
         }
         
         if let currentWeekDate = Calendar.current.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: Date()).date {
@@ -330,9 +344,11 @@ struct SurahView: View {
                 let center = UNUserNotificationCenter.current()
                 center.removePendingNotificationRequests(withIdentifiers: ["streak"])
                 
-                Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+                let timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
                     streakExtended = false
                 }
+                
+                RunLoop.current.add(timer, forMode: .common)
             }
         }
         

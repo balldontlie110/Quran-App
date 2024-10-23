@@ -105,6 +105,15 @@ struct DuaView: View {
         .onReceive(audioPlayer.$currentTime) { newValue in
             sliderValue = newValue
         }
+        .onAppear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
+            }
+        }.onDisappear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
+            }
+        }
     }
     
     @ViewBuilder

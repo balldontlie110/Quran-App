@@ -36,17 +36,6 @@ struct TasbeehView: View {
                 }
             }.padding()
         }
-        .onAppear {
-            DispatchQueue.main.async {
-                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
-                
-                UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            }
-        }.onDisappear {
-            DispatchQueue.main.async {
-                AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
-            }
-        }
         .navigationTitle("Tasbeeh")
         .navigationBarTitleDisplayMode(.inline)
     }

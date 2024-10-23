@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StreakView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
     
     @AppStorage("streak") private var streak: Int = 0
@@ -50,6 +51,9 @@ struct StreakView: View {
             }.background(Color(.systemBackground))
         }
         .background(Calendar.current.isDate(Date(timeIntervalSince1970: streakDate), inSameDayAs: Date()) ? Color.streak : Color(.systemBackground))
+        .onTapGesture {
+            hideKeyboard()
+        }
         .navigationDestination(item: $selectedDate) { selectedDate in
             let weekDate = weeks.first(where: { week in
                 if let weekDate = week.date, let startOfSelectedWeek = Calendar.current.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: selectedDate).date {
@@ -61,9 +65,6 @@ struct StreakView: View {
             })?.date
             
             WeeklyView(weeks: weeks, selectedWeek: weekDate, selectedDate: selectedDate)
-        }
-        .onTapGesture {
-            hideKeyboard()
         }
     }
     
@@ -78,19 +79,50 @@ struct StreakView: View {
                 .offset(y: 15)
                 .frame(height: 150)
                 .clipped()
-                .foregroundStyle(readToday ? Color.streak : Color(.tertiarySystemBackground))
+                .foregroundStyle(readToday ? Color.streak : colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary)
                 .brightness(readToday ? -0.25 : 0)
             
-            Text("\(streak) day\(streak == 1 ? "" : "s")")
-                .font(.system(size: 50, weight: .bold, design: .rounded))
-                .foregroundStyle(readToday ? Color.primary : Color(.tertiarySystemBackground))
-                .multilineTextAlignment(.leading)
-                .padding(.bottom)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(totalTimeTodayString)
+                    .font(.system(.headline, weight: .semibold))
+                    .foregroundStyle(Color.secondary)
+                    .multilineTextAlignment(.leading)
+                
+                Text("\(streak) day\(streak == 1 ? "" : "s")")
+                    .font(.system(size: 50, weight: .bold, design: .rounded))
+                    .foregroundStyle(readToday ? Color.primary : colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom)
+            }
         }
         .frame(height: 150)
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
         .padding(.top)
+    }
+    
+    private var totalTimeTodayString: String {
+        let days = weeks.compactMap({ $0.days?.sortedAllObjects() }).flatMap({ $0 })
+        
+        if let lastDay = days.first(where: {
+            if let date = $0.date {
+                return Calendar.current.isDate(date, inSameDayAs: Date())
+            }
+            
+            return false
+        }) {
+            return "\(getTimeString(Int(lastDay.seconds))) today"
+        }
+        
+        return "0 seconds today"
+    }
+    
+    private func getTimeString(_ seconds: Int) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .full
+        
+        return formatter.string(from: TimeInterval(seconds)) ?? ""
     }
     
     private var dailyQuranGoalPicker: some View {
@@ -106,11 +138,12 @@ struct StreakView: View {
                     .bold()
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.numberPad)
+                    .disabled(streak > 0)
                 
                 Text("minutes")
                     .bold()
                     .foregroundStyle(Color.secondary)
-            }.disabled(streak > 0)
+            }
             
             Text("The daily goal cannot be changed once a streak has started.")
                 .foregroundStyle(Color.secondary)
@@ -144,17 +177,17 @@ struct StreakView: View {
                         if let islamicDay = islamicDay(date: date) {
                             Text(String(islamicDay))
                                 .font(.system(.caption2, weight: .semibold))
-                                .foregroundStyle(Color(.systemBackground))
+                                .foregroundStyle(day.seconds >= (dailyQuranGoal * 60) ? Color(.systemBackground) : Color.secondary)
                         }
                         
                         Text(date.dayOfMonth())
                             .bold()
-                            .foregroundStyle(Color.primary)
+                            .foregroundStyle(day.seconds >= (dailyQuranGoal * 60) ? Color.secondary : Color.primary)
                     }
                 }
                 .padding(.vertical, 5)
                 .frame(maxWidth: .infinity)
-                .background(day.seconds >= (dailyQuranGoal * 60) ? Color.streak : Color(.tertiarySystemBackground))
+                .background(day.seconds >= (dailyQuranGoal * 60) ? Color.streak : Color(.secondarySystemBackground))
                 .cornerRadius(10)
                 .onTapGesture {
                     self.selectedDate = day.date

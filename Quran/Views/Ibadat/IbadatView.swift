@@ -113,6 +113,10 @@ struct IbadatView: View {
                         heartLocation = nil
                     }
                 }
+                
+                if let timer = timer {
+                    RunLoop.current.add(timer, forMode: .common)
+                }
             }
         }
         .toolbar {

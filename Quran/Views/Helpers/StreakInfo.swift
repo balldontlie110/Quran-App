@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StreakInfo: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let streak: Int
     let streakDate: Date
     
@@ -19,11 +21,11 @@ struct StreakInfo: View {
             
             Image(systemName: "flame.fill")
                 .font(.system(font))
-                .foregroundStyle(readToday ? Color.streak : Color(.tertiarySystemBackground))
+                .foregroundStyle(readToday ? Color.streak : colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary)
             
             Text(String(streak))
                 .font(.system(font, design: .rounded, weight: .bold))
-                .foregroundStyle(readToday ? Color.primary : Color(.tertiarySystemBackground))
+                .foregroundStyle(readToday ? Color.primary : colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary)
         }
     }
 }

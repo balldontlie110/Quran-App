@@ -50,7 +50,6 @@
 		A232714E2CC554CD006AFD44 /* WeeklyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A232714D2CC554CD006AFD44 /* WeeklyView.swift */; };
 		A23271502CC554D6006AFD44 /* LifetimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A232714F2CC554D6006AFD44 /* LifetimeView.swift */; };
 		A23271532CC59096006AFD44 /* QuranTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23271522CC59096006AFD44 /* QuranTimeWidget.swift */; };
-		A23271542CC59096006AFD44 /* QuranTimeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23271522CC59096006AFD44 /* QuranTimeWidget.swift */; };
 		A23271562CC59964006AFD44 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25B92C1EEB9A003785CF /* Persistence.swift */; };
 		A23271582CC59C18006AFD44 /* QuranApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A2FD25BC2C1EEBF9003785CF /* QuranApp.xcdatamodeld */; };
 		A23271672CC5D786006AFD44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2C781552C3168CC007DAFD3 /* GoogleService-Info.plist */; };
@@ -96,7 +95,6 @@
 		A2C273D92C4AA9E700815AC8 /* DonationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C273D82C4AA9E700815AC8 /* DonationsView.swift */; };
 		A2C497F42CC69CD200932178 /* StreakInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497F32CC69CD200932178 /* StreakInfo.swift */; };
 		A2C497F62CC69E4200932178 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497F52CC69E4200932178 /* StreakWidget.swift */; };
-		A2C497F72CC69E4200932178 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497F52CC69E4200932178 /* StreakWidget.swift */; };
 		A2C497FA2CC6B1DB00932178 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497F92CC6B1DB00932178 /* UserDefaults.swift */; };
 		A2C497FB2CC6B21500932178 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497F92CC6B1DB00932178 /* UserDefaults.swift */; };
 		A2C497FE2CC6DCD200932178 /* StreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497FD2CC6DCD200932178 /* StreakView.swift */; };
@@ -977,7 +975,6 @@
 				A2C6EEC52C90F598006F615E /* TestView.swift in Sources */,
 				A23E2AE82C51AFDD008C84E7 /* ImportantDate.swift in Sources */,
 				A23271502CC554D6006AFD44 /* LifetimeView.swift in Sources */,
-				A2C497F72CC69E4200932178 /* StreakWidget.swift in Sources */,
 				A2C706B22C4F13C8008FF0C3 /* FavoritesView.swift in Sources */,
 				A214A7122C34BB03000D12A5 /* QuestionDetailView.swift in Sources */,
 				A2ED6C752C88F38E002183EC /* Discussion.swift in Sources */,
@@ -1008,7 +1005,6 @@
 				A266AC592C3357C20058156B /* NewQuestionView.swift in Sources */,
 				A2C74A4C2C4B693D00D353FC /* AmaalModel.swift in Sources */,
 				A2358C512C5019C0008D6BFA /* SocialsView.swift in Sources */,
-				A23271542CC59096006AFD44 /* QuranTimeWidget.swift in Sources */,
 				A2A9C8712C49291A00F114FD /* EventsModel.swift in Sources */,
 				A2ED6C842C8E4C6D002183EC /* AssignmentView.swift in Sources */,
 				A2ED6C6A2C88EF6B002183EC /* ResourcesView.swift in Sources */,
@@ -1239,8 +1235,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1278,8 +1274,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

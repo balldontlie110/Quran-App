@@ -378,7 +378,7 @@ struct PrayerTimesWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: PrayerTimesProvider()) { entry in
             PrayerTimesWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(Color.widget, for: .widget)
         }
         .configurationDisplayName("Prayer Times")
         .description("See prayer times at a glance.")

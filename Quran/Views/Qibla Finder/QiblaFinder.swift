@@ -51,17 +51,6 @@ struct QiblaFinder: View {
             locationManager.locationManager?.stopUpdatingLocation()
             locationManager.locationManager?.stopUpdatingHeading()
         }
-        .onAppear {
-            DispatchQueue.main.async {
-                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
-                
-                UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
-            }
-        }.onDisappear {
-            DispatchQueue.main.async {
-                AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
-            }
-        }
         .navigationTitle("Qibla")
         .navigationBarTitleDisplayMode(.inline)
     }

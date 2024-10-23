@@ -72,6 +72,8 @@ struct StreakSimpleEntry: TimelineEntry {
 }
 
 struct StreakWidgetStreakInfo: View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let streak: Int
     let streakDate: Date
     
@@ -81,12 +83,12 @@ struct StreakWidgetStreakInfo: View {
             
             Image(systemName: "flame.fill")
                 .font(.system(.largeTitle))
-                .foregroundStyle(readToday ? Color.streak : Color(.tertiarySystemBackground))
+                .foregroundStyle(readToday ? Color.streak : colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary)
             
             Text(String(streak))
                 .font(.largeTitle)
                 .fontWeight(.heavy)
-                .foregroundStyle(readToday ? Color.primary : Color(.tertiarySystemBackground))
+                .foregroundStyle(readToday ? Color.primary : colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary)
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
@@ -123,6 +125,7 @@ struct StreakWidgetIslamicMonth: View {
 }
 
 struct StreakWidgetEntryView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.widgetFamily) private var widgetFamily
     
     var entry: StreakProvider.Entry
@@ -131,7 +134,7 @@ struct StreakWidgetEntryView: View {
         switch widgetFamily {
         case .systemSmall:
             StreakWidgetStreakInfo(streak: entry.streak, streakDate: entry.streakDate)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(Color.widget, for: .widget)
         case .systemMedium:
             HStack(spacing: 0) {
                 StreakWidgetStreakInfo(streak: entry.streak, streakDate: entry.streakDate)
@@ -139,7 +142,7 @@ struct StreakWidgetEntryView: View {
                     .padding([.leading, .vertical], -20)
                 
                 StreakWidgetIslamicMonth(islamicDay: entry.islamicDay, islamicMonth: entry.islamicMonth)
-                    .background(.fill.secondary)
+                    .background(Color(.tertiarySystemBackground))
                     .padding([.trailing, .vertical], -20)
             }.containerBackground(.clear, for: .widget)
         default:

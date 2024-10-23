@@ -103,7 +103,7 @@ struct AddClassView: View {
                     .foregroundStyle(Color.primary, Color.primary)
                     .multilineTextAlignment(.center)
                     .frame(minWidth: 35, minHeight: 35)
-                    .background(Color(.tertiarySystemBackground))
+                    .background(Color(.systemBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }.padding()
         }

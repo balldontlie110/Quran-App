@@ -65,6 +65,10 @@ struct FavoritesView: View {
                             heartLocation = nil
                         }
                     }
+                    
+                    if let timer = timer {
+                        RunLoop.current.add(timer, forMode: .common)
+                    }
                 }
             }
             .navigationTitle("Favorites")

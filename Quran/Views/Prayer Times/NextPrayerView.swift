@@ -46,9 +46,11 @@ struct NextPrayerView: View {
     }
     
     private func startTimer() {
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             self.date = Date()
         }
+        
+        RunLoop.current.add(timer, forMode: .common)
     }
     
     private var nextPrayer: Dictionary<String, Date>.Element? {

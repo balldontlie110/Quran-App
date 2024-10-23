@@ -54,6 +54,15 @@ struct AmaalView: View {
         }
         .navigationTitle(amaal.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
+            }
+        }.onDisappear {
+            DispatchQueue.main.async {
+                AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
+            }
+        }
     }
     
     private var description: some View {

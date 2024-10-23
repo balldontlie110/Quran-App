@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "hyderi-light.jpeg",
+      "filename" : "hyderi-light.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "hyderi-dark.jpeg",
+      "filename" : "hyderi-dark.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "hyderi-dark 1.jpeg",
+      "filename" : "hyderi-dark 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

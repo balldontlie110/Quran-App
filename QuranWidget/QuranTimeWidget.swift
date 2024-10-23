@@ -245,12 +245,14 @@ struct QuranTimeWidgetEntryView: View {
 }
 
 struct QuranTimeWidget: Widget {
+    @Environment(\.colorScheme) private var colorScheme
+    
     let kind: String = "QuranTimeWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: QuranTimeProvider()) { entry in
             QuranTimeWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(Color.widget, for: .widget)
         }
         .configurationDisplayName("Quran Time")
         .description("Easily keep track of how long you've spent reading Quran this week.")

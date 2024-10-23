@@ -17,22 +17,17 @@ struct LifetimeView: View {
     @AppStorage("streakDate") private var streakDate: Double = 0.0
     
     var body: some View {
-        VStack {
-            Spacer()
-            
-            lifetime
-            chart
-            
-            Spacer()
-            
-            totalTimeToday
-            
-            Spacer()
-            
-            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
-            
-            Spacer()
-        }.padding(.top)
+        ScrollView {
+            VStack {
+                lifetime
+                chart
+                
+                totalTimeToday
+                
+                StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
+                    .padding(.vertical)
+            }.padding(.top, 75)
+        }.scrollBounceBehavior(.basedOnSize, axes: .vertical)
     }
     
     @ViewBuilder
@@ -190,7 +185,7 @@ struct LifetimeView: View {
             }
             
             return false
-        }), let lastDate = lastDay.date {
+        }) {
             return getTimeString(Int(lastDay.seconds))
         }
         
