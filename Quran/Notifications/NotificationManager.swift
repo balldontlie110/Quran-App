@@ -48,7 +48,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
                 var prayerDates: [String : Date] = [:]
                 
                 for (prayer, time) in prayerTimes {
-                    var dateComponents = DateComponents()
+                    var dateComponents = DateComponents(second: 0)
                     
                     if let hour = Int(time.dropLast(3)) {
                         if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" {
@@ -62,6 +62,8 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
                     
                     prayerDates[prayersRenamed[prayer] ?? prayer] = Calendar.current.date(from: dateComponents)
                 }
+                
+                completion(prayerDates)
             }
         }
     }
@@ -70,6 +72,10 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         fetchPrayerTimes { prayerTimes in
             if let data = UserDefaultsController.shared.string(forKey: "prayerNotifications")?.data(using: .utf8) {
                 let prayerNotifications = (try? JSONDecoder().decode([String : Bool].self, from: data)) ?? [:]
+                
+                print(prayerTimes)
+                print(prayerNotifications)
+                
                 let activePrayerNotifications = prayerTimes.filter({ prayerNotifications[$0.key] ?? false })
                 
                 let center = UNUserNotificationCenter.current()
