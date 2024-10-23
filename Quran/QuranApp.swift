@@ -24,8 +24,8 @@ struct QuranApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .defaultAppStorage(UserDefaultsController.shared)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                .defaultAppStorage(UserDefaultsController.shared)
                 .environmentObject(QuranModel())
                 .environmentObject(QuranFilterModel())
                 .environmentObject(CalendarModel())

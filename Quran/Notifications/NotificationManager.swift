@@ -73,9 +73,6 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             if let data = UserDefaultsController.shared.string(forKey: "prayerNotifications")?.data(using: .utf8) {
                 let prayerNotifications = (try? JSONDecoder().decode([String : Bool].self, from: data)) ?? [:]
                 
-                print(prayerTimes)
-                print(prayerNotifications)
-                
                 let activePrayerNotifications = prayerTimes.filter({ prayerNotifications[$0.key] ?? false })
                 
                 let center = UNUserNotificationCenter.current()
