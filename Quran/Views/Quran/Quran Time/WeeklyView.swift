@@ -179,7 +179,7 @@ struct WeeklyView: View {
                         AxisGridLine()
                         AxisTick()
                         AxisValueLabel {
-                            Text(formatValue(value))
+                            Text(formatTime(value))
                         }
                     }
                 }
@@ -189,30 +189,19 @@ struct WeeklyView: View {
         }
     }
     
-    private func formatValue(_ value: AxisValue) -> String {
+    private func formatTime(_ value: AxisValue) -> String {
         if let seconds = value.as(Int.self) {
-            if seconds < 60 {
-                return "\(seconds)s"
-            }
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.hour, .minute, .second]
+            formatter.unitsStyle = .abbreviated
+            formatter.maximumUnitCount = 2
             
-            if seconds < 3600 {
-                let minutes = seconds / 60
-                let seconds = seconds % 60
+            if var time = formatter.string(from: TimeInterval(seconds)), let unit = time.last {
+                time = time.replacingOccurrences(of: " ", with: ":")
+                time = time.removingCharacters(of: .letters)
+                time += String(unit)
                 
-                if seconds == 0 {
-                    return "\(minutes)m"
-                } else {
-                    return "\(minutes):\(seconds)s"
-                }
-            }
-            
-            let hours = seconds / 3600
-            let minutes = seconds % 60
-            
-            if minutes == 0 {
-                return "\(hours)h"
-            } else {
-                return "\(hours):\(minutes)m"
+                return time
             }
         }
         
@@ -277,6 +266,18 @@ struct WeeklyView: View {
         formatter.unitsStyle = .full
         
         return formatter.string(from: TimeInterval(seconds)) ?? ""
+    }
+}
+
+extension String {
+    func removingCharacters(of characterSet: CharacterSet) -> String {
+        return self.filter({ !characterSet.containsCharacter($0) })
+    }
+}
+
+extension CharacterSet {
+    func containsCharacter(_ character: Character) -> Bool {
+        return character.unicodeScalars.allSatisfy(contains(_:))
     }
 }
 

@@ -54,7 +54,7 @@ class AudioPlayer: ObservableObject {
             .assign(to: \.duration, on: self)
             .store(in: &cancellables)
         
-        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 10), queue: .main) { [weak self] time in
+        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 10), queue: .main) { [weak self] time in
             self?.currentTime = time.seconds
         }
         

@@ -182,7 +182,7 @@ struct StreakView: View {
                         
                         Text(date.dayOfMonth())
                             .bold()
-                            .foregroundStyle(day.seconds >= (dailyQuranGoal * 60) ? Color.secondary : Color.primary)
+                            .foregroundStyle(day.seconds >= (dailyQuranGoal * 60) ? colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary : Color.primary)
                     }
                 }
                 .padding(.vertical, 5)

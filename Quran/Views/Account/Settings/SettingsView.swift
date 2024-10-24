@@ -22,6 +22,8 @@ struct SettingsView: View {
     
     @Binding var showSettingsView: Bool
     
+    @State private var quranModelErrorMessage: String?
+    
     @State private var showPassword: Bool = false
     @State private var verificationEmailSent: Bool = false
     @State private var realCode: [String]?
@@ -57,10 +59,10 @@ struct SettingsView: View {
     @AppStorage("fontNumber") private var fontNumber: Int = 1
     
     @AppStorage("translatorId") private var translatorId: Int = 131
-    @AppStorage("translationLanguage") private var translatorLanguage: String = "en"
+    @AppStorage("translationLanguage") private var translationLanguage: String = "en"
     
-    @AppStorage("reciterName") private var reciterName: String = "Ghamadi"
-    @AppStorage("reciterSubfolder") private var reciterSubfolder: String = "Ghamadi_40kbps"
+    @AppStorage("reciterName") private var reciterName: String = "Alafasy"
+    @AppStorage("reciterSubfolder") private var reciterSubfolder: String = "Alafasy_128kbps"
     
     @State private var showAllTranslators: Bool = false
     @State private var translatorsSearchText: String = ""
@@ -116,6 +118,11 @@ struct SettingsView: View {
         .onChange(of: colorScheme) { _, _ in
             audioPlayer.colorScheme = colorScheme
         }
+        .onChange(of: quranModel.errorMessage) {
+            if let errorMessage = quranModel.errorMessage {
+                self.quranModelErrorMessage = errorMessage
+            }
+        }
         .onDisappear {
             authenticationModel.error = ""
             authenticationModel.loading = false
@@ -131,7 +138,7 @@ struct SettingsView: View {
         } message: {
             Text("Are you sure you want to sign out of your account?")
         }
-        .alert(item: $quranModel.errorMessage) { errorMessage in
+        .alert(item: $quranModelErrorMessage) { errorMessage in
             Alert(title: Text(errorMessage))
         }
     }
@@ -574,7 +581,7 @@ struct SettingsView: View {
         }
     }
     
-    private var translationLanguage: String {
+    private var translatorLanguage: String {
         if let translator = quranModel.translators.first(where: { translator in
             translator.id == translatorId
         }) {
@@ -730,9 +737,11 @@ struct SettingsView: View {
             Button {
                 quranModel.checkLocalTranslation(translatorId: Int(translator.id)) {
                     translatorId = translator.id
-                    translatorLanguage = translationLanguage
+                    translationLanguage = translatorLanguage
                     
-                    quranModel.checkLocalWBWTranslation(wbwTranslationId: translationLanguage)
+                    quranModel.checkLocalWBWTranslation(wbwTranslationId: translatorLanguage)
+                    
+                    quranModel.errorMessage = "You may need to relaunch the app in order for the changes to take place."
                 }
             } label: {
                 TranslatorRow(translator: translator)

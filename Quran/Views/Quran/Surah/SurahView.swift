@@ -15,6 +15,7 @@ import UserNotifications
 struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.scenePhase) private var scenePhase
     
     @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel()
     
@@ -52,7 +53,11 @@ struct SurahView: View {
     @EnvironmentObject private var audioPlayer: AudioPlayer
     @State private var sliderValue: Double = 0.0
     
+    @AppStorage("fontNumber") private var fontNumber: Int = 1
+    
     @AppStorage("wordByWord") private var wordByWord: Bool = false
+    
+    @AppStorage("reciterSubfolder") private var reciterSubfolder: String = "Alafasy_128kbps"
     @AppStorage("continuePlaying") private var continuePlaying = false
     
     @AppStorage("streak") private var streak: Int = 0
@@ -78,8 +83,6 @@ struct SurahView: View {
                         
                         ProgressView()
                     } else {
-                        let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
-                        
                         LazyVStack(spacing: fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10) {
                             ForEach(surahFilterModel.filteredVerses) { verse in
                                 if let index = surahFilterModel.filteredVerses.firstIndex(where: { $0.id == verse.id }) {
@@ -97,7 +100,10 @@ struct SurahView: View {
                                         removeBookmark: { verse in
                                             removeBookmark(verse)
                                         },
-                                        audioPlayer: audioPlayer
+                                        audioPlayer: audioPlayer,
+                                        fontNumber: fontNumber,
+                                        wordByWord: wordByWord,
+                                        reciterSubfolder: reciterSubfolder
                                     ).id(verse.id)
                                 }
                             }
@@ -165,11 +171,10 @@ struct SurahView: View {
             audioPlayer.surahName = surah.transliteration
             audioPlayer.nextVerse = nextVerse
             audioPlayer.previousVerse = previousVerse
-            audioPlayer.reciterSubfolder = UserDefaultsController.shared.string(forKey: "reciterSubfolder")
+            audioPlayer.reciterSubfolder = reciterSubfolder
             audioPlayer.colorScheme = colorScheme
             
             initialiseScrollPosition()
-            initialiseQuranTime()
         }
         .onChange(of: time) { _, _ in
             if let lastWeekDaySeconds = weeks.last?.days?.sortedAllObjects()?.last?.seconds {
@@ -182,7 +187,6 @@ struct SurahView: View {
         }
         .onDisappear {
             audioPlayer.resetPlayer()
-            logQuranTime()
         }
         .onChange(of: colorScheme) { _, _ in
             audioPlayer.colorScheme = colorScheme
@@ -205,6 +209,24 @@ struct SurahView: View {
         }.onDisappear {
             DispatchQueue.main.async {
                 AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
+            }
+        }
+        .onAppear {
+            initialiseQuranTime()
+        }
+        .onDisappear {
+            logQuranTime()
+        }
+        .onChange(of: scenePhase) { _, _ in
+            switch scenePhase {
+            case .active:
+                initialiseQuranTime()
+            case .inactive:
+                timer?.invalidate()
+            case .background:
+                logQuranTime()
+            @unknown default:
+                break
             }
         }
         .navigationTitle(surah.transliteration)
@@ -439,7 +461,7 @@ struct SurahView: View {
     
     private var header: some View {
         VStack(spacing: 0) {
-            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
+            let fontNumber = fontNumber
             
             let defaultFont = Font.system(size: 50, weight: .bold)
             let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: 50)
@@ -607,6 +629,15 @@ struct VerseRow: View {
     
     @StateObject var audioPlayer: AudioPlayer
     
+    let fontNumber: Int
+    let wordByWord: Bool
+    let reciterSubfolder: String
+    
+    @AppStorage("fontSize") private var fontSize: Double = 40.0
+    
+    @AppStorage("translatorId") private var translatorId: Int = 13
+    @AppStorage("translationLanguage") private var translationLanguage: String = "en"
+    
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 10) {
@@ -636,15 +667,15 @@ struct VerseRow: View {
                 Spacer()
             }
             
-            let fontNumber = UserDefaultsController.shared.integer(forKey: "fontNumber")
+            let fontNumber = fontNumber
             
-            let defaultFont = Font.system(size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")), weight: .bold)
-            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
-            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(UserDefaultsController.shared.double(forKey: "fontSize")))
+            let defaultFont = Font.system(size: CGFloat(fontSize), weight: .bold)
+            let uthmanicFont = Font.custom("KFGQPCUthmanicScriptHAFS", size: CGFloat(fontSize))
+            let notoNastaliqFont = Font.custom("NotoNastaliqUrdu", size: CGFloat(fontSize))
             
             let font = fontNumber == 1 ? defaultFont : fontNumber == 2 ? uthmanicFont : notoNastaliqFont
             
-            if readingMode || !UserDefaultsController.shared.bool(forKey: "wordByWord") {
+            if readingMode || !wordByWord {
                 let verseText = getVerse(verse)
                 
                 Text(verseText.text)
@@ -658,7 +689,7 @@ struct VerseRow: View {
                             .font(font)
                             .lineSpacing(fontNumber == 1 ? 20 : fontNumber == 2 ? 0 : 10)
                         
-                        if let translationLanguage = UserDefaultsController.shared.string(forKey: "translationLanguage"), let translation = word.translations.first(where: { translation in
+                        if let translation = word.translations.first(where: { translation in
                             translation.id == translationLanguage
                         }) {
                             Text(translation.translation)
@@ -701,7 +732,7 @@ struct VerseRow: View {
         }
         
         guard let translation = verse.translations.first(where: { translation in
-            translation.id == UserDefaultsController.shared.integer(forKey: "translatorId")
+            translation.id == translatorId
         })?.translation else { return AttributedString() }
         
         let (cleanedTranslation, originalIndices) = clean(translation)
@@ -817,58 +848,52 @@ struct VerseRow: View {
         }
     }
     
+    @ViewBuilder
     private var audioButton: some View {
-        Group {
-            if let reciterSubfolder = UserDefaultsController.shared.string(forKey: "reciterSubfolder") {
-                if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
-                    if audioPlayer.url == audioUrl {
-                        Button {
-                            audioPlayer.playPause()
-                        } label: {
-                            Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
-                        }
-                    } else {
-                        Button {
-                            audioPlayer.setupPlayer(with: audioUrl, verse: verse)
-                            audioPlayer.playPause()
-                        } label: {
-                            Image(systemName: "play.fill")
-                        }
-                    }
+        if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
+            if audioPlayer.url == audioUrl {
+                Button {
+                    audioPlayer.playPause()
+                } label: {
+                    Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                }
+            } else {
+                Button {
+                    audioPlayer.setupPlayer(with: audioUrl, verse: verse)
+                    audioPlayer.playPause()
+                } label: {
+                    Image(systemName: "play.fill")
                 }
             }
         }
     }
     
+    @ViewBuilder
     private var contextMenuAudioButton: some View {
-        Group {
-            if let reciterSubfolder = UserDefaultsController.shared.string(forKey: "reciterSubfolder") {
-                if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
-                    if audioPlayer.url == audioUrl {
-                        Button {
-                            audioPlayer.playPause()
-                        } label: {
-                            HStack {
-                                Text(audioPlayer.isPlaying ? "Pause" : "Play")
-                                
-                                Spacer()
-                                
-                                Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
-                            }
-                        }
-                    } else {
-                        Button {
-                            audioPlayer.setupPlayer(with: audioUrl, verse: verse)
-                            audioPlayer.playPause()
-                        } label: {
-                            HStack {
-                                Text("Play")
-                                
-                                Spacer()
-                                
-                                Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
-                            }
-                        }
+        if let audioUrl = URL(string: "https://everyayah.com/data/\(reciterSubfolder)/\(verse.audio).mp3") {
+            if audioPlayer.url == audioUrl {
+                Button {
+                    audioPlayer.playPause()
+                } label: {
+                    HStack {
+                        Text(audioPlayer.isPlaying ? "Pause" : "Play")
+                        
+                        Spacer()
+                        
+                        Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                    }
+                }
+            } else {
+                Button {
+                    audioPlayer.setupPlayer(with: audioUrl, verse: verse)
+                    audioPlayer.playPause()
+                } label: {
+                    HStack {
+                        Text("Play")
+                        
+                        Spacer()
+                        
+                        Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
                     }
                 }
             }
@@ -890,7 +915,7 @@ struct VerseRow: View {
             }
         }
         
-        if UserDefaultsController.shared.integer(forKey: "fontNumber") == 2 {
+        if fontNumber == 2 {
             return arabicString
         } else {
             return "(\(arabicString))"

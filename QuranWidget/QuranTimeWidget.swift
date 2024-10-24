@@ -141,31 +141,35 @@ struct QuranTimeChart: View {
             }
             
             if let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: entry.date) {
-                Chart {
-                    ForEach(entry.days) { day in
-                        if let date = day.date {
-                            BarMark(x: .value("Date", date), y: .value("Time", Int(day.seconds)))
+                GeometryReader { proxy in
+                    Chart {
+                        ForEach(entry.days) { day in
+                            if let date = day.date {
+                                BarMark(x: .value("Date", date), y: .value("Time", Int(day.seconds)))
+                            }
                         }
                     }
-                }
-                .chartXScale(domain: entry.date...endOfSelectedWeek)
-                .chartXAxis {
-                    AxisMarks(preset: .extended, position: .bottom, values: .stride(by: .day)) { value in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel {
-                            VStack {
-                                Text(dayString(value))
-                            }.multilineTextAlignment(.center)
+                    .chartXScale(domain: entry.date...endOfSelectedWeek)
+                    .chartXAxis {
+                        AxisMarks(preset: .extended, position: .bottom, values: .stride(by: .day)) { value in
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel {
+                                VStack {
+                                    Text(dayString(value))
+                                }.multilineTextAlignment(.center)
+                            }
                         }
                     }
-                }
-                .chartYAxis {
-                    AxisMarks(preset: .aligned, position: .trailing) { value in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel {
-                            Text(formatValue(value))
+                    .chartYAxis {
+                        let desiredCount = min(Int(ceil(proxy.size.height / 30)), 5)
+                        
+                        AxisMarks(preset: .aligned, position: .trailing, values: .automatic(desiredCount: desiredCount)) { value in
+                            AxisGridLine()
+                            AxisTick()
+                            AxisValueLabel {
+                                Text(formatTime(value))
+                            }
                         }
                     }
                 }
@@ -183,30 +187,19 @@ struct QuranTimeChart: View {
         return formatter.string(from: TimeInterval(seconds)) ?? ""
     }
     
-    private func formatValue(_ value: AxisValue) -> String {
+    private func formatTime(_ value: AxisValue) -> String {
         if let seconds = value.as(Int.self) {
-            if seconds < 60 {
-                return "\(seconds)s"
-            }
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.hour, .minute, .second]
+            formatter.unitsStyle = .abbreviated
+            formatter.maximumUnitCount = 2
             
-            if seconds < 3600 {
-                let minutes = seconds / 60
-                let seconds = seconds % 60
+            if var time = formatter.string(from: TimeInterval(seconds)), let unit = time.last {
+                time = time.replacingOccurrences(of: " ", with: ":")
+                time = time.removingCharacters(of: .letters)
+                time += String(unit)
                 
-                if seconds == 0 {
-                    return "\(minutes)m"
-                } else {
-                    return "\(minutes):\(seconds)s"
-                }
-            }
-            
-            let hours = seconds / 3600
-            let minutes = seconds % 60
-            
-            if minutes == 0 {
-                return "\(hours)h"
-            } else {
-                return "\(hours):\(minutes)m"
+                return time
             }
         }
         
@@ -222,6 +215,18 @@ struct QuranTimeChart: View {
         }
         
         return ""
+    }
+}
+
+extension String {
+    func removingCharacters(of characterSet: CharacterSet) -> String {
+        return self.filter({ !characterSet.containsCharacter($0) })
+    }
+}
+
+extension CharacterSet {
+    func containsCharacter(_ character: Character) -> Bool {
+        return character.unicodeScalars.allSatisfy(contains(_:))
     }
 }
 
