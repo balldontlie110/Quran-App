@@ -60,6 +60,7 @@ struct QuranApp: App {
             UserDefaultsController.shared.setValue(0, forKey: "streak")
             UserDefaultsController.shared.setValue(nil, forKey: "streakDate")
             UserDefaultsController.shared.setValue(10, forKey: "dailyQuranGoal")
+            UserDefaultsController.shared.setValue(nil, forKey: "streakWidgetUpdate")
             UserDefaultsController.shared.setValue(true, forKey: "initialisedUserDefaults")
             UserDefaultsController.shared.synchronize()
         }

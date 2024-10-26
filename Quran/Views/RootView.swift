@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import SDWebImageSwiftUI
+import WidgetKit
 
 struct RootViewButton: Identifiable {
     let id: UUID = UUID()
@@ -46,6 +47,7 @@ struct RootView: View {
     
     @AppStorage("streak") private var streak: Int = 0
     @AppStorage("streakDate") private var streakDate: Double = 0.0
+    @AppStorage("streakWidgetUpdate") private var streakWidgetUpdate: Double = 0.0
     
     @State private var showSettingsView: Bool = false
     @State private var showSocialsView: Bool = false
@@ -201,7 +203,7 @@ struct RootView: View {
     }
     
     private func checkStreak() {
-        let streakDate = Date(timeIntervalSince1970: UserDefaultsController.shared.double(forKey: "streakDate"))
+        let streakDate = Date(timeIntervalSince1970: streakDate)
         
         if let interval = Calendar.current.dateComponents([.day], from: streakDate, to: Date()).day {
             if interval > 1 {
@@ -210,6 +212,19 @@ struct RootView: View {
                 NotificationManager.shared.streakReminderNotification(schedule: true)
             }
         }
+        
+        let streakWidgetUpdate = Date(timeIntervalSince1970: streakWidgetUpdate)
+        
+        if !Calendar.current.isDate(streakWidgetUpdate, inSameDayAs: Date()) {
+            WidgetCenter.shared.reloadTimelines(ofKind: "QuranTimeWidget")
+            WidgetCenter.shared.reloadTimelines(ofKind: "StreakWidget")
+            
+            self.streakWidgetUpdate = Date().timeIntervalSince1970
+        }
+    }
+    
+    private func updatePrayerTimes() {
+        WidgetCenter.shared.reloadTimelines(ofKind: "QuranWidget")
     }
     
     @ViewBuilder

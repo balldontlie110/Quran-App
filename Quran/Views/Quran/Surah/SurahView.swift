@@ -701,6 +701,15 @@ struct VerseRow: View {
         }
     }
     
+    @ViewBuilder
+    private var plainTranslation: some View {
+        if let translation = verse.translations.first(where: { translation in
+            translation.id == translatorId
+        })?.translation {
+            Text(translation)
+        }
+    }
+    
     private var highlightedTranslation: AttributedString {
         func clean(_ str: String) -> (cleaned: String, originalIndices: [Int]) {
             var cleaned = ""
@@ -792,7 +801,11 @@ struct VerseRow: View {
                 Group {
                     Text("\(verse.id).")
                     
-                    Text(highlightedTranslation)
+                    if searchText == "" {
+                        plainTranslation
+                    } else {
+                        Text(highlightedTranslation)
+                    }
                 }
                 .font(.system(size: 20))
                 .multilineTextAlignment(.leading)
