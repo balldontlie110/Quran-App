@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreData
 import SDWebImageSwiftUI
 import WidgetKit
 
@@ -266,7 +265,7 @@ struct RootView: View {
             gregorianDate
             
             islamicDate
-        }
+        }.padding(.top, 10)
     }
     
     private var gregorianDate: Text {

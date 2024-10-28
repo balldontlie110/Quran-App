@@ -21,52 +21,60 @@ struct QuranTimeProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (QuranTimeSimpleEntry) -> ()) {
-        let fetchRequest: NSFetchRequest<WeeklyTime> = WeeklyTime.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \WeeklyTime.date, ascending: true)]
-        
-        do {
-            let weeks = try moc.fetch(fetchRequest)
-            
-            if let week = weeks.last, let weekDate = week.date, let days = weeks.last?.days?.sortedAllObjects() {
-                fetchDate { islamicDay, islamicMonth in
-                    if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
-                        completion(QuranTimeSimpleEntry(date: weekDate, days: days, islamicDay: islamicDay, islamicMonth: islamicMonth))
-                    }
-                }
+        fetchDate { islamicDay, islamicMonth in
+            fetchWeeks(islamicDay: islamicDay, islamicMonth: islamicMonth) { entry in
+                completion(entry)
             }
-        } catch {
-            fetchDate { islamicDay, islamicMonth in
-                if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
-                    completion(QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: islamicDay, islamicMonth: islamicMonth))
-                }
-            }
-            
         }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+        fetchDate { islamicDay, islamicMonth in
+            fetchWeeks(islamicDay: islamicDay, islamicMonth: islamicMonth) { entry in
+                let timeline = Timeline(entries: [entry], policy: .atEnd)
+                
+                completion(timeline)
+            }
+        }
+    }
+    
+    func fetchWeeks(islamicDay: String?, islamicMonth: String?, completion: @escaping (QuranTimeSimpleEntry) -> ()) {
         let fetchRequest: NSFetchRequest<WeeklyTime> = WeeklyTime.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \WeeklyTime.date, ascending: true)]
         
         do {
             let weeks = try moc.fetch(fetchRequest)
             
-            if let week = weeks.last, let weekDate = week.date, let days = weeks.last?.days?.sortedAllObjects() {
-                fetchDate { islamicDay, islamicMonth in
-                    if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
-                        let timeline = Timeline(entries: [QuranTimeSimpleEntry(date: weekDate, days: days, islamicDay: islamicDay, islamicMonth: islamicMonth)], policy: .after(Date()))
-                        
-                        completion(timeline)
-                    }
+            if let weekDate = weeks.last?.date, let days = weeks.last?.days?.sortedAllObjects() {
+                if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
+                    let entry = QuranTimeSimpleEntry(date: weekDate, days: days, islamicDay: islamicDay, islamicMonth: islamicMonth)
+                    
+                    completion(entry)
+                } else {
+                    let entry = QuranTimeSimpleEntry(date: weekDate, days: days, islamicDay: "", islamicMonth: "")
+                    
+                    completion(entry)
+                }
+            } else {
+                if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
+                    let entry = QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: islamicDay, islamicMonth: islamicMonth)
+                    
+                    completion(entry)
+                } else {
+                    let entry = QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: "", islamicMonth: "")
+                    
+                    completion(entry)
                 }
             }
         } catch {
-            fetchDate { islamicDay, islamicMonth in
-                if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
-                    let timeline = Timeline(entries: [QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: islamicDay, islamicMonth: islamicMonth)], policy: .after(Date()))
-                    
-                    completion(timeline)
-                }
+            if let islamicDay = islamicDay, let islamicMonth = islamicMonth {
+                let entry = QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: islamicDay, islamicMonth: islamicMonth)
+                
+                completion(entry)
+            } else {
+                let entry = QuranTimeSimpleEntry(date: Date(), days: [], islamicDay: "", islamicMonth: "")
+                
+                completion(entry)
             }
         }
     }
@@ -125,7 +133,7 @@ struct QuranTimeChart: View {
                 }
                 
                 Text(getTimeString())
-                    .font(.title)
+                    .font(.title2)
                 
                 Spacer()
                 
@@ -140,7 +148,7 @@ struct QuranTimeChart: View {
                     .fontWeight(.heavy)
             }
             
-            if let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: entry.date) {
+            if !entry.days.isEmpty, let endOfSelectedWeek = Calendar.current.date(byAdding: .day, value: 6, to: entry.date) {
                 GeometryReader { proxy in
                     Chart {
                         ForEach(entry.days) { day in
@@ -173,6 +181,12 @@ struct QuranTimeChart: View {
                         }
                     }
                 }
+            } else {
+                Spacer()
+                
+                Text("Start reading some Quran this week to see your progress update here.")
+                
+                Spacer()
             }
         }
     }

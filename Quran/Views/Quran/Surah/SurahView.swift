@@ -344,7 +344,6 @@ struct SurahView: View {
     
     private func logQuranTime() {
         if let lastWeekDay = weeks.last?.days?.sortedAllObjects()?.last {
-            let previousSeconds = lastWeekDay.seconds
             let newSeconds = lastWeekDay.seconds + Int64(time)
             
             lastWeekDay.seconds = newSeconds
@@ -353,7 +352,7 @@ struct SurahView: View {
             
             WidgetCenter.shared.reloadTimelines(ofKind: "QuranTimeWidget")
             
-            if previousSeconds < (dailyQuranGoal * 60) && newSeconds >= (dailyQuranGoal * 60) {
+            if !Calendar.current.isDate(Date(timeIntervalSince1970: streakDate), inSameDayAs: Date()) && newSeconds >= (dailyQuranGoal * 60) {
                 streak += 1
                 streakDate = Date().timeIntervalSince1970
                 

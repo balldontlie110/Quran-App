@@ -145,7 +145,7 @@ struct StreakView: View {
                     .foregroundStyle(Color.secondary)
             }
             
-            Text("The daily goal cannot be changed once a streak has started.")
+            Text("Set the amount of time you want to spend reading Quran every day. The daily goal cannot be changed once a streak has started.")
                 .foregroundStyle(Color.secondary)
                 .font(.caption)
                 .multilineTextAlignment(.leading)
@@ -166,63 +166,146 @@ struct StreakView: View {
     }
     
     private var calendar: some View {
-        LazyVGrid(columns: columns, spacing: 20) {
-            ForEach(0..<firstOfMonth(), id: \.self) { _ in
-                Spacer()
-            }
-            
-            ForEach(days) { day in
-                VStack(spacing: 5) {
-                    if let date = day.date {
-                        if let islamicDay = islamicDay(date: date) {
-                            Text(String(islamicDay))
-                                .font(.system(.caption2, weight: .semibold))
-                                .foregroundStyle(day.seconds >= (dailyQuranGoal * 60) ? Color(.systemBackground) : Color.secondary)
-                        }
+        ScrollViewReader { proxy in
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(0..<firstOfMonth(), id: \.self) { _ in
+                    Spacer()
+                }
+                
+                ForEach(Array(groupedDays.indices), id: \.self) { groupIndex in
+                    ForEach(Array(groupedDays[groupIndex].indices), id: \.self) { dayIndex in
+                        let day = groupedDays[groupIndex][dayIndex]
+                        let dayType = DayType(of: day)
                         
-                        Text(date.dayOfMonth())
-                            .bold()
-                            .foregroundStyle(day.seconds >= (dailyQuranGoal * 60) ? colorScheme == .dark ? Color(.tertiarySystemBackground) : Color.secondary : Color.primary)
+                        VStack(spacing: 5) {
+                            Text("\(day.streak ? "\(dayIndex + 1)" : "-")")
+                                .font(.system(.caption2, weight: .semibold))
+                                .foregroundStyle(secondaryForegroundColor(for: dayType))
+                            
+                            Text(day.date.dayOfMonth())
+                                .bold()
+                                .foregroundStyle(foregroundColor(for: dayType))
+                        }
+                        .padding(.vertical, 5)
+                        .frame(maxWidth: .infinity)
+                        .background(backgroundColor(for: dayType))
+                        .cornerRadius(10)
+                        .onTapGesture {
+                            self.selectedDate = day.date
+                        }
+                        .id(day.date)
                     }
                 }
-                .padding(.vertical, 5)
-                .frame(maxWidth: .infinity)
-                .background(day.seconds >= (dailyQuranGoal * 60) ? Color.streak : Color(.secondarySystemBackground))
-                .cornerRadius(10)
-                .onTapGesture {
-                    self.selectedDate = day.date
-                }
+            }
+            .padding(5)
+            .scrollTargetLayout()
+            .onAppear {
+                proxy.scrollTo(Calendar.current.startOfDay(for: Date()))
             }
         }
-        .padding(.horizontal, 5)
-        .padding(.top)
     }
     
-    private var days: [DailyTime] {
+    private enum DayType {
+        case today, streak, none
+        
+        init(of day: StreakCalendarDay) {
+            if Calendar.current.isDate(day.date, inSameDayAs: Date()) {
+                self = .today
+            } else if day.streak {
+                self = .streak
+            } else {
+                self = .none
+            }
+        }
+    }
+    
+    private func backgroundColor(for dayType: DayType) -> Color {
+        if dayType == .today {
+            return Color.accentColor
+        }
+        
+        if dayType == .streak {
+            return Color.streak
+        }
+        
+        return Color(.secondarySystemBackground)
+    }
+    
+    private func foregroundColor(for dayType: DayType) -> Color {
+        if dayType == .today {
+            return Color.white
+        }
+        
+        if dayType == .streak {
+            return Color.black
+        }
+        
+        return Color.primary
+    }
+    
+    private func secondaryForegroundColor(for dayType: DayType) -> Color {
+        if dayType == .today {
+            return Color.white
+        }
+        
+        if dayType == .streak {
+            return Color.black
+        }
+        
+        return Color.secondary
+    }
+    
+    private var groupedDays: [[StreakCalendarDay]] {
         let days = weeks.compactMap({ $0.days?.sortedAllObjects() }).flatMap({ $0 })
         
-        if let lastDay = days.last, let lastDate = lastDay.date, let interval = Calendar.current.dateComponents([.day], from: lastDate, to: Date()).day, interval <= 1 {
+        if let firstDay = days.first {
+            var filledInDays = [StreakCalendarDay(dailyTime: firstDay)]
             
-            var consecutiveDays: [DailyTime] = [lastDay]
-            
-            for index in (1..<days.count).reversed() {
-                let currentDay = days[index]
-                let previousDay = days[index - 1]
-                if let currentDate = currentDay.date, let previousDate = previousDay.date {
-                    if let interval = Calendar.current.dateComponents([.day], from: previousDate, to: currentDate).day, interval <= 1 {
-                        consecutiveDays.append(previousDay)
+            for index in 1..<days.count {
+                if let date = days[index - 1].date, var fillerDate = Calendar.current.date(byAdding: .day, value: 1, to: date), let nextDate = days[index].date {
+                    
+                    while fillerDate < nextDate {
+                        let streakCalendarDay = StreakCalendarDay(date: fillerDate)
+                        filledInDays.append(streakCalendarDay)
+                        
+                        if let followingDate = Calendar.current.date(byAdding: .day, value: 1, to: fillerDate) {
+                            fillerDate = followingDate
+                        }
                     }
+                    
+                    let streakCalendarDay = StreakCalendarDay(dailyTime: days[index])
+                    filledInDays.append(streakCalendarDay)
                 }
             }
             
-            return consecutiveDays.sorted(by: { $0.date ?? Date() < $1.date ?? Date() })
+            var groupedDays: [[StreakCalendarDay]] = []
+            var currentGroup: [StreakCalendarDay] = []
+            
+            for day in filledInDays {
+                if let lastDay = currentGroup.last {
+                    if day.streak == lastDay.streak {
+                        currentGroup.append(day)
+                    } else {
+                        groupedDays.append(currentGroup)
+                        currentGroup = [day]
+                    }
+                } else {
+                    currentGroup.append(day)
+                }
+            }
+            
+            if !currentGroup.isEmpty {
+                groupedDays.append(currentGroup)
+            }
+            
+            return groupedDays
         }
         
         return []
     }
     
     private func firstOfMonth() -> Int {
-        if let first = days.first?.date {
+        if let first = groupedDays.first?.first?.date {
             return Calendar.current.component(.weekday, from: first) - 1
         }
         
@@ -236,34 +319,28 @@ struct StreakView: View {
                 .foregroundStyle(Color.secondary)
         }
     }
+}
+
+struct StreakCalendarDay: Identifiable {
+    var id: Date { date }
     
-    private func islamicDay(date: Date) -> Int? {
-        let components = Calendar.current.dateComponents([.day, .month, .year], from: date)
+    let date: Date
+    let seconds: Int
+    
+    var streak: Bool {
+        let dailyQuranGoal = UserDefaultsController.shared.integer(forKey: "dailyQuranGoal")
         
-        guard let day = components.day, let month = components.month, let year = components.year else {
-            return nil
-        }
-        
-        let julianDay: Int
-        if year > 1582 || (year == 1582 && month > 10) || (year == 1582 && month == 10 && day > 14) {
-            julianDay = intPart((1461 * (year + 4800 + intPart((month - 14) / 12))) / 4) + intPart((367 * (month - 2 - 12 * intPart((month - 14) / 12))) / 12) - intPart((3 * (intPart((year + 4900 + intPart((month - 14) / 12)) / 100))) / 4) + day - 32075
-        } else {
-            julianDay = 367 * year - intPart((7 * (year + 5001 + intPart((month - 9) / 7))) / 4) + intPart((275 * month) / 9) + day + 1729777
-        }
-        
-        var daysSinceEpoch = julianDay - 1948440 + 10632
-        let cycles = intPart((daysSinceEpoch - 1) / 10631)
-        daysSinceEpoch = daysSinceEpoch - 10631 * cycles + 354
-        let adjustedYear = (intPart((10985 - daysSinceEpoch) / 5316)) * (intPart((50 * daysSinceEpoch) / 17719)) + (intPart(daysSinceEpoch / 5670)) * (intPart((43 * daysSinceEpoch) / 15238))
-        daysSinceEpoch = daysSinceEpoch - (intPart((30 - adjustedYear) / 15)) * (intPart((17719 * adjustedYear) / 50)) - (intPart(adjustedYear / 16)) * (intPart((15238 * adjustedYear) / 43)) + 29
-        let islamicMonth = intPart((24 * daysSinceEpoch) / 709)
-        let islamicDay = daysSinceEpoch - intPart((709 * islamicMonth) / 24)
-        
-        return islamicDay
+        return seconds >= (dailyQuranGoal * 60)
     }
     
-    private func intPart(_ value: Int) -> Int {
-        return Int(floor(Double(value)))
+    init(dailyTime: DailyTime) {
+        self.date = dailyTime.date ?? Date()
+        self.seconds = Int(dailyTime.seconds)
+    }
+    
+    init(date: Date) {
+        self.date = date
+        self.seconds = 0
     }
 }
 
