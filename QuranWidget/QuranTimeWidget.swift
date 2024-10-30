@@ -159,7 +159,7 @@ struct QuranTimeChart: View {
                     }
                     .chartXScale(domain: entry.date...endOfSelectedWeek)
                     .chartXAxis {
-                        AxisMarks(preset: .extended, position: .bottom, values: .stride(by: .day)) { value in
+                        AxisMarks(preset: .aligned, position: .bottom, values: .stride(by: .day)) { value in
                             AxisGridLine()
                             AxisTick()
                             AxisValueLabel {
@@ -182,11 +182,10 @@ struct QuranTimeChart: View {
                     }
                 }
             } else {
-                Spacer()
-                
                 Text("Start reading some Quran this week to see your progress update here.")
-                
-                Spacer()
+                    .font(.callout)
+                    .foregroundStyle(Color.secondary)
+                    .multilineTextAlignment(.center)
             }
         }
     }
@@ -204,14 +203,12 @@ struct QuranTimeChart: View {
     private func formatTime(_ value: AxisValue) -> String {
         if let seconds = value.as(Int.self) {
             let formatter = DateComponentsFormatter()
-            formatter.allowedUnits = [.hour, .minute, .second]
-            formatter.unitsStyle = .abbreviated
-            formatter.maximumUnitCount = 2
+            formatter.allowedUnits = seconds == 0 ? [.second] : seconds % 3600 == 0 ? [.hour] : seconds >= 3600 ? [.hour, .minute] : seconds % 60 == 0 ? [.minute] : seconds >= 60 ? [.minute, .second] : [.second]
+            formatter.unitsStyle = .positional
+            formatter.zeroFormattingBehavior = .pad
             
-            if var time = formatter.string(from: TimeInterval(seconds)), let unit = time.last {
-                time = time.replacingOccurrences(of: " ", with: ":")
-                time = time.removingCharacters(of: .letters)
-                time += String(unit)
+            if var time = formatter.string(from: TimeInterval(seconds)) {
+                time += seconds == 0 ? "s" : seconds % 3600 == 0 ? "h" : seconds >= 3600 || seconds % 60 == 0 ? "m" : "s"
                 
                 return time
             }

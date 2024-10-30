@@ -17,17 +17,22 @@ struct LifetimeView: View {
     @AppStorage("streakDate") private var streakDate: Double = 0.0
     
     var body: some View {
-        ScrollView {
-            VStack {
-                lifetime
-                chart
-                
-                totalTimeToday
-                
-                StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
-                    .padding(.vertical)
-            }.padding(.top, 75)
-        }.scrollBounceBehavior(.basedOnSize, axes: .vertical)
+        VStack {
+            Spacer()
+            
+            lifetime
+            chart
+            
+            Spacer()
+            
+            totalTimeToday
+            
+            Spacer()
+            
+            StreakInfo(streak: streak, streakDate: Date(timeIntervalSince1970: streakDate), font: .largeTitle)
+            
+            Spacer()
+        }
     }
     
     @ViewBuilder
@@ -95,14 +100,12 @@ struct LifetimeView: View {
     private func formatTime(_ value: AxisValue) -> String {
         if let seconds = value.as(Int.self) {
             let formatter = DateComponentsFormatter()
-            formatter.allowedUnits = [.hour, .minute, .second]
-            formatter.unitsStyle = .abbreviated
-            formatter.maximumUnitCount = 2
+            formatter.allowedUnits = seconds == 0 ? [.second] : seconds % 3600 == 0 ? [.hour] : seconds >= 3600 ? [.hour, .minute] : seconds % 60 == 0 ? [.minute] : seconds >= 60 ? [.minute, .second] : [.second]
+            formatter.unitsStyle = .positional
+            formatter.zeroFormattingBehavior = .pad
             
-            if var time = formatter.string(from: TimeInterval(seconds)), let unit = time.last {
-                time = time.replacingOccurrences(of: " ", with: ":")
-                time = time.removingCharacters(of: .letters)
-                time += String(unit)
+            if var time = formatter.string(from: TimeInterval(seconds)) {
+                time += seconds == 0 ? "s" : seconds % 3600 == 0 ? "h" : seconds >= 3600 || seconds % 60 == 0 ? "m" : "s"
                 
                 return time
             }

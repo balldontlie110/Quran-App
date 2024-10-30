@@ -256,10 +256,12 @@ struct StreakView: View {
     }
     
     private var groupedDays: [[StreakCalendarDay]] {
+        var filledInDays: [StreakCalendarDay] = []
+        
         let days = weeks.compactMap({ $0.days?.sortedAllObjects() }).flatMap({ $0 })
         
         if let firstDay = days.first {
-            var filledInDays = [StreakCalendarDay(dailyTime: firstDay)]
+            filledInDays.append(StreakCalendarDay(dailyTime: firstDay))
             
             for index in 1..<days.count {
                 if let date = days[index - 1].date, var fillerDate = Calendar.current.date(byAdding: .day, value: 1, to: date), let nextDate = days[index].date {
@@ -277,31 +279,47 @@ struct StreakView: View {
                     filledInDays.append(streakCalendarDay)
                 }
             }
-            
-            var groupedDays: [[StreakCalendarDay]] = []
-            var currentGroup: [StreakCalendarDay] = []
-            
-            for day in filledInDays {
-                if let lastDay = currentGroup.last {
-                    if day.streak == lastDay.streak {
-                        currentGroup.append(day)
-                    } else {
-                        groupedDays.append(currentGroup)
-                        currentGroup = [day]
-                    }
-                } else {
-                    currentGroup.append(day)
-                }
-            }
-            
-            if !currentGroup.isEmpty {
-                groupedDays.append(currentGroup)
-            }
-            
-            return groupedDays
         }
         
-        return []
+        let currentDate = Calendar.current.startOfDay(for: Date())
+        
+        if let lastDate = filledInDays.last?.date {
+            if lastDate < currentDate, var fillerDate = Calendar.current.date(byAdding: .day, value: 1, to: lastDate) {
+                while fillerDate <= currentDate {
+                    let streakCalendarDay = StreakCalendarDay(date: fillerDate)
+                    filledInDays.append(streakCalendarDay)
+                    
+                    if let followingDate = Calendar.current.date(byAdding: .day, value: 1, to: fillerDate) {
+                        fillerDate = followingDate
+                    }
+                }
+            }
+        } else {
+            let streakCalendarDay = StreakCalendarDay(date: currentDate)
+            filledInDays.append(streakCalendarDay)
+        }
+        
+        var groupedDays: [[StreakCalendarDay]] = []
+        var currentGroup: [StreakCalendarDay] = []
+        
+        for day in filledInDays {
+            if let lastDay = currentGroup.last {
+                if day.streak == lastDay.streak {
+                    currentGroup.append(day)
+                } else {
+                    groupedDays.append(currentGroup)
+                    currentGroup = [day]
+                }
+            } else {
+                currentGroup.append(day)
+            }
+        }
+        
+        if !currentGroup.isEmpty {
+            groupedDays.append(currentGroup)
+        }
+        
+        return groupedDays
     }
     
     private func firstOfMonth() -> Int {

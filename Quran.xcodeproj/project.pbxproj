@@ -124,6 +124,15 @@
 		A2D43E652C190AF200C3F21F /* QuranModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D43E642C190AF200C3F21F /* QuranModel.swift */; };
 		A2DC615D2C1A650400E73390 /* Quran.json in Resources */ = {isa = PBXBuildFile; fileRef = A2DC615C2C1A650400E73390 /* Quran.json */; };
 		A2E4E3C12C1DF174007D28A4 /* PrayerTimesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */; };
+		A2E555FB2CD11E9800A9F4FC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20E15FC2C1F5C3300AF9DA4 /* WidgetKit.framework */; };
+		A2E555FC2CD11E9800A9F4FC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20E15FE2C1F5C3300AF9DA4 /* SwiftUI.framework */; };
+		A2E555FF2CD11E9A00A9F4FC /* QuranTimerWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E555FE2CD11E9A00A9F4FC /* QuranTimerWidgetLiveActivity.swift */; };
+		A2E556012CD11E9A00A9F4FC /* QuranTimerWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E556002CD11E9A00A9F4FC /* QuranTimerWidgetBundle.swift */; };
+		A2E556052CD11E9C00A9F4FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2E556042CD11E9C00A9F4FC /* Assets.xcassets */; };
+		A2E556092CD11E9C00A9F4FC /* QuranTimerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A2E555FA2CD11E9800A9F4FC /* QuranTimerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A2E5560E2CD11F1E00A9F4FC /* QuranTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E5560D2CD11F1E00A9F4FC /* QuranTimerAttributes.swift */; };
+		A2E5560F2CD11F1E00A9F4FC /* QuranTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E5560D2CD11F1E00A9F4FC /* QuranTimerAttributes.swift */; };
+		A2E556102CD1203800A9F4FC /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C497F92CC6B1DB00932178 /* UserDefaults.swift */; };
 		A2ED6C562C86CD11002183EC /* EmailCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2ED6C552C86CD11002183EC /* EmailCodeView.swift */; };
 		A2ED6C592C87E6F9002183EC /* MadrassahView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2ED6C582C87E6F9002183EC /* MadrassahView.swift */; };
 		A2ED6C5B2C8892AD002183EC /* MadrassahModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2ED6C5A2C8892AD002183EC /* MadrassahModel.swift */; };
@@ -156,6 +165,13 @@
 			remoteGlobalIDString = A20E15F92C1F5C3300AF9DA4;
 			remoteInfo = QuranWidgetExtension;
 		};
+		A2E556072CD11E9C00A9F4FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A2D43E472C190A0900C3F21F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A2E555F92CD11E9800A9F4FC;
+			remoteInfo = QuranTimerWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -165,6 +181,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				A2E556092CD11E9C00A9F4FC /* QuranTimerWidgetExtension.appex in Embed Foundation Extensions */,
 				A210DA592C850A160033701C /* QuranWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -272,6 +289,13 @@
 		A2D43E642C190AF200C3F21F /* QuranModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranModel.swift; sourceTree = "<group>"; };
 		A2DC615C2C1A650400E73390 /* Quran.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Quran.json; sourceTree = "<group>"; };
 		A2E4E3C02C1DF174007D28A4 /* PrayerTimesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimesModel.swift; sourceTree = "<group>"; };
+		A2E555FA2CD11E9800A9F4FC /* QuranTimerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuranTimerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2E555FE2CD11E9A00A9F4FC /* QuranTimerWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTimerWidgetLiveActivity.swift; sourceTree = "<group>"; };
+		A2E556002CD11E9A00A9F4FC /* QuranTimerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTimerWidgetBundle.swift; sourceTree = "<group>"; };
+		A2E556042CD11E9C00A9F4FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2E556062CD11E9C00A9F4FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2E5560D2CD11F1E00A9F4FC /* QuranTimerAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuranTimerAttributes.swift; sourceTree = "<group>"; };
+		A2E556112CD1234500A9F4FC /* QuranTimerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QuranTimerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		A2ED6C552C86CD11002183EC /* EmailCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailCodeView.swift; sourceTree = "<group>"; };
 		A2ED6C582C87E6F9002183EC /* MadrassahView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadrassahView.swift; sourceTree = "<group>"; };
 		A2ED6C5A2C8892AD002183EC /* MadrassahModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MadrassahModel.swift; sourceTree = "<group>"; };
@@ -327,6 +351,15 @@
 				A227E7BC2CC834AF00275DA9 /* SDWebImageSwiftUI in Frameworks */,
 				A227E7B62CC8349700275DA9 /* StripePaymentSheet in Frameworks */,
 				A227E7A52CC8345200275DA9 /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A2E555F72CD11E9800A9F4FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2E555FC2CD11E9800A9F4FC /* SwiftUI.framework in Frameworks */,
+				A2E555FB2CD11E9800A9F4FC /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +608,8 @@
 				A2D43E512C190A0900C3F21F /* Quran */,
 				A20E16002C1F5C3300AF9DA4 /* QuranWidget */,
 				A23271552CC5948E006AFD44 /* QuranWidgetExtension.entitlements */,
+				A2E555FD2CD11E9800A9F4FC /* QuranTimerWidget */,
+				A2E556112CD1234500A9F4FC /* QuranTimerWidgetExtension.entitlements */,
 				A20E15FB2C1F5C3300AF9DA4 /* Frameworks */,
 				A2D43E502C190A0900C3F21F /* Products */,
 			);
@@ -585,6 +620,7 @@
 			children = (
 				A2D43E4F2C190A0900C3F21F /* Quran.app */,
 				A20E15FA2C1F5C3300AF9DA4 /* QuranWidgetExtension.appex */,
+				A2E555FA2CD11E9800A9F4FC /* QuranTimerWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -675,6 +711,18 @@
 				A232714C2CC554B3006AFD44 /* Quran Time */,
 			);
 			path = Quran;
+			sourceTree = "<group>";
+		};
+		A2E555FD2CD11E9800A9F4FC /* QuranTimerWidget */ = {
+			isa = PBXGroup;
+			children = (
+				A2E5560D2CD11F1E00A9F4FC /* QuranTimerAttributes.swift */,
+				A2E555FE2CD11E9A00A9F4FC /* QuranTimerWidgetLiveActivity.swift */,
+				A2E556002CD11E9A00A9F4FC /* QuranTimerWidgetBundle.swift */,
+				A2E556042CD11E9C00A9F4FC /* Assets.xcassets */,
+				A2E556062CD11E9C00A9F4FC /* Info.plist */,
+			);
+			path = QuranTimerWidget;
 			sourceTree = "<group>";
 		};
 		A2ED6C572C87E645002183EC /* Madrassah */ = {
@@ -802,6 +850,7 @@
 			);
 			dependencies = (
 				A210DA5B2C850A160033701C /* PBXTargetDependency */,
+				A2E556082CD11E9C00A9F4FC /* PBXTargetDependency */,
 			);
 			name = Quran;
 			packageProductDependencies = (
@@ -824,6 +873,23 @@
 			productReference = A2D43E4F2C190A0900C3F21F /* Quran.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A2E555F92CD11E9800A9F4FC /* QuranTimerWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A2E5560C2CD11E9C00A9F4FC /* Build configuration list for PBXNativeTarget "QuranTimerWidgetExtension" */;
+			buildPhases = (
+				A2E555F62CD11E9800A9F4FC /* Sources */,
+				A2E555F72CD11E9800A9F4FC /* Frameworks */,
+				A2E555F82CD11E9800A9F4FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuranTimerWidgetExtension;
+			productName = QuranTimerWidgetExtension;
+			productReference = A2E555FA2CD11E9800A9F4FC /* QuranTimerWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -838,6 +904,9 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					A2D43E4E2C190A0900C3F21F = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					A2E555F92CD11E9800A9F4FC = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -869,6 +938,7 @@
 			targets = (
 				A2D43E4E2C190A0900C3F21F /* Quran */,
 				A20E15F92C1F5C3300AF9DA4 /* QuranWidgetExtension */,
+				A2E555F92CD11E9800A9F4FC /* QuranTimerWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -909,6 +979,14 @@
 				A2A9C88A2C49311700F114FD /* Zuhr.mp3 in Resources */,
 				A2A9C88B2C49311700F114FD /* Isha.mp3 in Resources */,
 				A2A9C88C2C49311700F114FD /* LICENSE in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A2E555F82CD11E9800A9F4FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2E556052CD11E9C00A9F4FC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -962,6 +1040,7 @@
 				A2C706AD2C4F036A008FF0C3 /* BookmarkedVerseCard.swift in Sources */,
 				A2C706AE2C4F036A008FF0C3 /* BookmarkedFoldersView.swift in Sources */,
 				A2C706AF2C4F036A008FF0C3 /* BookmarkedVersesView.swift in Sources */,
+				A2E5560F2CD11F1E00A9F4FC /* QuranTimerAttributes.swift in Sources */,
 				A2A9C87C2C492E9800F114FD /* AudioPlayer.swift in Sources */,
 				A2A9C8762C492CF200F114FD /* Reciter.swift in Sources */,
 				A289AA642C4AC6850051C8CC /* PaymentModel.swift in Sources */,
@@ -1024,6 +1103,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A2E555F62CD11E9800A9F4FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2E5560E2CD11F1E00A9F4FC /* QuranTimerAttributes.swift in Sources */,
+				A2E556102CD1203800A9F4FC /* UserDefaults.swift in Sources */,
+				A2E555FF2CD11E9A00A9F4FC /* QuranTimerWidgetLiveActivity.swift in Sources */,
+				A2E556012CD11E9A00A9F4FC /* QuranTimerWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1031,6 +1121,11 @@
 			isa = PBXTargetDependency;
 			target = A20E15F92C1F5C3300AF9DA4 /* QuranWidgetExtension */;
 			targetProxy = A210DA5A2C850A160033701C /* PBXContainerItemProxy */;
+		};
+		A2E556082CD11E9C00A9F4FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A2E555F92CD11E9800A9F4FC /* QuranTimerWidgetExtension */;
+			targetProxy = A2E556072CD11E9C00A9F4FC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1232,6 +1327,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To show the Qibla direction.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "To save photos from discussions to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To select photos from your phone to send in dicussions.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -1271,6 +1367,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To show the Qibla direction.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "To save photos from discussions to your photo library.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To select photos from your phone to send in dicussions.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
@@ -1284,6 +1381,62 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Ali.Quran;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A2E5560A2CD11E9C00A9F4FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = QuranTimerWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3CS5B84X2T;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuranTimerWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuranTimerWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ali.Quran.QuranTimerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A2E5560B2CD11E9C00A9F4FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = QuranTimerWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3CS5B84X2T;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = QuranTimerWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = QuranTimerWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ali.Quran.QuranTimerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1316,6 +1469,15 @@
 			buildConfigurations = (
 				A2D43E5E2C190A0A00C3F21F /* Debug */,
 				A2D43E5F2C190A0A00C3F21F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A2E5560C2CD11E9C00A9F4FC /* Build configuration list for PBXNativeTarget "QuranTimerWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A2E5560A2CD11E9C00A9F4FC /* Debug */,
+				A2E5560B2CD11E9C00A9F4FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

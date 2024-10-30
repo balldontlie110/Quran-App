@@ -119,6 +119,7 @@ struct RootView: View {
         .onAppear {
             createQuestionsBookmarkFolder()
             getLocalTranslation()
+            updatePrayerTimesWidget()
             checkStreak()
             
             quranFilterModel.quranModel = quranModel
@@ -222,7 +223,7 @@ struct RootView: View {
         }
     }
     
-    private func updatePrayerTimes() {
+    private func updatePrayerTimesWidget() {
         WidgetCenter.shared.reloadTimelines(ofKind: "QuranWidget")
     }
     

@@ -10,12 +10,14 @@ import CoreData
 import Combine
 import WStack
 import WidgetKit
+import ActivityKit
 import UserNotifications
 
 struct SurahView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dismiss) private var dismiss
     
     @StateObject private var surahFilterModel: SurahFilterModel = SurahFilterModel()
     
@@ -49,6 +51,8 @@ struct SurahView: View {
     
     @State private var timer: Timer?
     @State private var time: Int = 0
+    
+    @State private var activity: Activity<QuranTimerAttributes>?
     
     @EnvironmentObject private var audioPlayer: AudioPlayer
     @State private var sliderValue: Double = 0.0
@@ -212,10 +216,24 @@ struct SurahView: View {
             }
         }
         .onAppear {
+            NotificationCenter.default.addObserver(forName: Notification.Name("liveActivityEnded"), object: nil, queue: .main) { _ in
+                timer?.invalidate()
+                
+                dismiss()
+            }
+        }
+        .onChange(of: time) { _, _ in
+            if let id = activity?.id {
+                QuranTimerLiveActivityManager().updateActivity(activity: id, duration: time)
+            }
+        }
+        .onAppear {
             initialiseQuranTime()
         }
         .onDisappear {
             logQuranTime()
+            
+            QuranTimerLiveActivityManager().endActivity()
         }
         .onChange(of: scenePhase) { _, _ in
             switch scenePhase {
@@ -311,8 +329,6 @@ struct SurahView: View {
                         newDailyTime(for: lastWeek)
                         
                         try? viewContext.save()
-                        
-                        return
                     } else {
                         newWeeklyTime(with: currentWeekDate)
                     }
@@ -320,6 +336,18 @@ struct SurahView: View {
             } else {
                 newWeeklyTime(with: currentWeekDate)
             }
+        }
+        
+        initialiseLiveActivity()
+    }
+    
+    private func initialiseLiveActivity() {
+        QuranTimerLiveActivityManager().endActivity()
+        
+        if let lastWeekDay = weeks.last?.days?.sortedAllObjects()?.last {
+            let remaining = dailyQuranGoal - Int(lastWeekDay.seconds)
+            
+            self.activity = QuranTimerLiveActivityManager().startActivity(remaining: remaining, duration: time)
         }
     }
     
