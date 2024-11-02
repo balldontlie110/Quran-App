@@ -54,8 +54,7 @@ struct QuranTimerWidgetLiveActivity: Widget {
                     .foregroundStyle(Color.streak)
                     .padding(5)
             } minimal: {
-                Image(systemName: "timer")
-                    .foregroundStyle(Color.streak)
+                RemainingTimeCircle(duration: context.state.duration, remaining: context.attributes.remaining, viewType: .minimal)
             }.widgetURL(URL(string: "http://www.apple.com"))
         }
     }
@@ -117,16 +116,16 @@ struct RemainingTimeCircle: View {
     enum ViewType {
         case banner, expanded, compact, minimal
         
-        var frame: CGFloat {
+        var frame: CGFloat? {
             switch self {
             case .banner:
-                return 40
+                return 43
             case .expanded:
-                return 35
+                return 40
             case .compact:
-                return 10
+                return nil
             case .minimal:
-                return 10
+                return nil
             }
         }
         
@@ -137,9 +136,9 @@ struct RemainingTimeCircle: View {
             case .expanded:
                 return 5
             case .compact:
-                return 2
+                return 2.5
             case .minimal:
-                return 2
+                return 2.5
             }
         }
     }
@@ -149,19 +148,20 @@ struct RemainingTimeCircle: View {
     var body: some View {
         let progress = Double(duration) / Double(remaining)
         
-        if progress > 0 {
+        if progress >= 0 {
             ZStack {
                 Circle()
                     .stroke(lineWidth: viewType.circleWidth)
                     .foregroundStyle(Color.secondary)
                 
                 Circle()
-                    .trim(from: 0.0, to: progress)
+                    .trim(from: 0, to: progress)
                     .stroke(style: StrokeStyle(lineWidth: viewType.circleWidth, lineCap: .round, lineJoin: .round))
                     .foregroundStyle(Color.streak)
             }
             .frame(width: viewType.frame, height: viewType.frame)
-            .padding(5)
+            .padding(viewType == .banner || viewType == .expanded ? 5 : 0)
+            .padding(.trailing, viewType == .compact ? 5 : 0)
         } else {
             if viewType == .compact || viewType == .minimal {
                 Image(systemName: "flame.fill")

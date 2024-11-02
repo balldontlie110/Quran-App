@@ -287,7 +287,11 @@ struct PrayerTimesWidgetEntryView : View {
             var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
             
             if let hour = Int(time.dropLast(3)) {
-                if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" || (prayer == "Midnight" && hour == 11) {
+                if prayer == "Midnight", let maghribTime = filteredPrayerTimes["Maghrib"], let maghribHour = Int(maghribTime.dropLast(3)) {
+                    if hour > maghribHour {
+                        dateComponents.hour = hour + 12
+                    }
+                } else if (prayer == "Noon" && hour == 1) || prayer == "Sunset" || prayer == "Maghrib" {
                     dateComponents.hour = hour + 12
                 } else {
                     dateComponents.hour = hour

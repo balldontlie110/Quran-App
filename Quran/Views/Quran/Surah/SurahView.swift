@@ -345,7 +345,7 @@ struct SurahView: View {
         QuranTimerLiveActivityManager().endActivity()
         
         if let lastWeekDay = weeks.last?.days?.sortedAllObjects()?.last {
-            let remaining = dailyQuranGoal - Int(lastWeekDay.seconds)
+            let remaining = (dailyQuranGoal * 60) - Int(lastWeekDay.seconds)
             
             self.activity = QuranTimerLiveActivityManager().startActivity(remaining: remaining, duration: time)
         }
