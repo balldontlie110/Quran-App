@@ -182,10 +182,15 @@ struct QuranTimeChart: View {
                     }
                 }
             } else {
+                Spacer()
+                
                 Text("Start reading some Quran this week to see your progress update here.")
                     .font(.callout)
                     .foregroundStyle(Color.secondary)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                Spacer()
             }
         }
     }
